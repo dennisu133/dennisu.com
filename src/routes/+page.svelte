@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { fade } from "svelte/transition";
   import { Cloud, CloudOff } from "@lucide/svelte";
 
   import AboutCard from "$lib/components/card/AboutCard.svelte";
@@ -73,7 +74,7 @@
     },
     {
       platform: "GitHub",
-      handle: "@dennisu133",
+      handle: "dennisu133",
       url: `https://github.com/dennisu133`,
       icon: githubIcon,
     },
@@ -91,7 +92,7 @@
     },
     {
       platform: "Spotify",
-      handle: "@dennisu-chan",
+      handle: "dennisu-chan",
       url: "https://open.spotify.com/user/dennisu-chan",
       icon: spotifyIcon,
     },
@@ -103,18 +104,15 @@
 <main
   class="relative isolate flex min-h-dvh flex-col overflow-y-auto scroll-momentum lg:h-dvh lg:overflow-hidden text-white"
 >
-  <div
-    class="absolute inset-0 -z-10 pointer-events-none transition-opacity duration-300 {animated
-      ? 'opacity-100'
-      : 'opacity-0'}"
-  >
-    <Background
-      opacity={0.18}
-      density={0.6}
-      speed={0.015}
-      color={[0.72, 0.72, 0.72]}
-    />
-  </div>
+  {#if animated}
+    <div
+      class="absolute inset-0 -z-10 pointer-events-none"
+      in:fade={{ duration: 300 }}
+      out:fade={{ duration: 300 }}
+    >
+      <Background />
+    </div>
+  {/if}
 
   <div
     class="layout-container flex h-full w-full flex-col py-6 sm:py-8 lg:py-10"

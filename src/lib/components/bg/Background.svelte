@@ -1,18 +1,41 @@
-<!--  
+<!--
   @component
-  Renders a 2D clouds shader as a background.
+  Renders a 2D clouds shader as a background with optional "moon" and top lighting.
+
   Usage:
-  <Background enabled={true} speed={0.02} scale={1.0} density={0.5} opacity={0.25} color={[0.72, 0.72, 0.72]} resolutionScale={0.85} />
+  <Background
+    enabled={true}
+    speed={0.015}
+    scale={1}
+    density={0.4}
+    opacity={0.3}
+    color={[0.75, 0.75, 0.75]}
+    resolutionScale={0.85}
+    moonPosition={[0.6, 0.7]}
+    moonRadius={0.4}
+    moonIntensity={1}
+    topLightStrength={0.8}
+  />
   Optional: pass `class` to extend/override wrapper spacing.
 
   Parameters:
-  - enabled: Whether the background is enabled (default: true)
-  - speed: Cloud drift speed (units per second) (default: 0.02)
-  - scale: Base noise scale (higher = larger features) (default: 1.0)
-  - density: 0 = very dense, 1 = very sparse (default: 0.5)
-  - opacity: Overall cloud opacity cap (default: 0.25)
-  - color: Subtle grey cloud color (linear-ish RGB) (default: [0.72, 0.72, 0.72])
-  - resolutionScale: Render at a lower internal resolution and upscale via CSS (default: 0.85)
+  - enabled: Whether the background is active. If false, resources are disposed and rendering stops. (default: true)
+  - speed: Cloud drift speed (units per second). (default: 0.015)
+  - scale: Base noise scale (higher = larger features). (default: 1)
+  - density: 0 = very dense, 1 = very sparse; higher values yield sparser clouds. (default: 0.4)
+  - opacity: Overall cloud opacity cap. (default: 0.3)
+  - color: Subtle grey cloud color (linear-ish RGB). (default: [0.75, 0.75, 0.75])
+  - resolutionScale: Internal render scale (0–1); lower improves performance; upscaled via CSS. (default: 0.85)
+  - moonPosition: UV position (0..1) of the moon light center. (default: [0.6, 0.7])
+  - moonRadius: Radius of the moon light in UV units. (default: 0.4)
+  - moonIntensity: Brightness contribution of the moon light [0..1]. (default: 1)
+  - topLightStrength: Additional gradient lighting from the top [0..1]. (default: 0.8)
+
+  Notes:
+  - Adaptive resolution scaling dynamically adjusts the internal resolution to maintain smooth frame times.
+  - Toggling `enabled` from true to false after mount triggers a full teardown (RAF canceled, WebGL objects disposed).
+  - Three.js is lazy-loaded inside `onMount`. Even for a static site, prerendered builds can execute in a non-browser context.
+    Lazy import ensures this code only runs in the browser and keeps the initial bundle smaller by loading Three on demand.
 -->
 
 <script lang="ts">
@@ -25,12 +48,16 @@
   // Public props to fine-tune the effect without editing shaders
   let {
     enabled = true,
-    speed = 0.02, // Cloud drift speed (units per second)
-    scale = 1.0, // Base noise scale (higher = larger features)
+    speed = 0.015, // Cloud drift speed (units per second)
+    scale = 1, // Base noise scale (higher = larger features)
     density = 0.5, // 0 = very dense, 1 = very sparse
-    opacity = 0.25, // Overall cloud opacity cap
-    color = [0.72, 0.72, 0.72] as [number, number, number], // Subtle grey cloud color (linear-ish RGB)
+    opacity = 0.3, // Overall cloud opacity cap
+    color = [0.75, 0.75, 0.75] as [number, number, number], // Subtle grey cloud color (linear-ish RGB)
     resolutionScale = 0.85, // Render at a lower internal resolution and upscale via CSS
+    moonPosition = [0.6, 0.7] as [number, number], // UV position of the moon (0..1)
+    moonRadius = 0.4, // Moon light radius in UV units
+    moonIntensity = 1, // Brightness contribution [0..1]
+    topLightStrength = 0.8, // Extra gradient light from top [0..1]
   } = $props();
 
   let teardown: (() => void) | undefined;
@@ -75,6 +102,10 @@
       u_opacity: { value: opacity },
 
       u_color: { value: new THREE.Color(color[0], color[1], color[2]) },
+      u_moonPos: { value: new THREE.Vector2(moonPosition[0], moonPosition[1]) },
+      u_moonRadius: { value: moonRadius },
+      u_moonIntensity: { value: moonIntensity },
+      u_topLightStrength: { value: topLightStrength },
     };
 
     // Shaders (imported from separate files)
@@ -177,7 +208,7 @@
           raf = requestAnimationFrame(tick);
         }
       },
-      { root: null, threshold: 0 }
+      { root: null, threshold: 0 },
     );
 
     io.observe(host!);
