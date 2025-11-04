@@ -101,9 +101,7 @@
   const siteSource = "https://github.com/dennisu133/dennisu.com";
 </script>
 
-<main
-  class="relative isolate flex min-h-dvh flex-col overflow-y-auto lg:h-dvh lg:overflow-hidden"
->
+<main class="page-shell">
   {#if animated}
     <div
       class="absolute inset-0 -z-10 pointer-events-none"
@@ -114,9 +112,7 @@
     </div>
   {/if}
 
-  <div
-    class="flex h-full w-full flex-col max-w-6xl mx-auto px-6 sm:px-10 py-6 sm:py-8 lg:py-10"
-  >
+  <div class="page-container">
     <header class="flex flex-wrap items-end gap-6">
       <div class="max-w-xl">
         <h1 class="mt-3 text-title">
@@ -131,7 +127,7 @@
         <div class="relative group">
           <button
             type="button"
-            class="inline-flex items-center p-2 text-slate-400 hover:text-slate-300 transition-colors duration-150 focus:outline-none"
+            class="bg-toggle-button"
             onclick={toggleBackground}
             aria-label={animated
               ? "Disable animated background"
@@ -144,11 +140,7 @@
               <Cloud size={30} />
             {/if}
           </button>
-          <span
-            id="bg-toggle-tooltip"
-            role="tooltip"
-            class="text-default absolute right-0 top-full mt-2 border border-border bg-black/90 px-2 py-1 text-left opacity-0 pointer-events-none transition-opacity duration-150 ease-linear group-hover:opacity-100"
-          >
+          <span id="bg-toggle-tooltip" role="tooltip" class="bg-toggle-tooltip">
             {animated
               ? "Disable animated background"
               : "Enable animated background"}
@@ -168,7 +160,7 @@
     </header>
 
     <div class="mt-6 flex flex-1 flex-col gap-6">
-      <section class="text-body">
+      <section>
         <header class="section-header sm:mb-4">
           <span>About</span>
           <span class="rule"></span>
@@ -225,3 +217,28 @@
     </footer>
   </div>
 </main>
+
+<style lang="postcss">
+  @reference "tailwindcss";
+
+  .page-shell {
+    @apply relative isolate flex min-h-dvh flex-col overflow-y-auto lg:h-dvh lg:overflow-hidden;
+  }
+  .page-container {
+    @apply flex h-full w-full flex-col max-w-6xl mx-auto px-6 sm:px-10 py-6 sm:py-8 lg:py-10;
+  }
+  .bg-toggle-button {
+    @apply inline-flex items-center p-2 text-slate-400 hover:text-slate-300 transition-colors duration-150 focus:outline-none;
+  }
+  .bg-toggle-tooltip {
+    @apply text-(--text) absolute right-0 top-full mt-2 border bg-black/90 px-2 py-1 text-left opacity-0 pointer-events-none transition-opacity duration-150 ease-linear group-hover:opacity-100;
+    border-color: var(--color-border);
+  }
+  .section-header {
+    @apply flex items-center justify-between mb-3 uppercase tracking-[0.35em] text-(--text-kicker);
+  }
+  .section-header .rule {
+    @apply ml-4 h-px grow;
+    background-color: var(--color-border);
+  }
+</style>
