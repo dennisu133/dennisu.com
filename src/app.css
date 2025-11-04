@@ -47,44 +47,14 @@ body {
   font-family: "Inter", system-ui, sans-serif;
 }
 
-/* Component & utility classes */
-.card {
-  /* We use border-[color] to apply a CSS variable */
-  @apply border border-border bg-surface p-4 transition-colors duration-150 ease-linear hover:border-border-hover;
-}
-
-/* Section header */
-.section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.75rem; /* mb-3 */
-  text-transform: uppercase;
-  letter-spacing: 0.35em;
-  font-size: var(--text-kicker);
-  color: var(--text-muted);
-}
-.section-header .rule {
-  margin-left: 1rem;
-  height: 1px;
-  background-color: var(--color-border);
-  flex: 1 1 auto;
-}
-
 /* Links */
 .link {
   @apply text-(--color-link) transition-colors duration-150 ease-linear hover:text-(--color-link-hover) focus-visible:text-(--color-link-hover);
 }
 
 .link-action {
+  @apply uppercase tracking-[0.06em] text-(--text-action) hover:text-(--color-link-hover) group-hover:text-(--color-link-hover);
   color: var(--color-link);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-size: var(--text-action);
-}
-.link-action:hover,
-.group:hover .link-action {
-  color: var(--color-link-hover);
 }
 
 /* Text color utilities */
