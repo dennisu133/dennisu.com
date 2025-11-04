@@ -228,7 +228,7 @@
     @apply flex h-full w-full flex-col max-w-6xl mx-auto px-6 sm:px-10 py-6 sm:py-8 lg:py-10;
   }
   .bg-toggle-button {
-    @apply inline-flex items-center p-2 text-slate-400 hover:text-slate-300 transition-colors duration-150 focus:outline-none;
+    @apply inline-flex items-center p-2 text-(--text-muted) hover:text-(--text-muted-hover) transition-colors duration-150 focus:outline-none;
   }
   .bg-toggle-tooltip {
     @apply text-(--text) absolute right-0 top-full mt-2 border bg-black/90 px-2 py-1 text-left opacity-0 pointer-events-none transition-opacity duration-150 ease-linear group-hover:opacity-100;
