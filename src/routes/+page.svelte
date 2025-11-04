@@ -102,7 +102,7 @@
 </script>
 
 <main
-  class="relative isolate flex min-h-dvh flex-col overflow-y-auto scroll-momentum lg:h-dvh lg:overflow-hidden text-white"
+  class="relative isolate flex min-h-dvh flex-col overflow-y-auto lg:h-dvh lg:overflow-hidden"
 >
   {#if animated}
     <div
@@ -115,65 +115,47 @@
   {/if}
 
   <div
-    class="layout-container flex h-full w-full flex-col py-6 sm:py-8 lg:py-10"
+    class="flex h-full w-full flex-col max-w-6xl mx-auto px-6 sm:px-10 py-6 sm:py-8 lg:py-10"
   >
-    <div class="flex justify-end text-slate-500 lg:hidden">
-      <div class="relative group">
-        <button
-          type="button"
-          class="mt-1 inline-flex items-center p-2 text-slate-400 hover:text-slate-300 transition"
-          onclick={toggleBackground}
-          aria-label={animated
-            ? "Disable animated background"
-            : "Enable animated background"}
-          aria-describedby="bg-toggle-tooltip-mobile"
-        >
-          {#if animated}
-            <CloudOff size={24} />
-          {:else}
-            <Cloud size={24} />
-          {/if}
-        </button>
-        <span id="bg-toggle-tooltip-mobile" role="tooltip" class="tooltip">
-          {animated
-            ? "Disable animated background"
-            : "Enable animated background"}
-        </span>
-      </div>
-    </div>
-    <header class="flex flex-wrap items-end justify-between gap-6">
+    <header class="flex flex-wrap items-end gap-6">
       <div class="max-w-xl">
-        <h1 class="mt-3 text-title font-semibold leading-tight text-white">
+        <h1 class="mt-3 text-title">
           {profile.name}
         </h1>
-        <p class="mt-1 text-subtitle text-slate-400">
+        <p class="mt-1 text-subtitle">
           {profile.title}
         </p>
       </div>
-      <div class="flex flex-col items-end text-right text-small text-slate-500">
-        <div class="relative group hidden lg:block">
+
+      <div class="flex flex-col items-end text-right text-small ml-auto">
+        <div class="relative group">
           <button
             type="button"
-            class="inline-flex items-center p-2 text-slate-400 hover:text-slate-300 transition"
+            class="inline-flex items-center p-2 text-slate-400 hover:text-slate-300 transition-colors duration-150 focus:outline-none"
             onclick={toggleBackground}
             aria-label={animated
               ? "Disable animated background"
               : "Enable animated background"}
-            aria-describedby="bg-toggle-tooltip-desktop"
+            aria-describedby="bg-toggle-tooltip"
           >
             {#if animated}
-              <CloudOff size={24} />
+              <CloudOff size={30} />
             {:else}
-              <Cloud size={24} />
+              <Cloud size={30} />
             {/if}
           </button>
-          <span id="bg-toggle-tooltip-desktop" role="tooltip" class="tooltip">
+          <span
+            id="bg-toggle-tooltip"
+            role="tooltip"
+            class="text-default absolute right-0 top-full mt-2 border border-border bg-black/90 px-2 py-1 text-left opacity-0 pointer-events-none transition-opacity duration-150 ease-linear group-hover:opacity-100"
+          >
             {animated
               ? "Disable animated background"
               : "Enable animated background"}
           </span>
         </div>
-        <span>
+
+        <span class="text-subtle">
           {profile.location.text}
           <a
             href={profile.location.url}
@@ -186,7 +168,7 @@
     </header>
 
     <div class="mt-6 flex flex-1 flex-col gap-6">
-      <section class="text-body leading-relaxed">
+      <section class="text-body">
         <header class="section-header sm:mb-4">
           <span>About</span>
           <span class="rule"></span>
@@ -236,9 +218,7 @@
       </div>
     </div>
 
-    <footer
-      class="mt-6 flex items-center justify-between text-small text-slate-500"
-    >
+    <footer class="mt-6 flex items-center text-small opacity-80">
       <a href={siteSource} target="_blank" rel="noreferrer" class="link"
         >View Source</a
       >
