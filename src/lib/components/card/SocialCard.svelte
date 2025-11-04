@@ -18,7 +18,7 @@
       <p class="text-muted">{handle}</p>
     </div>
   </div>
-  <a class="btn-ghost link-action" href={url} target="_blank" rel="noreferrer">
+  <a class="link-action" href={url} target="_blank" rel="noreferrer">
     Open
   </a>
 </li>
