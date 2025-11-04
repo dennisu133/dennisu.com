@@ -47,6 +47,12 @@
 <svelte:head>
   <link rel="icon" href={isVisible ? favicon : alticon} />
   <title>{isVisible ? frames[currentFrame] : altTitle}</title>
+  <meta name="theme-color" content="#0ea5e9" />
+  <meta property="og:title" content="Dennisu.com 🐱" />
+  <meta property="og:description" content={"Personal website of Dennis Karnowitsch. Please hire me."} />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://dennisu.com" />
+  <meta property="og:image" content={"/dancing.gif"} />
 </svelte:head>
 
 {@render children?.()}
