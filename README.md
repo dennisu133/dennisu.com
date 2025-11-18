@@ -1,22 +1,20 @@
 # dennisu.com
 
-Source code for my personal website.
-
-Special thanks to drift for the 2D clouds shader: https://www.shadertoy.com/view/4tdSWr
+Source code for my personal website. It's a static page but developed using [bun](https://bun.com/).
 
 ## Install
 
-Install dependencies with `npm install` (or `pnpm install`).
+Install dependencies with `bun install`.
 
 ## Developing
 
-You can start a development server with `npm run dev`.
+You can start a development server with `bun run dev`.
 
 ## Building
 
-To create a production version run `npm run build` (or `pnpm run build`).
+To create a production version run `bun run build`.
 
-Preview the build with `npm run preview`.
+Preview the build with `bun run preview`.
 
 ## License & Attributions
 
