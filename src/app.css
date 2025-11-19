@@ -1,35 +1,34 @@
 @import "tailwindcss";
 @plugin '@tailwindcss/typography';
 
+@variant pointer-fine (@media (pointer: fine));
+@variant pointer-coarse (@media (pointer: coarse));
+
 @theme {
   /* Typography tokens - Shared */
   --text-title: clamp(2.1rem, 5vw, 3.4rem);
   --text-subtitle: clamp(1rem, 2.2vw, 1.2rem);
-  --text-body: clamp(0.85rem, 1.8vw, 1rem);
-  --text-small: clamp(0.7rem, 1.5vw, 0.85rem);
-  --text-kicker: clamp(0.7rem, 1.5vw, 0.8rem);
-  --text-action: clamp(0.7rem, 1.5vw, 0.8rem);
+  --text-body: clamp(0.85rem, 1.8vw, 1.05rem);
   --text-card-title: clamp(1rem, 2.1vw, 1.15rem);
 }
 
 :root {
   /* Light Mode Colors */
   --color-accent-300: #0ea5e9;
-  --color-accent-400: #0284c7;
-  --color-accent-500: #0369a1;
+  --color-accent-400: #2563eb;
+  --color-accent-500: #1e3a8a;
 
   --bg-base: #66b2ff;
 
-  --text-strong: #0f172a; /* slate-900 */
-  --text: #334155; /* slate-700 */
-  --text-muted: #475569; /* slate-600 */
-  --text-subtle: #64748b; /* slate-500 */
-  --text-action-color: var(--color-accent-500); /* link color default */
+  --text: #0f172a;
+  --text-muted: #1e293b;
+  --text-extra: #1e293b;
+  --text-action-color: var(--color-accent-500);
 
   /* Surfaces */
-  --color-surface: rgba(255, 255, 255, 0.75);
-  --color-border: rgba(255, 255, 255, 0.6);
-  --color-border-hover: rgba(255, 255, 255, 0.9);
+  --color-surface: rgba(255, 255, 255, 0.6);
+  --color-border: rgba(15, 23, 42, 0.25);
+  --color-border-hover: rgba(15, 23, 42, 0.55);
 
   /* Semantic aliases */
   --color-link: var(--color-accent-500);
@@ -44,10 +43,9 @@
 
   --bg-base: #000000; /* Deep black night sky */
 
-  --text-strong: #ffffff;
   --text: rgba(255, 255, 255, 0.92);
   --text-muted: rgba(255, 255, 255, 0.6);
-  --text-subtle: #94a3b8;
+  --text-extra: #94a3b8;
   --text-action-color: var(--color-accent-400);
 
   /* Surfaces */
@@ -73,49 +71,6 @@ body {
   font-family: "Inter", system-ui, sans-serif;
 }
 
-/* Links */
-.link {
-  @apply text-(--color-link) transition-colors duration-150 ease-linear hover:text-(--color-link-hover) focus-visible:text-(--color-link-hover);
-}
-
-.link-action {
-  @apply uppercase tracking-[0.06em] text-(--text-action) hover:text-(--color-link-hover) group-hover:text-(--color-link-hover);
-  color: var(--color-link);
-}
-
-/* Text color utilities */
-.text-strong {
-  color: var(--text-strong);
-}
-.text-default {
-  color: var(--text);
-}
-.text-muted {
+p {
   color: var(--text-muted);
-}
-.text-subtitle {
-  color: var(--text-subtle);
-}
-.text-subtle {
-  color: var(--text-subtle);
-}
-
-/* Typography utilities */
-.text-title {
-  font-size: var(--text-title);
-  @apply font-semibold leading-tight;
-}
-.text-subtitle {
-  font-size: var(--text-subtitle);
-}
-.text-body {
-  font-size: var(--text-body);
-  @apply leading-relaxed;
-}
-.text-small {
-  font-size: var(--text-small);
-}
-.text-card-title {
-  font-size: var(--text-card-title);
-  @apply font-medium;
 }

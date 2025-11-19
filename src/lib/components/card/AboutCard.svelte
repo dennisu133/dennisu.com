@@ -11,9 +11,9 @@
 </script>
 
 <div class="card {className}">
-  <div class="grid gap-3 text-default text-body">
+  <div class="grid gap-3 text-body">
     <p>{about}</p>
-    <p class="text-muted">
+    <p>
       {proficiencies}
     </p>
   </div>

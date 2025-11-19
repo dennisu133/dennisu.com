@@ -59,6 +59,20 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://dennisu.com" />
   <meta property="og:image" content={"/dancing.gif"} />
+  <script>
+    try {
+      const saved = localStorage.getItem("theme");
+      const prefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)",
+      ).matches;
+
+      if (saved === "dark" || (!saved && prefersDark)) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    } catch (e) {}
+  </script>
 </svelte:head>
 
 {@render children?.()}
@@ -73,5 +87,21 @@
   }
   :global(.card:hover) {
     border-color: var(--color-border-hover);
+  }
+
+  :global(.text-body) {
+    @apply leading-relaxed;
+    font-size: var(--text-body);
+  }
+
+  :global(.link) {
+    @apply text-(--color-link) transition-colors duration-150 ease-linear 
+    hover:text-(--color-link-hover) focus-visible:text-(--color-link-hover);
+  }
+
+  :global(.link-action) {
+    @apply uppercase tracking-[0.06em] text-(--text-action) 
+    hover:text-(--color-link-hover) group-hover:text-(--color-link-hover);
+    color: var(--color-link);
   }
 </style>
