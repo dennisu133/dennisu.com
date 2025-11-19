@@ -1,6 +1,7 @@
 <script lang="ts">
   import "../app.css";
   import { onMount } from "svelte";
+  import { initTheme } from "$lib/theme.svelte";
   import favicon from "$lib/assets/favicon.svg";
   import alticon from "$lib/assets/alticon.svg";
 
@@ -21,6 +22,8 @@
   let isVisible = $state(true);
 
   onMount(() => {
+    initTheme();
+
     // Check initial visibility state
     isVisible = !document.hidden;
 
@@ -47,9 +50,12 @@
 <svelte:head>
   <link rel="icon" href={isVisible ? favicon : alticon} />
   <title>{isVisible ? frames[currentFrame] : altTitle}</title>
-  <meta name="theme-color" content="#0ea5e9" />
+  <meta name="theme-color" content="#66b2ff" />
   <meta property="og:title" content="Dennisu.com 🐱" />
-  <meta property="og:description" content={"Personal website of Dennis Karnowitsch. Please hire me."} />
+  <meta
+    property="og:description"
+    content={"Personal website of Dennis Karnowitsch. Please hire me."}
+  />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://dennisu.com" />
   <meta property="og:image" content={"/dancing.gif"} />

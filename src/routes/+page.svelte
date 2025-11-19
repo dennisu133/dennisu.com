@@ -1,7 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
-  import { Cloud, CloudOff } from "@lucide/svelte";
+  import { Cloud, CloudOff, Moon, Sun } from "@lucide/svelte";
+  import { themeState, toggleTheme } from "$lib/theme.svelte";
 
   import AboutCard from "$lib/components/card/AboutCard.svelte";
   import ProjectCard from "$lib/components/card/ProjectCard.svelte";
@@ -14,7 +15,7 @@
   import steamIcon from "$lib/assets/steam.svg";
   import spotifyIcon from "$lib/assets/spotify.svg";
 
-  let animated = true;
+  let animated = $state(true);
 
   function toggleBackground() {
     animated = !animated;
@@ -124,30 +125,51 @@
       </div>
 
       <div class="flex flex-col items-end text-right text-small ml-auto">
-        <div class="relative group">
-          <button
-            type="button"
-            class="bg-toggle-button"
-            onclick={toggleBackground}
-            aria-label={animated
-              ? "Disable animated background"
-              : "Enable animated background"}
-            aria-describedby="bg-toggle-tooltip"
-          >
-            {#if animated}
-              <CloudOff size={30} />
-            {:else}
-              <Cloud size={30} />
-            {/if}
-          </button>
-          <span id="bg-toggle-tooltip" role="tooltip" class="bg-toggle-tooltip">
-            {animated
-              ? "Disable animated background"
-              : "Enable animated background"}
-          </span>
+        <div class="flex items-center gap-2">
+          <!-- Theme Toggle -->
+          <div class="relative group">
+            <button
+              type="button"
+              class="bg-toggle-button"
+              onclick={toggleTheme}
+              aria-label={themeState.mode === "dark"
+                ? "Switch to light mode"
+                : "Switch to dark mode"}
+            >
+              {#if themeState.mode === "dark"}
+                <Moon size={30} />
+              {:else}
+                <Sun size={30} />
+              {/if}
+            </button>
+            <span role="tooltip" class="bg-toggle-tooltip">
+              {themeState.mode === "dark" ? "Light Mode" : "Dark Mode"}
+            </span>
+          </div>
+
+          <!-- Background Toggle -->
+          <div class="relative group">
+            <button
+              type="button"
+              class="bg-toggle-button"
+              onclick={toggleBackground}
+              aria-label={animated
+                ? "Disable animated background"
+                : "Enable animated background"}
+            >
+              {#if animated}
+                <CloudOff size={30} />
+              {:else}
+                <Cloud size={30} />
+              {/if}
+            </button>
+            <span role="tooltip" class="bg-toggle-tooltip">
+              {animated ? "Static Background" : "Animated Background"}
+            </span>
+          </div>
         </div>
 
-        <span class="text-subtle">
+        <span class="text-subtle mt-2">
           {profile.location.text}
           <a
             href={profile.location.url}
@@ -228,10 +250,10 @@
     @apply flex h-full w-full flex-col max-w-6xl mx-auto px-6 sm:px-10 py-6 sm:py-8 lg:py-10;
   }
   .bg-toggle-button {
-    @apply inline-flex items-center p-2 text-(--text-muted) hover:text-(--text-muted-hover) transition-colors duration-150 focus:outline-none;
+    @apply inline-flex items-center p-2 text-(--text-muted) hover:text-(--text-strong) transition-colors duration-150 focus:outline-none cursor-pointer;
   }
   .bg-toggle-tooltip {
-    @apply text-(--text) absolute right-0 top-full mt-2 border bg-black/90 px-2 py-1 text-left opacity-0 pointer-events-none transition-opacity duration-150 ease-linear group-hover:opacity-100;
+    @apply text-(--text-strong) absolute right-0 top-full mt-2 border bg-(--color-surface) backdrop-blur-md shadow-sm px-2 py-1 text-left opacity-0 pointer-events-none transition-opacity duration-150 ease-linear group-hover:opacity-100 min-w-max z-10 rounded-sm text-xs;
     border-color: var(--color-border);
   }
   .section-header {

@@ -2,26 +2,7 @@
 @plugin '@tailwindcss/typography';
 
 @theme {
-  /* Accent */
-  --color-accent-300: #7dd3fc;
-  --color-accent-400: #38bdf8;
-  --color-accent-500: #0ea5e9;
-
-  /* Semantic aliases for hyperlinks */
-  --color-link: var(--color-accent-400);
-  --color-link-hover: var(--color-accent-300);
-
-  /* Base app colors */
-  --bg-base: #000000;
-
-  /* Text tokens */
-  --text-strong: #ffffff;
-  --text: rgba(255, 255, 255, 0.92);
-  --text-muted: rgba(255, 255, 255, 0.6);
-  --text-slate-400: #94a3b8;
-  --text-slate-500: #64748b;
-
-  /* Typography tokens */
+  /* Typography tokens - Shared */
   --text-title: clamp(2.1rem, 5vw, 3.4rem);
   --text-subtitle: clamp(1rem, 2.2vw, 1.2rem);
   --text-body: clamp(0.85rem, 1.8vw, 1rem);
@@ -29,21 +10,66 @@
   --text-kicker: clamp(0.7rem, 1.5vw, 0.8rem);
   --text-action: clamp(0.7rem, 1.5vw, 0.8rem);
   --text-card-title: clamp(1rem, 2.1vw, 1.15rem);
+}
 
-  /* Surfaces and borders */
+:root {
+  /* Light Mode Colors */
+  --color-accent-300: #0ea5e9;
+  --color-accent-400: #0284c7;
+  --color-accent-500: #0369a1;
+
+  --bg-base: #66b2ff;
+
+  --text-strong: #0f172a; /* slate-900 */
+  --text: #334155; /* slate-700 */
+  --text-muted: #475569; /* slate-600 */
+  --text-subtle: #64748b; /* slate-500 */
+  --text-action-color: var(--color-accent-500); /* link color default */
+
+  /* Surfaces */
+  --color-surface: rgba(255, 255, 255, 0.75);
+  --color-border: rgba(255, 255, 255, 0.6);
+  --color-border-hover: rgba(255, 255, 255, 0.9);
+
+  /* Semantic aliases */
+  --color-link: var(--color-accent-500);
+  --color-link-hover: var(--color-accent-400);
+}
+
+.dark {
+  /* Dark Mode Colors */
+  --color-accent-300: #7dd3fc; /* lighter blue */
+  --color-accent-400: #38bdf8;
+  --color-accent-500: #0ea5e9;
+
+  --bg-base: #000000; /* Deep black night sky */
+
+  --text-strong: #ffffff;
+  --text: rgba(255, 255, 255, 0.92);
+  --text-muted: rgba(255, 255, 255, 0.6);
+  --text-subtle: #94a3b8;
+  --text-action-color: var(--color-accent-400);
+
+  /* Surfaces */
   --color-surface: rgba(12, 12, 12, 0.6);
   --color-border: rgba(255, 255, 255, 0.08);
   --color-border-hover: rgba(255, 255, 255, 0.16);
+
+  /* Semantic aliases */
+  --color-link: var(--color-accent-400);
+  --color-link-hover: var(--color-accent-300);
 }
 
 html,
 body {
   @apply h-full overflow-auto;
   background-color: var(--bg-base);
+  color: var(--text);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 body {
-  @apply m-0 text-(--text);
+  @apply m-0;
   font-family: "Inter", system-ui, sans-serif;
 }
 
@@ -68,10 +94,10 @@ body {
   color: var(--text-muted);
 }
 .text-subtitle {
-  color: var(--text-slate-400);
+  color: var(--text-subtle);
 }
 .text-subtle {
-  color: var(--text-slate-500);
+  color: var(--text-subtle);
 }
 
 /* Typography utilities */
