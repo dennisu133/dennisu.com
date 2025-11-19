@@ -10,7 +10,9 @@
   import Background from "$lib/components/bg/Background.svelte";
 
   import emailIcon from "$lib/assets/email.svg";
+  import emailIconDark from "$lib/assets/email-dark.svg"; // Dark icon for light mode
   import githubIcon from "$lib/assets/github.svg";
+  import githubIconDark from "$lib/assets/github-dark.svg"; // Dark icon for light mode
   import discordIcon from "$lib/assets/discord.svg";
   import steamIcon from "$lib/assets/steam.svg";
   import spotifyIcon from "$lib/assets/spotify.svg";
@@ -72,12 +74,14 @@
       handle: "d@dennisu.com",
       url: "mailto:d@dennisu.com",
       icon: emailIcon,
+      iconDark: emailIconDark,
     },
     {
       platform: "GitHub",
       handle: "dennisu133",
       url: `https://github.com/dennisu133`,
       icon: githubIcon,
+      iconDark: githubIconDark,
     },
     {
       platform: "Discord",
@@ -116,15 +120,15 @@
   <div class="page-container">
     <header class="flex flex-wrap items-end gap-6">
       <div class="max-w-xl">
-        <h1 class="mt-3 text-title">
+        <h1>
           {profile.name}
         </h1>
-        <p class="mt-1 text-subtitle">
+        <p class="subtitle">
           {profile.title}
         </p>
       </div>
 
-      <div class="flex flex-col items-end text-right text-small ml-auto">
+      <div class="flex flex-col items-end text-right ml-auto">
         <div class="flex items-center gap-2">
           <!-- Theme Toggle -->
           <div class="relative group">
@@ -169,7 +173,7 @@
           </div>
         </div>
 
-        <span class="text-subtle mt-2">
+        <span class="location">
           {profile.location.text}
           <a
             href={profile.location.url}
@@ -185,7 +189,7 @@
       <section>
         <header class="section-header sm:mb-4">
           <span>About</span>
-          <span class="rule"></span>
+          <span class="separator"></span>
         </header>
 
         <AboutCard
@@ -199,7 +203,7 @@
         <section class="flex w-full flex-col gap-4 lg:flex-1">
           <header class="section-header sm:mb-4">
             <span>Projects</span>
-            <span class="rule"></span>
+            <span class="separator"></span>
           </header>
           <ul class="flex flex-col gap-3 text-body">
             {#each projects as project}
@@ -216,7 +220,7 @@
         <section class="flex w-full flex-col gap-4 lg:flex-1">
           <header class="section-header sm:mb-4">
             <span>Socials</span>
-            <span class="rule"></span>
+            <span class="separator"></span>
           </header>
           <ul class="grid gap-3 text-body">
             {#each socials as social}
@@ -225,6 +229,7 @@
                 handle={social.handle}
                 url={social.url}
                 icon={social.icon}
+                iconDark={social.iconDark}
               />
             {/each}
           </ul>
@@ -243,6 +248,19 @@
 <style lang="postcss">
   @reference "tailwindcss";
 
+  h1 {
+    font-size: var(--text-title);
+    @apply mt-3 font-semibold leading-tight;
+  }
+  .subtitle {
+    font-size: var(--text-subtitle);
+    @apply mt-1 font-semibold leading-tight text-(--text-extra);
+  }
+
+  .location {
+    @apply mt-2 text-(--text-extra);
+  }
+
   .page-shell {
     @apply relative isolate flex min-h-dvh flex-col overflow-y-auto lg:h-dvh lg:overflow-hidden;
   }
@@ -250,16 +268,16 @@
     @apply flex h-full w-full flex-col max-w-6xl mx-auto px-6 sm:px-10 py-6 sm:py-8 lg:py-10;
   }
   .bg-toggle-button {
-    @apply inline-flex items-center p-2 text-(--text-muted) hover:text-(--text-strong) transition-colors duration-150 focus:outline-none cursor-pointer;
+    @apply inline-flex items-center p-2 text-(--text-muted) hover:text-(--text) transition-colors duration-150 focus:outline-none cursor-pointer;
   }
   .bg-toggle-tooltip {
-    @apply text-(--text-strong) absolute right-0 top-full mt-2 border bg-(--color-surface) backdrop-blur-md shadow-sm px-2 py-1 text-left opacity-0 pointer-events-none transition-opacity duration-150 ease-linear group-hover:opacity-100 min-w-max z-10 rounded-sm text-xs;
+    @apply text-(--text) absolute right-0 top-full mt-2 border bg-(--color-surface) backdrop-blur-md shadow-sm px-2 py-1 text-left opacity-0 pointer-events-none transition-opacity duration-150 ease-linear group-hover:opacity-100 min-w-max z-10 rounded-sm text-xs;
     border-color: var(--color-border);
   }
   .section-header {
     @apply flex items-center justify-between mb-3 uppercase tracking-[0.35em] text-(--text-kicker);
   }
-  .section-header .rule {
+  .section-header .separator {
     @apply ml-4 h-px grow;
     background-color: var(--color-border);
   }

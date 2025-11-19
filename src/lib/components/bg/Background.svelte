@@ -44,7 +44,7 @@
       antialias: false,
       depth: false,
       stencil: false,
-      powerPreference: "low-power",
+      powerPreference: "high-performance", // Prefer high performance to avoid power saving glitches
     });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.0));
     // Clear color doesn't matter as shader covers screen
@@ -92,17 +92,9 @@
         // Sky1 (top) is a slightly adjusted version to keep some depth
         const hsl = { h: 0, s: 0, l: 0 };
         baseColor.getHSL(hsl);
-        // Darken the top slightly for sky gradient effect
-        // For very dark backgrounds (night), we might want to keep it dark or slightly different hue
-        // For light backgrounds (day), darker blue at top looks good
         if (mode === "dark") {
-          // Night: keep it consistent or maybe slightly lighter/purple at top?
-          // Let's keep it flat black/dark as requested "more blackish"
-          // Maybe slightly lighter for stars to pop?
-          // No, "more blackish" means dark. Let's keep it flat or very subtle.
           hsl.l = Math.max(0, hsl.l + 0.02);
         } else {
-          // Day: darker blue at top
           hsl.l = Math.max(0, hsl.l - 0.2);
         }
         const topColor = new THREE.Color().setHSL(hsl.h, hsl.s, hsl.l);
@@ -166,17 +158,28 @@
     const scaleMax = resolutionScale;
     const scaleStep = 0.03;
 
+    const MAX_DT = 0.1; // Cap max frame time to 100ms
+
     let running = true;
     let inView = true;
 
     const tick = (now: number) => {
       if (!running || !inView) return;
-      const dt = (now - last) / 1000;
+
+      let dt = (now - last) / 1000;
       last = now;
+
+      // Cap dt to prevent huge jumps after pauses/inactive tabs
+      if (dt > MAX_DT) dt = MAX_DT;
+      if (dt < 0) dt = 0; // prevent negative dt
 
       smoothedDt = smoothedDt * (1 - dtSmoothing) + dt * dtSmoothing;
       uniforms.u_time.value += smoothedDt;
-      renderer.render(scene, camera);
+
+      // Add context loss check if possible, though rare in WebGL1
+      if (!renderer.getContext().isContextLost()) {
+        renderer.render(scene, camera);
+      }
 
       // Adaptive resolution scaling based on smoothed frame time
       if (adaptiveResolution) {
