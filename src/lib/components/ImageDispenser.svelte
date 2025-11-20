@@ -123,13 +123,24 @@
       });
     }
 
+    let lastFrameTime = 0;
+
     function refreshParticles() {
+      const currentTime = performance.now();
+      // Calculate delta time in seconds (defaulting to ~60fps on first frame)
+      const dt = lastFrameTime ? (currentTime - lastFrameTime) / 1000 : 0.016;
+      lastFrameTime = currentTime;
+
+      // Target 60 FPS as the baseline (dt approx 0.016s)
+      // If screen is 120Hz (dt approx 0.008s), this factor will be 0.5, slowing down per-frame movement
+      const timeScale = dt * 60;
+
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
-        p.left = p.left - p.speedHorz * p.direction;
-        p.top = p.top - p.speedUp;
-        p.speedUp = p.speedUp - 0.2;
-        p.spinVal = p.spinVal + p.spinSpeed;
+        p.left = p.left - p.speedHorz * p.direction * timeScale;
+        p.top = p.top - p.speedUp * timeScale;
+        p.speedUp = p.speedUp - 0.2 * timeScale;
+        p.spinVal = p.spinVal + p.spinSpeed * timeScale;
 
         // Remove if out of bounds (bottom)
         if (p.top >= window.innerHeight + p.size) {
@@ -144,8 +155,7 @@
       }
     }
 
-    function loop() {
-      const currentTime = performance.now();
+    function loop(currentTime: number) {
       if (
         autoAddParticle &&
         particles.length < limit &&
@@ -159,7 +169,7 @@
       animationFrame = requestAnimationFrame(loop);
     }
 
-    loop();
+    animationFrame = requestAnimationFrame(loop);
 
     const onMouseEnter = () => {
       autoAddParticle = true;
