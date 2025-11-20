@@ -32,9 +32,6 @@ The background cloud shader, located in [`/src/lib/components/bg/shaders/clouds.
 
 - **License:** The original author, drift, has generously given public permission for the shader to be used "in any way that you choose" (see comments on the original shader's page).
 - **Original Source:** [https://www.shadertoy.com/view/4tdSWr](https://www.shadertoy.com/view/4tdSWr)
-- **License Details:** [http://creativecommons.org/licenses/by-nc-sa/3.0/](http://creativecommons.org/licenses/by-nc-sa/3.0/)
-
-This license means this specific component **may not be used for commercial purposes**, and any modifications to it must also be shared under the same CC BY-NC-SA 3.0 license.
 
 #### Favicon (Apache 2.0)
 
