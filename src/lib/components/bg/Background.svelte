@@ -146,7 +146,6 @@
     resize();
     window.addEventListener("resize", resize);
 
-    // Animation (auto-paused when hidden/offscreen)
     let raf = 0;
     let last = performance.now();
     let smoothedDt = 1 / 60;
@@ -154,9 +153,9 @@
 
     // Adaptive resolution scaling
     let adaptiveResolution = true;
-    const scaleMin = 0.5;
+    const scaleMin = 0.65;
     const scaleMax = resolutionScale;
-    const scaleStep = 0.03;
+    const scaleStep = 0.01;
 
     const MAX_DT = 0.1; // Cap max frame time to 100ms
 

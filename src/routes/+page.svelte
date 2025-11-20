@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
+  import { asset } from "$app/paths";
   import { Cloud, CloudOff, Moon, Sun } from "@lucide/svelte";
   import { themeState, toggleTheme } from "$lib/theme.svelte";
 
@@ -8,14 +9,7 @@
   import ProjectCard from "$lib/components/card/ProjectCard.svelte";
   import SocialCard from "$lib/components/card/SocialCard.svelte";
   import Background from "$lib/components/bg/Background.svelte";
-
-  import emailIcon from "$lib/assets/email.svg";
-  import emailIconDark from "$lib/assets/email-dark.svg"; // Dark icon for light mode
-  import githubIcon from "$lib/assets/github.svg";
-  import githubIconDark from "$lib/assets/github-dark.svg"; // Dark icon for light mode
-  import discordIcon from "$lib/assets/discord.svg";
-  import steamIcon from "$lib/assets/steam.svg";
-  import spotifyIcon from "$lib/assets/spotify.svg";
+  import ImageDispenser from "$lib/components/ImageDispenser.svelte";
 
   let animated = $state(true);
 
@@ -38,7 +32,6 @@
   const profile = {
     name: "Dennis Karnowitsch",
     title: "Aspiring Full Stack Developer",
-    about: "Bachelor in Computer Science. I love programming, music and cats.",
     proficiencies: "Proficient in Python, Typescript, Svelte and C",
     location: {
       text: "Based in",
@@ -73,37 +66,55 @@
       platform: "Email",
       handle: "d@dennisu.com",
       url: "mailto:d@dennisu.com",
-      icon: emailIcon,
-      iconDark: emailIconDark,
+      icon: asset("/icons/email.svg"),
+      iconDark: asset("/icons/email-dark.svg"),
     },
     {
       platform: "GitHub",
       handle: "dennisu133",
       url: `https://github.com/dennisu133`,
-      icon: githubIcon,
-      iconDark: githubIconDark,
+      icon: asset("/icons/github.svg"),
+      iconDark: asset("/icons/github-dark.svg"),
     },
     {
       platform: "Discord",
       handle: "dennisu",
       url: "https://discord.com/users/193137218964029440",
-      icon: discordIcon,
+      icon: asset("/icons/discord.svg"),
     },
     {
       platform: "Steam",
       handle: "dennisuchan",
       url: "https://steamcommunity.com/id/dennisuchan/",
-      icon: steamIcon,
+      icon: asset("/icons/steam.svg"),
     },
     {
       platform: "Spotify",
       handle: "dennisu-chan",
       url: "https://open.spotify.com/user/dennisu-chan",
-      icon: spotifyIcon,
+      icon: asset("/icons/spotify.svg"),
     },
   ];
 
   const siteSource = "https://github.com/dennisu133/dennisu.com";
+  const programmingImages = import.meta.glob(
+    "$lib/assets/images/programmingImages/*",
+    {
+      eager: true,
+      query: "?url",
+      import: "default",
+    },
+  );
+  const musicImages = import.meta.glob("$lib/assets/images/musicImages/*", {
+    eager: true,
+    query: "?url",
+    import: "default",
+  });
+  const catImages = import.meta.glob("$lib/assets/images/catImages/*", {
+    eager: true,
+    query: "?url",
+    import: "default",
+  });
 </script>
 
 <main class="page-shell">
@@ -192,8 +203,16 @@
           <span class="separator"></span>
         </header>
 
+        {#snippet aboutText()}
+          Bachelor in Computer Science. I love
+          <ImageDispenser paths={programmingImages}>programming</ImageDispenser
+          >,
+          <ImageDispenser paths={musicImages}>music</ImageDispenser> and
+          <ImageDispenser paths={catImages}>cats</ImageDispenser>.
+        {/snippet}
+
         <AboutCard
-          about={profile.about}
+          about={aboutText}
           proficiencies={profile.proficiencies}
           class="mt-4"
         />
