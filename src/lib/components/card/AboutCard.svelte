@@ -7,14 +7,34 @@
 -->
 
 <script lang="ts">
-  let { about, proficiencies, class: className = "" } = $props();
+  import type { Snippet } from "svelte";
+
+  let {
+    about,
+    proficiencies,
+    class: className = "",
+  }: {
+    about: string | Snippet;
+    proficiencies: string | Snippet;
+    class?: string;
+  } = $props();
 </script>
 
 <div class="card {className}">
   <div class="grid gap-3 text-body">
-    <p>{about}</p>
-    <p>
-      {proficiencies}
-    </p>
+    <div>
+      {#if typeof about === "string"}
+        {about}
+      {:else}
+        {@render about()}
+      {/if}
+    </div>
+    <div>
+      {#if typeof proficiencies === "string"}
+        {proficiencies}
+      {:else}
+        {@render proficiencies()}
+      {/if}
+    </div>
   </div>
 </div>
