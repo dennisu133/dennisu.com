@@ -42,22 +42,25 @@
 
   const projects = [
     {
+      name: "PrivateStream",
+      description: "A private low-latency livestream viewer for friend groups.",
+      repo: "https://github.com/dennisu133/PrivateStream",
+      date: "10/2025",
+    },
+    {
       name: "LetterMaker",
       description:
         "Create beautiful letters with folding guides ready for printout.",
       url: "https://letter.dennisu.com",
       repo: "https://github.com/dennisu133/LetterMaker",
+      date: "08/2025",
     },
     {
       name: "CompetitiveWordle",
       description: "Wordle clone with a focus on competitive gameplay.",
       url: "https://wordle.dennisu.com",
       repo: "https://github.com/dennisu133/CompetitiveWordle",
-    },
-    {
-      name: "PrivateStream",
-      description: "A private low-latency livestream viewer for friend groups.",
-      repo: "https://github.com/dennisu133/PrivateStream",
+      date: "05/2025",
     },
   ];
 
@@ -231,6 +234,7 @@
                 description={project.description}
                 url={project.url}
                 repo={project.repo}
+                date={project.date}
               />
             {/each}
           </ul>
