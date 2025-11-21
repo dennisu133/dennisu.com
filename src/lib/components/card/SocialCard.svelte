@@ -21,6 +21,24 @@
   let currentIcon = $derived(
     themeState.mode === "light" && iconDark ? iconDark : icon,
   );
+
+  // Email obfuscation logic
+  let isEmail = $derived(platform === "Email");
+  // Start with "#" if email, otherwise actual url
+  let computedHref = $state(platform === "Email" ? "#" : url);
+
+  function handleInteraction() {
+    if (isEmail) {
+      computedHref = url;
+    }
+  }
+
+  function handleClick(e: MouseEvent) {
+    if (isEmail && computedHref === "#") {
+      e.preventDefault();
+      window.location.href = url;
+    }
+  }
 </script>
 
 <!-- Snippet for the inner content to avoid duplication -->
@@ -49,7 +67,14 @@
   </div>
 
   {#if !isDesktop}
-    <a class="link-action" href={url} target="_blank" rel="noreferrer">
+    <a
+      class="link-action"
+      href={computedHref}
+      target="_blank"
+      rel="noreferrer"
+      onmouseenter={handleInteraction}
+      onclick={handleClick}
+    >
       Open
     </a>
   {/if}
@@ -65,15 +90,19 @@
   <!-- Desktop: Entire card is clickable via Stretched Link -->
   <!-- Hidden by default, visible ONLY on fine-pointer devices (Mouse) -->
   <div
-    class="hidden pointer-fine:flex items-center justify-between p-4 w-full h-full relative hover:bg-(--color-surface)/50 transition-colors"
+    class="hidden pointer-fine:flex items-center justify-between p-4 w-full
+    h-full relative hover:bg-(--color-surface)/50 transition-colors"
+    onmouseenter={handleInteraction}
+    role="none"
   >
     <!-- Main Stretched Link -->
     <a
-      href={url}
+      href={computedHref}
       target="_blank"
       rel="noreferrer"
       class="absolute inset-0 z-10"
       aria-label={`Open ${platform}`}
+      onclick={handleClick}
     ></a>
 
     {@render cardContent(true)}
