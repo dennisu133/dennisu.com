@@ -74,6 +74,10 @@ float getStars(vec2 uv) {
     return (1.0 - smoothstep(0.0, 0.3, dist)) * twinkle * (brightness - 0.98) * 50.0;
 }
 
+float random(vec2 st) {
+    return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
+}
+
 void main() {
     vec2 p = vUv;
     vec2 uv = p*vec2(u_aspect,1.0);
@@ -146,6 +150,9 @@ void main() {
     // Mix between starry sky and cloud layer
     // Cloud layer uses baseSky (no stars) for tinting
     vec3 result = mix(skyWithStars, clamp(skytint * baseSky + cloudcolour, 0.0, 1.0), clamp(f + c, 0.0, 1.0));
+
+    // Apply dithering to prevent banding
+    result += (random(gl_FragCoord.xy) - 0.5) / 255.0;
 
     gl_FragColor = vec4( result, 1.0 );
 }
