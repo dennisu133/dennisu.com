@@ -155,9 +155,9 @@
                 : "Switch to dark mode"}
             >
               {#if themeState.mode === "dark"}
-                <Moon size={30} />
-              {:else}
                 <Sun size={30} />
+              {:else}
+                <Moon size={30} />
               {/if}
             </button>
             <span role="tooltip" class="bg-toggle-tooltip">
@@ -285,20 +285,27 @@
   }
 
   .page-shell {
-    @apply relative isolate flex min-h-dvh flex-col overflow-y-auto lg:h-dvh lg:overflow-hidden;
+    @apply relative isolate flex min-h-dvh flex-col overflow-y-auto 
+    lg:h-dvh lg:overflow-hidden;
   }
   .page-container {
-    @apply flex h-full w-full flex-col max-w-6xl mx-auto px-6 sm:px-10 py-6 sm:py-8 lg:py-10;
+    @apply flex h-full w-full flex-col max-w-6xl mx-auto px-6 sm:px-10 
+    py-6 sm:py-8 lg:py-10;
   }
   .bg-toggle-button {
-    @apply inline-flex items-center p-2 text-(--text-muted) hover:text-(--text) transition-colors duration-150 focus:outline-none cursor-pointer;
+    @apply inline-flex items-center p-2 text-(--text-muted) hover:text-(--text) 
+    transition-colors duration-150 focus:outline-none cursor-pointer;
   }
   .bg-toggle-tooltip {
-    @apply text-(--text) absolute right-0 top-full mt-2 border bg-(--color-surface) backdrop-blur-md shadow-sm px-2 py-1 text-left opacity-0 pointer-events-none transition-opacity duration-150 ease-linear group-hover:opacity-100 min-w-max z-10 rounded-sm text-xs;
+    @apply text-(--text) absolute right-0 top-full mt-2 border 
+    bg-(--color-surface) backdrop-blur-md shadow-sm px-2 py-1 text-left 
+    opacity-0 pointer-events-none transition-opacity duration-150 ease-linear 
+    group-hover:opacity-100 min-w-max z-10 rounded-sm text-xs;
     border-color: var(--color-border);
   }
   .section-header {
-    @apply flex items-center justify-between mb-3 uppercase tracking-[0.35em] text-(--text-kicker);
+    @apply flex items-center justify-between mb-3 uppercase 
+    tracking-[0.35em] text-(--text-kicker);
   }
   .section-header .separator {
     @apply ml-4 h-px grow;
