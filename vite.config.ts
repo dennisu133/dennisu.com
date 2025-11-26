@@ -8,15 +8,7 @@ export default defineConfig({
 		host: true,
 	},
 	build: {
-		chunkSizeWarningLimit: 1000,
-		rollupOptions: {
-			output: {
-				manualChunks: (id) => {
-					if (id.includes("node_modules/three")) {
-						return "three";
-					}
-				},
-			},
-		},
+		target: "esnext", // Smaller output for modern browsers
+		modulePreload: { polyfill: false }, // Skip polyfill for module preload
 	},
 });

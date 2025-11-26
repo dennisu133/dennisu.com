@@ -1,14 +1,22 @@
 <script lang="ts">
   import "../app.css";
   import { onMount } from "svelte";
-  import { initTheme } from "$lib/theme.svelte";
   import favicon from "$lib/assets/favicon.svg";
   import alticon from "$lib/assets/alticon.svg";
 
   let { children } = $props();
 
-  function generateFrames(name = "Dennisu", emoji = "🐈") {
-    const frames = [];
+  /**
+   * Generates an array of strings by replacing each character in the given name
+   * with the specified emoji, animating through each position, then reverses all but
+   * the first and last frames for a seamless loop.
+   *
+   * @param name The string to animate. Default: "Dennisu"
+   * @param emoji The emoji to insert in place of each char. Default: "🐈"
+   * @returns Array of animated strings with emoji inserted at each position.
+   */
+  function generateFrames(name: string = "Dennisu", emoji: string = "🐈") {
+    const frames: string[] = [];
     for (let i = 0; i < name.length; i++) {
       const frame = name.slice(0, i) + emoji + name.slice(i + 1);
       frames.push(frame);
@@ -18,16 +26,13 @@
 
   const frames = generateFrames();
   const altTitle = "Spicy Singles in Your Area";
+  const description = "Personal website of Dennis Karnowitsch. Please hire me.";
   let currentFrame = $state(0);
   let isVisible = $state(true);
 
   onMount(() => {
-    initTheme();
-
-    // Check initial visibility state
     isVisible = !document.hidden;
 
-    // Handle visibility change
     const handleVisibilityChange = () => {
       isVisible = !document.hidden;
     };
@@ -48,27 +53,34 @@
 </script>
 
 <svelte:head>
+  <!-- Favicon -->
   <link rel="icon" href={isVisible ? favicon : alticon} />
+
+  <!-- Metadata -->
   <title>{isVisible ? frames[currentFrame] : altTitle}</title>
-  <meta name="theme-color" content="#66b2ff" />
-  <meta property="og:title" content="Dennisu.com 🐱" />
+  <meta name="description" content={description} />
   <meta
-    property="og:description"
-    content={"Personal website of Dennis Karnowitsch. Please hire me."}
+    name="keywords"
+    content="Dennis Karnowitsch, Dennisu, dennisu, dennisu133, dennisu.com"
   />
+  <meta name="theme-color" content="#66b2ff" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="🐱 Dennisu.com 🐱" />
+  <meta property="og:description" content={description} />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://dennisu.com" />
   <meta property="og:image" content={"/dancing.gif"} />
+
+  <!-- Blocking script to initialize theme (dark is default) -->
   <script>
     try {
-      const saved = localStorage.getItem("theme");
-      const prefersDark = window.matchMedia(
-        "(prefers-color-scheme: dark)",
+      const stored = localStorage.getItem("theme");
+      const prefersLight = window.matchMedia(
+        "(prefers-color-scheme: light)",
       ).matches;
-
-      if (saved === "dark" || (!saved && prefersDark)) {
-        document.documentElement.classList.add("dark");
-      } else {
+      const theme = stored || (prefersLight ? "light" : "dark");
+      if (theme === "light") {
         document.documentElement.classList.remove("dark");
       }
     } catch (e) {}
@@ -76,32 +88,3 @@
 </svelte:head>
 
 {@render children?.()}
-
-<style lang="postcss">
-  @reference "tailwindcss";
-
-  :global(.card) {
-    @apply border p-4 transition-colors duration-150 ease-linear;
-    background-color: var(--color-surface);
-    border-color: var(--color-border);
-  }
-  :global(.card:hover) {
-    border-color: var(--color-border-hover);
-  }
-
-  :global(.text-body) {
-    @apply leading-relaxed;
-    font-size: var(--text-body);
-  }
-
-  :global(.link) {
-    @apply text-(--color-link) transition-colors duration-150 ease-linear 
-    hover:text-(--color-link-hover) focus-visible:text-(--color-link-hover);
-  }
-
-  :global(.link-action) {
-    @apply uppercase tracking-[0.06em] text-(--text-action) 
-    hover:text-(--color-link-hover) group-hover:text-(--color-link-hover);
-    color: var(--color-link);
-  }
-</style>

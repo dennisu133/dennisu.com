@@ -6,12 +6,10 @@ const config = {
 	preprocess: vitePreprocess(),
 	kit: {
 		adapter: adapter({
-			// default options are shown. On some platforms
-			// these options are set automatically — see below
 			pages: 'build',
 			assets: 'build',
 			fallback: undefined,
-			precompress: false,
+			precompress: true, // Generate .gz and .br files for smaller transfers
 			strict: true
 		})
 	}

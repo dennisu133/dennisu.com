@@ -2,7 +2,12 @@
   @component
   A simple boxed card for the "About" section content.
   Usage:
-  <AboutCard about={profile.about} proficiencies={profile.proficiencies} class="mt-4" />
+  ```html
+  <AboutCard
+    about="I'm a software engineer with a passion for building web applications."
+    proficiencies="Proficient in Python, Typescript, Svelte and C"
+  />
+  ``` 
   Optional: pass `class` to extend/override wrapper spacing.
 -->
 
@@ -20,8 +25,9 @@
   } = $props();
 </script>
 
+<!-- -->
 <div class="card {className}">
-  <div class="grid gap-3 text-body">
+  <div class="grid gap-2 lg:gap-3 text-body">
     <div>
       {#if typeof about === "string"}
         {about}
@@ -29,7 +35,7 @@
         {@render about()}
       {/if}
     </div>
-    <div>
+    <div class="text-(--text-muted)">
       {#if typeof proficiencies === "string"}
         {proficiencies}
       {:else}
