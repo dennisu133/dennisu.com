@@ -134,12 +134,12 @@
               onclick={() => theme.toggle()}
               aria-label="Toggle theme"
             >
-              <Sun size={30} class="hidden theme-dark:block" />
-              <Moon size={30} class="theme-dark:hidden" />
+              <Sun size={30} class="hidden dark:block" />
+              <Moon size={30} class="dark:hidden" />
             </button>
             <span role="tooltip" class="bg-toggle-tooltip">
-              <span class="theme-dark:hidden">Dark Mode</span>
-              <span class="hidden theme-dark:block">Light Mode</span>
+              <span class="dark:hidden">Dark Mode</span>
+              <span class="hidden dark:block">Light Mode</span>
             </span>
           </div>
 
@@ -180,8 +180,12 @@
             href={profile.location.url}
             target="_blank"
             rel="noreferrer"
-            class="link">{profile.location.label}</a
+            class="link"
           >
+            <address class="inline-block text-nowrap">
+              {profile.location.label}
+            </address>
+          </a>
         </span>
       </div>
     </header>
