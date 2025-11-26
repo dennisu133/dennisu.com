@@ -4,17 +4,20 @@
   Adapted from Shadertoy "2D clouds" by drift.
 
   Usage:
+  ```html
   <Background
     enabled={true}
     speed={0.03}
     scale={1.1}
     density={0.2}
+    resolutionScale={0.85}
   />
+  ```
 -->
 
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
-  import { themeState } from "$lib/theme.svelte";
+  import { theme } from "$lib/theme.svelte";
   import vertexShader from "./shaders/clouds.vert.glsl?raw";
   import fragmentShader from "./shaders/clouds.frag.glsl?raw";
 
@@ -35,19 +38,38 @@
   onMount(async () => {
     if (!enabled || !host) return;
 
-    // Lazy-load Three.js to avoid SSR issues
-    const THREE = await import("three");
+    // Defer loading until browser is idle to not block LCP
+    await new Promise<void>((resolve) => {
+      if ("requestIdleCallback" in window) {
+        (window as Window).requestIdleCallback(() => resolve(), {
+          timeout: 200,
+        });
+      } else {
+        setTimeout(resolve, 50);
+      }
+    });
+
+    // Tree-shake Three.js - import only what we need
+    const {
+      WebGLRenderer,
+      Scene,
+      OrthographicCamera,
+      ShaderMaterial,
+      Mesh,
+      PlaneGeometry,
+      Vector3,
+      Color,
+    } = await import("three");
 
     // Renderer
-    const renderer = new THREE.WebGLRenderer({
+    const renderer = new WebGLRenderer({
       alpha: false, // Opaque sky
       antialias: false,
       depth: false,
       stencil: false,
-      powerPreference: "high-performance", // Prefer high performance to avoid power saving glitches
+      powerPreference: "high-performance",
     });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.0));
-    // Clear color doesn't matter as shader covers screen
     renderer.setClearColor(0x000000, 1);
     renderer.domElement.style.position = "absolute";
     renderer.domElement.style.inset = "0";
@@ -60,8 +82,8 @@
     host.appendChild(renderer.domElement);
 
     // Scene + Camera (screen-space quad)
-    const scene = new THREE.Scene();
-    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    const scene = new Scene();
+    const camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
     // Uniforms
     const uniforms = {
@@ -71,9 +93,9 @@
       u_speed: { value: speed },
       u_density: { value: density },
 
-      u_skyColor1: { value: new THREE.Vector3(0, 0, 0) },
-      u_skyColor2: { value: new THREE.Vector3(0, 0, 0) },
-      u_cloudColor: { value: new THREE.Vector3(1, 1, 1) },
+      u_skyColor1: { value: new Vector3(0, 0, 0) },
+      u_skyColor2: { value: new Vector3(0, 0, 0) },
+      u_cloudColor: { value: new Vector3(1, 1, 1) },
       u_starsStrength: { value: 0.0 },
     };
 
@@ -83,7 +105,7 @@
         const styles = getComputedStyle(document.documentElement);
         const bgBase = styles.getPropertyValue("--bg-base").trim();
 
-        const baseColor = new THREE.Color(bgBase);
+        const baseColor = new Color(bgBase);
 
         // Dynamic Gradient:
         // Sky2 (bottom) matches the background exactly
@@ -97,7 +119,7 @@
         } else {
           hsl.l = Math.max(0, hsl.l - 0.2);
         }
-        const topColor = new THREE.Color().setHSL(hsl.h, hsl.s, hsl.l);
+        const topColor = new Color().setHSL(hsl.h, hsl.s, hsl.l);
         uniforms.u_skyColor1.value.set(topColor.r, topColor.g, topColor.b);
 
         if (mode === "dark") {
@@ -111,12 +133,12 @@
     };
 
     // Initial update
-    updateColors(themeState.mode);
+    updateColors(theme.current);
 
     // Shaders (imported from separate files)
     let currentScale = resolutionScale;
 
-    const material = new THREE.ShaderMaterial({
+    const material = new ShaderMaterial({
       uniforms,
       vertexShader,
       fragmentShader,
@@ -125,7 +147,7 @@
       depthWrite: false,
     });
 
-    const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
+    const quad = new Mesh(new PlaneGeometry(2, 2), material);
     scene.add(quad);
 
     // Resize handler
@@ -259,7 +281,7 @@
   // React to theme changes
   $effect(() => {
     if (updateColors) {
-      updateColors(themeState.mode);
+      updateColors(theme.current);
     }
   });
 </script>

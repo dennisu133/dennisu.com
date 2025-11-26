@@ -2,7 +2,15 @@
   @component
   Renders a single project as a boxed list item with responsive action links.
   Usage:
-  <ProjectCard name="My App" description="..." url="https://..." repo="https://..." />
+  ```html
+  <ProjectCard
+    name="My App"
+    description="..."
+    url="https://..."
+    repo="https://..."
+    date="2025-01-01"
+  />
+  ```
   Optional: pass `class` to extend/override wrapper spacing.
 -->
 
@@ -15,102 +23,89 @@
     date,
     class: className = "",
   } = $props();
+
+  const primaryLink = url || repo;
 </script>
 
-<!-- Snippet for the inner content to avoid duplication -->
-{#snippet cardContent(isDesktop: boolean)}
-  <div class="content {isDesktop ? 'w-full' : 'mb-2'}">
-    <h3
-      class={isDesktop
-        ? "group-hover:text-(--color-link-hover) transition-colors"
-        : ""}
+<!--  -->
+{#snippet projectDate()}
+  {#if date}
+    <time
+      datetime={date.toISOString()}
+      class="text-xs opacity-60 text-(--text-muted)"
     >
-      {name}
-    </h3>
+      {date.toLocaleDateString("en-US", { year: "numeric", month: "long" })}
+    </time>
+  {/if}
+{/snippet}
 
-    <!-- Actions/Links -->
-    <div class={isDesktop ? "" : "flex flex-row items-center gap-4"}>
-      {#if !isDesktop}
-        <!-- Mobile Actions -->
+<li class="relative card group {className} p-0! overflow-hidden">
+  <!-- Mobile: touch-friendly with explicit links -->
+  <div class="pointer-fine:hidden flex flex-col gap-2 card-padding h-full">
+    <div class="flex items-start justify-between gap-2">
+      <h3>{name}</h3>
+      <div class="flex items-center gap-3">
         {#if url}
           <a class="link-action" href={url} target="_blank" rel="noreferrer"
             >Visit</a
           >
-          <span class="rule">|</span>
+          <span class="text-(--text-muted)">|</span>
         {/if}
         <a class="link-action" href={repo} target="_blank" rel="noreferrer"
           >GitHub</a
         >
-      {:else if repo}
-        <!-- Desktop Actions (GitHub only, url is stretched link) -->
-        <!-- GitHub link must be z-20 to be clickable over the stretched link -->
-        <!-- Use object to avoid nested <a> warning/issue, keep strict separation -->
-        <object class="relative z-20" aria-label="GitHub Repository">
-          <a
-            href={repo}
-            target="_blank"
-            rel="noreferrer"
-            class="link-action hover:underline pointer-events-auto"
-            onclick={(e) => e.stopPropagation()}
-          >
-            GitHub
-          </a>
-        </object>
-      {/if}
+      </div>
+    </div>
+    <p>{description}</p>
+    <div class="mt-auto pt-2 self-end">
+      {@render projectDate()}
     </div>
   </div>
-  <p class={isDesktop ? "mt-2" : ""}>{description}</p>
 
-  {#if date}
-    <span class="mt-auto self-end text-xs extra-muted pt-2">{date}</span>
-  {/if}
-{/snippet}
-
-<li class="relative card group {className} p-0! sm:p-0! overflow-hidden">
-  <!-- Mobile Layout (Default: Touch-friendly) -->
-  <!-- Visible by default, hidden ONLY on fine-pointer devices (Mouse) -->
-  <div class="pointer-fine:hidden p-4 h-full flex flex-col">
-    {@render cardContent(false)}
-  </div>
-
-  <!-- Desktop Layout (Clickable Card) -->
-  <!-- Hidden by default, visible ONLY on fine-pointer devices (Mouse) -->
+  <!-- Desktop: entire card clickable, GitHub link floats above -->
   <div
-    class="hidden pointer-fine:flex flex-col p-4 w-full h-full relative
-    hover:bg-(--color-surface)/50 transition-colors"
+    class="hidden pointer-fine:flex flex-col gap-2 card-padding w-full h-full relative
+           hover:bg-(--color-surface)/50 transition-colors"
   >
-    <!-- Main Stretched Link -->
     <a
-      href={url || repo}
+      href={primaryLink}
       target="_blank"
       rel="noreferrer"
       class="absolute inset-0 z-10"
-      aria-label={`Visit ${name}`}
+      aria-label="Visit {name}"
     ></a>
 
-    {@render cardContent(true)}
+    <div class="flex items-start justify-between gap-2">
+      <h3 class="group-hover:text-(--color-link-hover) transition-colors">
+        {name}
+      </h3>
+      {#if repo}
+        <a
+          href={repo}
+          target="_blank"
+          rel="noreferrer"
+          class="link-action relative z-20 pointer-events-auto hover:underline"
+        >
+          GitHub
+        </a>
+      {/if}
+    </div>
+    <div class="flex items-end justify-between gap-4">
+      <p class="flex-1">{description}</p>
+      {@render projectDate()}
+    </div>
   </div>
 </li>
 
 <style lang="postcss">
   @reference "tailwindcss";
 
+  .card-padding {
+    padding: clamp(0.75rem, 1.5dvh, 1rem);
+  }
+
   h3 {
     font-size: var(--text-card-title);
     @apply font-medium;
-  }
-
-  .content {
-    @apply flex flex-row items-start justify-between gap-2 sm:flex-row 
-    sm:items-center sm:justify-between;
-  }
-
-  .rule {
-    @apply text-(--text-muted);
-  }
-
-  .extra-muted {
-    color: var(--text-muted);
-    opacity: 0.6;
   }
 </style>

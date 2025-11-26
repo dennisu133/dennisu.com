@@ -1,33 +1,14 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { fade } from "svelte/transition";
   import { asset } from "$app/paths";
   import { Cloud, CloudOff, Moon, Sun } from "@lucide/svelte";
-  import { themeState, toggleTheme } from "$lib/theme.svelte";
+  import { theme, background } from "$lib/theme.svelte";
 
   import AboutCard from "$lib/components/card/AboutCard.svelte";
   import ProjectCard from "$lib/components/card/ProjectCard.svelte";
   import SocialCard from "$lib/components/card/SocialCard.svelte";
   import Background from "$lib/components/bg/Background.svelte";
   import ImageDispenser from "$lib/components/ImageDispenser.svelte";
-
-  let animated = $state(true);
-
-  function toggleBackground() {
-    animated = !animated;
-    try {
-      localStorage.setItem("bgAnimated", String(animated));
-    } catch (e) {}
-  }
-
-  onMount(() => {
-    try {
-      const saved = localStorage.getItem("bgAnimated");
-      if (saved !== null) {
-        animated = saved === "true";
-      }
-    } catch (e) {}
-  });
 
   const profile = {
     name: "Dennis Karnowitsch",
@@ -45,7 +26,7 @@
       name: "PrivateStream",
       description: "A private low-latency livestream viewer for friend groups.",
       repo: "https://github.com/dennisu133/PrivateStream",
-      date: "10/2025",
+      date: new Date(2025, 9, 1), // Month is 0-indexed: 9 = October
     },
     {
       name: "LetterMaker",
@@ -53,14 +34,14 @@
         "Create beautiful letters with folding guides ready for printout.",
       url: "https://letter.dennisu.com",
       repo: "https://github.com/dennisu133/LetterMaker",
-      date: "08/2025",
+      date: new Date(2025, 7, 1), // 7 = August
     },
     {
       name: "CompetitiveWordle",
       description: "Wordle clone with a focus on competitive gameplay.",
       url: "https://wordle.dennisu.com",
       repo: "https://github.com/dennisu133/CompetitiveWordle",
-      date: "05/2025",
+      date: new Date(2025, 4, 1), // 4 = May
     },
   ];
 
@@ -120,8 +101,9 @@
   });
 </script>
 
+<!-- TODO: refactor into components -->
 <main class="page-shell">
-  {#if animated}
+  {#if background.current === "animated"}
     <div
       class="absolute inset-0 -z-10 pointer-events-none"
       in:fade={{ duration: 300 }}
@@ -143,25 +125,21 @@
       </div>
 
       <div class="flex flex-col items-end text-right ml-auto">
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2" id="toggles-jsonly">
           <!-- Theme Toggle -->
           <div class="relative group">
             <button
               type="button"
               class="bg-toggle-button"
-              onclick={toggleTheme}
-              aria-label={themeState.mode === "dark"
-                ? "Switch to light mode"
-                : "Switch to dark mode"}
+              onclick={() => theme.toggle()}
+              aria-label="Toggle theme"
             >
-              {#if themeState.mode === "dark"}
-                <Sun size={30} />
-              {:else}
-                <Moon size={30} />
-              {/if}
+              <Sun size={30} class="hidden theme-dark:block" />
+              <Moon size={30} class="theme-dark:hidden" />
             </button>
             <span role="tooltip" class="bg-toggle-tooltip">
-              {themeState.mode === "dark" ? "Light Mode" : "Dark Mode"}
+              <span class="theme-dark:hidden">Dark Mode</span>
+              <span class="hidden theme-dark:block">Light Mode</span>
             </span>
           </div>
 
@@ -170,22 +148,31 @@
             <button
               type="button"
               class="bg-toggle-button"
-              onclick={toggleBackground}
-              aria-label={animated
+              onclick={() => background.toggle()}
+              aria-label={background.current === "animated"
                 ? "Disable animated background"
                 : "Enable animated background"}
             >
-              {#if animated}
+              {#if background.current === "animated"}
                 <CloudOff size={30} />
               {:else}
                 <Cloud size={30} />
               {/if}
             </button>
             <span role="tooltip" class="bg-toggle-tooltip">
-              {animated ? "Static Background" : "Animated Background"}
+              {background.current === "animated"
+                ? "Static Background"
+                : "Animated Background"}
             </span>
           </div>
         </div>
+        <noscript>
+          <style>
+            #toggles-jsonly {
+              display: none !important;
+            }
+          </style>
+        </noscript>
 
         <span class="location">
           {profile.location.text}
@@ -199,10 +186,10 @@
       </div>
     </header>
 
-    <div class="mt-6 flex flex-1 flex-col gap-6">
+    <div class="content-area">
       <section>
-        <header class="section-header sm:mb-4">
-          <span>About</span>
+        <header class="section-header">
+          <h2>About</h2>
           <span class="separator"></span>
         </header>
 
@@ -214,20 +201,16 @@
           <ImageDispenser paths={catImages}>cats</ImageDispenser>.
         {/snippet}
 
-        <AboutCard
-          about={aboutText}
-          proficiencies={profile.proficiencies}
-          class="mt-4"
-        />
+        <AboutCard about={aboutText} proficiencies={profile.proficiencies} />
       </section>
 
-      <div class="flex flex-col gap-5 lg:flex-row lg:flex-1">
-        <section class="flex w-full flex-col gap-4 lg:flex-1">
-          <header class="section-header sm:mb-4">
-            <span>Projects</span>
+      <div class="projects-socials-row">
+        <section class="section-col lg:basis-2/3">
+          <header class="section-header">
+            <h2>Projects</h2>
             <span class="separator"></span>
           </header>
-          <ul class="flex flex-col gap-3 text-body">
+          <ul class="item-list text-body">
             {#each projects as project}
               <ProjectCard
                 name={project.name}
@@ -240,12 +223,12 @@
           </ul>
         </section>
 
-        <section class="flex w-full flex-col gap-4 lg:flex-1">
-          <header class="section-header sm:mb-4">
-            <span>Socials</span>
+        <section class="section-col lg:basis-1/3">
+          <header class="section-header">
+            <h2>Socials</h2>
             <span class="separator"></span>
           </header>
-          <ul class="grid gap-3 text-body">
+          <ul class="item-list text-body">
             {#each socials as social}
               <SocialCard
                 platform={social.platform}
@@ -260,7 +243,7 @@
       </div>
     </div>
 
-    <footer class="mt-6 flex items-center text-small opacity-80">
+    <footer class="page-footer">
       <a href={siteSource} target="_blank" rel="noreferrer" class="link"
         >View Source</a
       >
@@ -281,7 +264,7 @@
   }
 
   .location {
-    @apply mt-2 text-(--text-extra);
+    @apply mt-1 text-sm text-(--text-extra) sm:mt-2 sm:text-base;
   }
 
   .page-shell {
@@ -289,8 +272,9 @@
     lg:h-dvh lg:overflow-hidden;
   }
   .page-container {
-    @apply flex h-full w-full flex-col max-w-6xl mx-auto px-6 sm:px-10 
-    py-6 sm:py-8 lg:py-10;
+    --page-gap: clamp(0.75rem, 1.5dvh, 1.5rem);
+    @apply flex h-full w-full flex-col max-w-6xl mx-auto px-6 sm:px-10;
+    padding-block: clamp(1rem, 2dvh, 2.5rem);
   }
   .bg-toggle-button {
     @apply inline-flex items-center p-2 text-(--text-muted) hover:text-(--text) 
@@ -304,11 +288,38 @@
     border-color: var(--color-border);
   }
   .section-header {
-    @apply flex items-center justify-between mb-3 uppercase 
-    tracking-[0.35em] text-(--text-kicker);
+    @apply flex items-center justify-between uppercase 
+    tracking-[0.2em] text-(--text-muted);
+    margin-bottom: clamp(0.5rem, 1dvh, 1rem);
   }
   .section-header .separator {
     @apply ml-4 h-px grow;
     background-color: var(--color-border);
+  }
+
+  .content-area {
+    @apply flex flex-1 flex-col;
+    margin-top: var(--page-gap);
+    gap: var(--page-gap);
+  }
+
+  .projects-socials-row {
+    @apply flex flex-col lg:flex-row lg:flex-1;
+    gap: var(--page-gap);
+  }
+
+  .section-col {
+    @apply flex w-full flex-col;
+    gap: var(--page-gap);
+  }
+
+  .item-list {
+    @apply flex flex-col;
+    gap: clamp(0.5rem, 1dvh, 0.75rem);
+  }
+
+  .page-footer {
+    @apply flex items-center text-xs opacity-80;
+    margin-top: var(--page-gap);
   }
 </style>

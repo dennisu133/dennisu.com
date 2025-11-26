@@ -1,56 +1,68 @@
-// Global theme state
-export const themeState = $state({
-	mode: "light" as "light" | "dark",
-});
+import { browser } from "$app/environment";
 
-export function toggleTheme() {
-	themeState.mode = themeState.mode === "light" ? "dark" : "light";
-	updateDom();
-	try {
-		localStorage.setItem("theme", themeState.mode);
-	} catch (e) {}
+export type Theme = "light" | "dark";
+export type Background = "animated" | "static";
+
+// The reactive states
+let currentTheme = $state<Theme>("dark");
+let currentBackground = $state<Background>("animated");
+
+// Initialize on client
+if (browser) {
+	// Theme: read from DOM (blocking script already set the class)
+	currentTheme = document.documentElement.classList.contains("dark")
+		? "dark"
+		: "light";
+
+	// Background: read from localStorage
+	const savedBg = localStorage.getItem("bgMode");
+	currentBackground = savedBg === "static" ? "static" : "animated";
+
+	// Enable smooth transitions after initial load (prevents flash)
+	requestAnimationFrame(() => {
+		document.documentElement.classList.add("theme-transition");
+	});
 }
 
-export function setTheme(mode: "light" | "dark") {
-	themeState.mode = mode;
-	updateDom();
-	try {
-		localStorage.setItem("theme", themeState.mode);
-	} catch (e) {}
-}
+export const theme = {
+	get current() {
+		return currentTheme;
+	},
 
-function updateDom() {
-	if (typeof document !== "undefined") {
-		if (themeState.mode === "dark") {
-			document.documentElement.classList.add("dark");
-		} else {
-			document.documentElement.classList.remove("dark");
+	set current(value: Theme) {
+		currentTheme = value;
+		if (browser) {
+			document.documentElement.classList.toggle("dark", value === "dark");
+			localStorage.setItem("theme", value);
 		}
-	}
-}
+	},
 
-export function initTheme() {
-	if (typeof document !== "undefined") {
-		try {
-			const saved = localStorage.getItem("theme");
-			const isDarkClass = document.documentElement.classList.contains("dark");
+	toggle() {
+		this.current = currentTheme === "dark" ? "light" : "dark";
+	},
+};
 
-			// Sync state with what's already in DOM (handled by app.html script)
-			if (isDarkClass) {
-				themeState.mode = "dark";
-			} else if (saved === "light") {
-				themeState.mode = "light";
-			} else if (
-				!saved &&
-				window.matchMedia("(prefers-color-scheme: dark)").matches
-			) {
-				themeState.mode = "dark";
-			} else {
-				themeState.mode = "light";
-			}
-		} catch (e) {}
+export const background = {
+	get current() {
+		return currentBackground;
+	},
 
-		// Ensure DOM matches state (double check)
-		updateDom();
-	}
-}
+	set current(value: Background) {
+		currentBackground = value;
+		if (browser) {
+			document.documentElement.classList.toggle(
+				"bg-animated",
+				value === "animated",
+			);
+			document.documentElement.classList.toggle(
+				"bg-static",
+				value === "static",
+			);
+			localStorage.setItem("bgMode", value);
+		}
+	},
+
+	toggle() {
+		this.current = currentBackground === "animated" ? "static" : "animated";
+	},
+};
