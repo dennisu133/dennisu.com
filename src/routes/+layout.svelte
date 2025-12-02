@@ -25,7 +25,7 @@
 	}
 
 	const frames = generateFrames();
-	const altTitle = "Spicy Singles in Your Area";
+	const altTitle = "Spicy Singles in Your Area 🌶️";
 	const description = "Personal website of Dennis Karnowitsch. Please hire me.";
 	let currentFrame = $state(0);
 	let isVisible = $state(true);
