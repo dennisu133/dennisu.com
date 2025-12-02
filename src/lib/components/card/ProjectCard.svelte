@@ -20,7 +20,6 @@
 	const primaryLink = url || repo;
 </script>
 
-<!--  -->
 {#snippet projectDate()}
 	{#if date}
 		<time datetime={date.toISOString()} class="text-xs opacity-60 text-(--text-muted)">
@@ -66,14 +65,7 @@
 				{name}
 			</h3>
 			{#if repo}
-				<a
-					href={repo}
-					target="_blank"
-					rel="noreferrer"
-					class="link-action relative z-20 pointer-events-auto hover:underline"
-				>
-					GitHub
-				</a>
+				<a href={repo} target="_blank" rel="noreferrer" class="link-action"> GitHub </a>
 			{/if}
 		</div>
 		<div class="flex items-end justify-between gap-4">
