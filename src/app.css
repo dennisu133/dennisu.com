@@ -1,104 +1,100 @@
 @import "tailwindcss";
-@plugin '@tailwindcss/typography';
 
 :root {
-  /* Light Mode Colors */
-  --color-accent-300: #0ea5e9;
-  --color-accent-400: #2563eb;
-  --color-accent-500: #1e3a8a;
+  color-scheme: light dark;
 
-  --bg-base: #66b2ff;
+  --color-accent-300: light-dark(#0ea5e9, #7dd3fc);
+  --color-accent-400: light-dark(#2563eb, #38bdf8);
+  --color-accent-500: light-dark(#1e3a8a, #0ea5e9);
 
-  --text: #0f172a;
-  --text-muted: #1e293b;
-  --text-extra: #1e293b;
-  --text-action-color: var(--color-accent-500);
+  --bg-base-light: #66b2ff;
+  --bg-base-dark: #000000;
+  --bg-base: light-dark(var(--bg-base-light), var(--bg-base-dark));
 
-  /* Surfaces */
-  --color-surface: rgba(243, 243, 243, 0.6);
-  --color-border: rgba(15, 23, 42, 0.25);
-  --color-border-hover: rgba(15, 23, 42, 0.55);
+  --text: light-dark(#0f172a, #ebebeb);
+  --text-muted: light-dark(#1e293b, #9ca3af);
+  --text-extra: light-dark(#1e293b, #94a3b8);
+  --text-action-color: light-dark(
+    var(--color-accent-500),
+    var(--color-accent-400)
+  );
 
-  /* Semantic aliases */
-  --color-link: var(--color-accent-500);
-  --color-link-hover: var(--color-accent-400);
+  --color-surface: light-dark(rgba(243, 243, 243, 0.6), rgba(12, 12, 12, 0.6));
+  --color-border: light-dark(rgba(15, 23, 42, 0.25), rgba(255, 255, 255, 0.08));
+  --color-border-hover: light-dark(
+    rgba(15, 23, 42, 0.55),
+    rgba(255, 255, 255, 0.16)
+  );
+
+  --color-link: light-dark(var(--color-accent-500), var(--color-accent-400));
+  --color-link-hover: light-dark(
+    var(--color-accent-400),
+    var(--color-accent-300)
+  );
 }
 
-.dark {
-  /* Dark Mode Colors */
-  --color-accent-300: #7dd3fc; /* lighter blue */
-  --color-accent-400: #38bdf8;
-  --color-accent-500: #0ea5e9;
-
-  --bg-base: #000000; /* Deep black night sky */
-
-  --text: rgba(255, 255, 255, 0.92);
-  --text-muted: rgba(255, 255, 255, 0.6);
-  --text-extra: #94a3b8;
-  --text-action-color: var(--color-accent-400);
-
-  /* Surfaces */
-  --color-surface: rgba(12, 12, 12, 0.6);
-  --color-border: rgba(255, 255, 255, 0.08);
-  --color-border-hover: rgba(255, 255, 255, 0.16);
-
-  /* Semantic aliases */
-  --color-link: var(--color-accent-400);
-  --color-link-hover: var(--color-accent-300);
+:root:not([theme]):has(#theme-system:checked),
+:root[theme="system"] {
+  color-scheme: light dark;
 }
 
-@variant dark (&:where(.dark, .dark *));
+:root:not([theme]):has(#theme-light:checked),
+:root[theme="light"] {
+  color-scheme: light;
+}
+
+:root:not([theme]):has(#theme-dark:checked),
+:root[theme="dark"] {
+  color-scheme: dark;
+}
+
 @variant pointer-fine (@media (pointer: fine));
 @variant pointer-coarse (@media (pointer: coarse));
 
 @theme {
-  /* Typography tokens - Shared */
   --text-title: clamp(2.1rem, 5vw, 3.4rem);
   --text-subtitle: clamp(1rem, 2.2vw, 1.2rem);
   --text-body: clamp(0.85rem, 1.8vw, 1.05rem);
   --text-card-title: clamp(1rem, 2.1vw, 1.15rem);
-};
+}
 
 html,
 body {
-  @apply h-full overflow-auto;
+  @apply h-full overflow-auto; /* Fit HTML to viewport */
   background-color: var(--bg-base);
-  color: var(--text);
-  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+:root[bg="animated"] html,
+:root[bg="animated"] body {
+  background-color: transparent;
 }
 
 body {
-  @apply m-0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  @apply m-0; /* Remove default margin */
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    sans-serif;
 }
 
 p {
   color: var(--text-muted);
 }
 
+/* REUSABLE CARD STYLES */
 .card {
-    @apply border transition-colors duration-150 ease-linear;
-    padding: clamp(0.75rem, 1.5dvh, 1rem);
-    background-color: var(--color-surface);
-    border-color: var(--color-border);
+  @apply border transition-colors duration-150 ease-linear;
+  padding: clamp(0.75rem, 1.5dvh, 1rem);
+  background-color: var(--color-surface);
+  border-color: var(--color-border);
 }
 
 .card:hover {
-    border-color: var(--color-border-hover);
-}
-
-.text-body {
-    @apply leading-relaxed;
-    font-size: var(--text-body);
-}
-
-.link {
-    @apply text-(--color-link) transition-colors duration-150 ease-linear 
-    hover:text-(--color-link-hover) focus-visible:text-(--color-link-hover);
+  border-color: var(--color-border-hover);
 }
 
 .link-action {
-    @apply tracking-[0.06em] text-(--text-action) 
-    hover:text-(--color-link-hover) group-hover:text-(--color-link-hover);
-    color: var(--color-link);
+  @apply tracking-[0.06em] text-(--text-action) 
+    hover:text-(--color-link-hover) 
+    group-hover:text-(--color-link-hover)
+    transition-colors duration-150 ease-linear;
+  color: var(--color-link);
 }
