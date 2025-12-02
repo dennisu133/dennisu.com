@@ -52,8 +52,7 @@
 </label>
 
 <style lang="postcss">
-	@import "./theme-button.css";
-	@reference "tailwindcss";
+	@import "./theme.css";
 
 	/* CSS-only selected state based on :root theme attribute (prevents FOUC) */
 	/* This applies immediately based on the blocking script in +layout.svelte */
@@ -65,5 +64,6 @@
 	:global(:root:not([theme])) #theme-light:checked ~ label[for='theme-light'],
 	:global(:root:not([theme])) #theme-dark:checked ~ label[for='theme-dark'] {
 		@apply text-(--text);
+		background-color: var(--bg-contrast);
 	}
 </style>

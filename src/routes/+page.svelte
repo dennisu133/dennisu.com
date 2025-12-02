@@ -188,7 +188,6 @@
 
 <style lang="postcss">
 	@reference "tailwindcss";
-
 	a {
 		@apply text-(--color-link)
     hover:text-(--color-link-hover) 

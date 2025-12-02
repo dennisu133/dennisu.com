@@ -84,7 +84,7 @@
 </li>
 
 <style lang="postcss">
-	@reference "tailwindcss";
+	@import "./card.css";
 
 	.card-padding {
 		padding: clamp(0.75rem, 1.5dvh, 1rem);
