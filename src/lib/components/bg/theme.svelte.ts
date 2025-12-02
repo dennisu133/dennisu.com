@@ -2,11 +2,13 @@ import { browser } from '$app/environment';
 
 export type Theme = 'light' | 'dark' | 'system';
 export type Background = 'animated' | 'static';
+export type Quality = 'low' | 'medium' | 'high' | 'auto';
 
 class ThemeState {
 	mode = $state<Theme>('system');
 	bg = $state<Background>('animated');
-	
+	quality = $state<Quality>('auto');
+
 	// Track what the OS specifically wants currently
 	systemPref = $state<'light' | 'dark'>('light');
 
@@ -15,13 +17,31 @@ class ThemeState {
 		return this.mode === 'system' ? this.systemPref : this.mode;
 	}
 
+	// Derived: Resolved quality level (0=low, 1=medium, 2=high)
+	get qualityLevel(): 0 | 1 | 2 {
+		if (this.quality !== 'auto') {
+			return this.quality === 'low' ? 0 : this.quality === 'medium' ? 1 : 2;
+		}
+		// Auto-detect: check if mobile/low-power device
+		if (!browser) return 2;
+		const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+			navigator.userAgent
+		);
+		const isLowPower = navigator.hardwareConcurrency <= 4;
+		const isSmallScreen = window.innerWidth < 768;
+		if (isMobile || (isLowPower && isSmallScreen)) return 0;
+		if (isLowPower || isSmallScreen) return 1;
+		return 2;
+	}
+
 	constructor() {
 		if (browser) {
 			const doc = document.documentElement;
 
-			// 1. Initialize from DOM
+			// 1. Initialize from DOM/localStorage
 			this.mode = (doc.getAttribute('theme') as Theme) || 'system';
 			this.bg = (doc.getAttribute('bg') as Background) || 'animated';
+			this.quality = (localStorage.getItem('quality') as Quality) || 'auto';
 
 			// 2. Initialize System Preference
 			const match = window.matchMedia('(prefers-color-scheme: dark)');
@@ -29,7 +49,6 @@ class ThemeState {
 
 			// 3. Create root effect scope
 			$effect.root(() => {
-        
 				// Sync Theme Attribute/Storage
 				$effect(() => {
 					doc.setAttribute('theme', this.mode);
@@ -44,18 +63,20 @@ class ThemeState {
 					else localStorage.setItem('bg', this.bg);
 				});
 
+				// Sync Quality Storage
+				$effect(() => {
+					if (this.quality === 'auto') localStorage.removeItem('quality');
+					else localStorage.setItem('quality', this.quality);
+				});
+
 				// Listen for System Changes
-				// We use $effect to register the listener so it cleans up if this scope were ever destroyed
-				// (though as a singleton, it likely won't be, but it's good practice)
 				$effect(() => {
 					const updateSystem = (e: MediaQueryListEvent) => {
 						this.systemPref = e.matches ? 'dark' : 'light';
 					};
-					
-					// Listen for changes
+
 					match.addEventListener('change', updateSystem);
-					
-					// Cleanup
+
 					return () => {
 						match.removeEventListener('change', updateSystem);
 					};
