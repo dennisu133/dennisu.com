@@ -1,8 +1,26 @@
-/* Avoid repetitive button styling */
 @reference "tailwindcss";
 
+/* Need additional contrast for light mode sigh */
+:global(:root) {
+	--bg-contrast: transparent;
+}
+
+/* Forced Light */
+:global(:root:not([theme]):has(#theme-light:checked)),
+:global(:root[theme="light"]) {
+	--bg-contrast: rgba(15, 23, 42, 0.12);
+}
+
+/* System + OS Light */
+@media (prefers-color-scheme: light) {
+	:global(:root:not([theme]):has(#theme-system:checked)),
+	:global(:root[theme="system"]) {
+		--bg-contrast: rgba(15, 23, 42, 0.12);
+	}
+}
+
 .toggle-option {
-	@apply relative flex items-center justify-center w-8 h-8
+	@apply relative flex items-center justify-center w-8 h-8 rounded-md
 		text-(--text-muted) hover:text-(--text)
 		cursor-pointer transition-all duration-150 ease-linear;
 }
@@ -19,4 +37,3 @@
 .toggle-tooltip span {
 	display: block;
 }
-

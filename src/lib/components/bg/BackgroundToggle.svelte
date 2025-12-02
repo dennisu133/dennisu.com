@@ -36,8 +36,7 @@
 </label>
 
 <style lang="postcss">
-	@import "./theme-button.css";
-	@reference "tailwindcss";
+	@import "./theme.css";
 
 	/* CSS-only selected state based on :root bg attribute (prevents FOUC) */
 	/* This applies immediately based on the blocking script in +layout.svelte */
@@ -47,5 +46,6 @@
 	:global(:root:not([bg])) #bg-animated:checked ~ label[for='bg-animated'],
 	:global(:root:not([bg])) #bg-static:checked ~ label[for='bg-static'] {
 		@apply text-(--text);
+		background-color: var(--bg-contrast);
 	}
 </style>

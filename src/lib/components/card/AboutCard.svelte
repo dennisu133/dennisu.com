@@ -25,7 +25,6 @@
 	} = $props();
 </script>
 
-<!-- -->
 <div class="card {className}">
 	<div class="grid gap-2 lg:gap-3">
 		<div>
@@ -44,3 +43,7 @@
 		</div>
 	</div>
 </div>
+
+<style lang="postcss">
+	@import "./card.css";
+</style>

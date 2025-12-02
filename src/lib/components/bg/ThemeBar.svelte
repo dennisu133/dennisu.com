@@ -23,7 +23,6 @@
 
 <style lang="postcss">
 	@reference "tailwindcss";
-
 	.controls-container {
 		@apply inline-flex items-center gap-0.5 p-0.5 
     border rounded-lg

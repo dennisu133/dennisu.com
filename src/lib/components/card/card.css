@@ -1,0 +1,20 @@
+@reference "tailwindcss";
+
+.card {
+	@apply border transition-colors duration-150 ease-linear;
+	padding: clamp(0.75rem, 1.5dvh, 1rem);
+	background-color: var(--color-surface);
+	border-color: var(--color-border);
+}
+
+.card:hover {
+	border-color: var(--color-border-hover);
+}
+
+.link-action {
+	@apply tracking-[0.06em] text-(--text-action) 
+    hover:text-(--color-link-hover) 
+    group-hover:text-(--color-link-hover)
+    transition-colors duration-150 ease-linear;
+	color: var(--color-link);
+}

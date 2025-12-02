@@ -70,14 +70,14 @@
 	<img
 		src={icon}
 		alt={platform}
-		class="h-8 w-8 p-1.5 rounded-md {iconDark ? 'icon-for-dark' : ''}"
+		class="h-8 w-8 p-1.5 rounded-md {iconDark ? 'show-on-dark' : ''}"
 		style="background-color: var(--bg-icon)"
 	/>
 	{#if iconDark}
 		<img
 			src={iconDark}
 			alt={platform}
-			class="icon-for-light h-8 w-8 p-1.5 rounded-md"
+			class="show-on-light h-8 w-8 p-1.5 rounded-md"
 			style="background-color: var(--bg-icon)"
 		/>
 	{/if}
@@ -156,45 +156,11 @@
 </li>
 
 <style lang="postcss">
-	@reference "tailwindcss";
+	@import "./card.css";
 
 	/* SOCIALCARD SPECIFIC PADDING */
 	.card-padding {
 		padding: clamp(0.75rem, 1.5dvh, 1rem);
-	}
-
-	/* ICONS */
-	/* Hide both by default */
-	.icon-for-light,
-	.icon-for-dark {
-		display: none;
-	}
-
-	/* Forced Light */
-	:global(:root[theme="light"]) .icon-for-light,
-	:global(:root:not([theme]):has(#theme-light:checked)) .icon-for-light {
-		display: block;
-	}
-	/* Forced Dark */
-	:global(:root[theme="dark"]) .icon-for-dark,
-	:global(:root:not([theme]):has(#theme-dark:checked)) .icon-for-dark {
-		display: block;
-	}
-
-	/* System + OS Light */
-	@media (prefers-color-scheme: light) {
-		:global(:root[theme="system"]) .icon-for-light,
-		:global(:root:not([theme]):has(#theme-system:checked)) .icon-for-light {
-			display: block;
-		}
-	}
-
-	/* System + OS Dark */
-	@media (prefers-color-scheme: dark) {
-		:global(:root[theme="system"]) .icon-for-dark,
-		:global(:root:not([theme]):has(#theme-system:checked)) .icon-for-dark {
-			display: block;
-		}
 	}
 
 	/* EMAIL OBFUSCATION */
