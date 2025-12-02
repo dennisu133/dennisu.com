@@ -61,12 +61,6 @@
 html,
 body {
   @apply h-full overflow-auto; /* Fit HTML to viewport */
-  background-color: var(--bg-base);
-}
-
-:root[bg="animated"] html,
-:root[bg="animated"] body {
-  background-color: transparent;
 }
 
 body {
