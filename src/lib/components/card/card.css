@@ -15,6 +15,22 @@
 	@apply tracking-[0.06em] text-(--text-action) 
     hover:text-(--color-link-hover) 
     group-hover:text-(--color-link-hover)
-    transition-colors duration-150 ease-linear;
+    transition-colors duration-150 ease-linear
+    relative z-20 pointer-events-auto;
 	color: var(--color-link);
+}
+
+.link-action::after {
+	content: "";
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 0;
+	height: 1px;
+	background-color: var(--color-link-hover);
+	transition: width 0.3s ease-out;
+}
+
+.link-action:hover::after {
+	width: 100%;
 }
