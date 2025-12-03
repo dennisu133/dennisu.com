@@ -58,6 +58,9 @@
 
 	<!-- Metadata -->
 	<title>{isVisible ? frames[currentFrame] : altTitle}</title>
+	<noscript>
+		<title>Dennisu.com 🐱</title>
+	</noscript>
 	<meta name="description" content={description} />
 	<meta name="keywords" content="Dennis Karnowitsch, Dennisu, dennisu, dennisu133, dennisu.com" />
 	<meta name="author" content="Dennis Karnowitsch" />
