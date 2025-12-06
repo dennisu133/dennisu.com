@@ -1,7 +1,8 @@
 <!--
   @component
   Renders a 2D clouds shader as a background using raw WebGL2.
-  Adapted from Shadertoy "2D clouds" by drift.
+  Adapted from Shadertoy "2D clouds" by drift. 
+  Permission has been granted to use the shader in any way that you choose.
 
   Usage:
   ```html
