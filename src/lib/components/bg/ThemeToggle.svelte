@@ -1,9 +1,12 @@
+<!-- Very hacky way to make a purely CSS based theme toggle -->
+
 <script lang="ts">
 	import { themeState } from "./theme.svelte";
 	import { Sun, Moon, SunMoon } from "@lucide/svelte";
 </script>
 
 <input
+	aria-hidden="true"
 	type="radio"
 	id="theme-system"
 	name="theme"
@@ -13,6 +16,7 @@
 	bind:group={themeState.mode}
 />
 <input
+	aria-hidden="true"
 	type="radio"
 	id="theme-light"
 	name="theme"
@@ -21,6 +25,7 @@
 	bind:group={themeState.mode}
 />
 <input
+	aria-hidden="true"
 	type="radio"
 	id="theme-dark"
 	name="theme"
@@ -29,23 +34,23 @@
 	bind:group={themeState.mode}
 />
 
-<label for="theme-system" class={{ "toggle-option": true, group: true }}>
+<!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -->
+<label for="theme-system" class={{ "toggle-option": true, group: true }} role="button" tabindex="0">
 	<SunMoon size={20} />
-	<span class="sr-only">System Preference</span>
 	<span role="tooltip" class="toggle-tooltip">
 		<span class="text-system">System Preference</span>
 	</span>
 </label>
-<label for="theme-light" class={{ "toggle-option": true, group: true }}>
+<!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -->
+<label for="theme-light" class={{ "toggle-option": true, group: true }} role="button" tabindex="0">
 	<Sun size={20} />
-	<span class="sr-only">Light Mode</span>
 	<span role="tooltip" class="toggle-tooltip">
 		<span class="text-light">Light Mode</span>
 	</span>
 </label>
-<label for="theme-dark" class={{ "toggle-option": true, group: true }}>
+<!-- svelte-ignore a11y_no_noninteractive_element_to_interactive_role -->
+<label for="theme-dark" class={{ "toggle-option": true, group: true }} role="button" tabindex="0">
 	<Moon size={20} />
-	<span class="sr-only">Dark Mode</span>
 	<span role="tooltip" class="toggle-tooltip">
 		<span class="text-dark">Dark Mode</span>
 	</span>

@@ -20,16 +20,17 @@
 }
 
 .toggle-option {
-	@apply relative flex items-center justify-center w-8 h-8 rounded-md
+	@apply flex items-center justify-center w-8 h-8 rounded-md
 		text-(--text-muted) hover:text-(--text)
-		cursor-pointer transition-all duration-150 ease-linear;
+		cursor-pointer transition-all duration-150 ease-linear
+		relative;
 }
 
 .toggle-tooltip {
 	@apply text-(--text) absolute right-0 top-full mt-2 border 
 		shadow-sm px-2 py-1 text-left 
 		opacity-0 pointer-events-none transition-opacity duration-150
-		group-hover:opacity-100 min-w-max z-10 rounded-sm text-xs;
+		group-hover:opacity-100 group-focus:opacity-100 min-w-max z-10 rounded-sm text-xs;
 	background-color: light-dark(rgb(243, 243, 243), rgb(12, 12, 12));
 	border-color: var(--color-border);
 }
