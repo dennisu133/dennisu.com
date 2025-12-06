@@ -1,12 +1,18 @@
 <script lang="ts">
-	import { asset } from "$app/paths";
-
 	import AboutCard from "$lib/components/card/AboutCard.svelte";
 	import ProjectCard from "$lib/components/card/ProjectCard.svelte";
 	import SocialCard from "$lib/components/card/SocialCard.svelte";
 	import Background from "$lib/components/bg/Background.svelte";
 	import ThemeBar from "$lib/components/bg/ThemeBar.svelte";
 	import SectionHeader from "$lib/components/SectionHeader.svelte";
+
+	import discordIcon from "$lib/assets/icons/discord.svg";
+	import githubIcon from "$lib/assets/icons/github.svg";
+	import steamIcon from "$lib/assets/icons/steam.svg";
+	import spotifyIcon from "$lib/assets/icons/spotify.svg";
+	import emailIcon from "$lib/assets/icons/email.svg";
+	import emailDarkIcon from "$lib/assets/icons/email-dark.svg";
+	import githubDarkIcon from "$lib/assets/icons/github-dark.svg";
 
 	const profile = {
 		name: "Dennis Karnowitsch",
@@ -47,33 +53,33 @@
 			platform: "Email",
 			handle: "d@dennisu.com",
 			url: "mailto:d@dennisu.com",
-			icon: asset("/icons/email.svg"),
-			iconDark: asset("/icons/email-dark.svg")
+			icon: emailIcon,
+			iconDark: emailDarkIcon
 		},
 		{
 			platform: "GitHub",
 			handle: "dennisu133",
 			url: `https://github.com/dennisu133`,
-			icon: asset("/icons/github.svg"),
-			iconDark: asset("/icons/github-dark.svg")
+			icon: githubIcon,
+			iconDark: githubDarkIcon
 		},
 		{
 			platform: "Discord",
 			handle: "dennisu",
 			url: "https://discord.com/users/193137218964029440",
-			icon: asset("/icons/discord.svg")
+			icon: discordIcon
 		},
 		{
 			platform: "Steam",
 			handle: "dennisuchan",
 			url: "https://steamcommunity.com/id/dennisuchan/",
-			icon: asset("/icons/steam.svg")
+			icon: steamIcon
 		},
 		{
 			platform: "Spotify",
 			handle: "dennisu-chan",
 			url: "https://open.spotify.com/user/dennisu-chan",
-			icon: asset("/icons/spotify.svg")
+			icon: spotifyIcon
 		}
 	];
 
