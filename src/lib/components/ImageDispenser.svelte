@@ -234,10 +234,8 @@
 
 <span
 	bind:this={element}
-	class="inline-block cursor-pointer underline underline-offset-4 decoration-2
-  hover:text-(--text) transition-colors"
-	role="button"
-	tabindex="0"
+	class="inline-block underline underline-offset-4 decoration-2"
+	role="presentation"
 >
 	{@render children()}
 </span>

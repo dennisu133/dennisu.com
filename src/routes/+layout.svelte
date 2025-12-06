@@ -82,4 +82,6 @@
 	</script>
 </svelte:head>
 
-{@render children?.()}
+<div class="flex flex-col min-h-screen max-w-6xl px-6 mx-auto sm:px-10">
+	{@render children?.()}
+</div>

@@ -107,61 +107,34 @@
 	</div>
 {/snippet}
 
-<li class="relative card group {className} p-0! overflow-hidden">
-	<!-- Mobile: tap content to reveal, "Open" button to navigate -->
-	<!-- svelte-ignore a11y_click_events_have_key_events -->
-	<div
-		class="pointer-fine:hidden flex items-center justify-between card-padding"
-		class:cursor-pointer={isEmail && !revealed}
-		role={isEmail && !revealed ? "button" : undefined}
-		onclick={isEmail && !revealed ? reveal : undefined}
-	>
-		<div class="flex items-center gap-4">
-			{@render cardIcon()}
-			{@render cardHandle(false)}
-		</div>
+<li class="flex relative items-center justify-between group card {className}" onmouseenter={reveal}>
+	<a
+		href={computedHref}
+		target="_blank"
+		rel="noreferrer"
+		class="hidden pointer-fine:block absolute inset-0 z-10"
+		aria-label="Open {platform}"
+		onclick={handleLinkClick}
+	></a>
 
-		<a
-			class="link-action"
-			href={computedHref}
-			target="_blank"
-			rel="noreferrer"
-			onclick={handleLinkClick}
-		>
-			Open
-		</a>
+	<div class="flex flex-1 items-center gap-4">
+		{@render cardIcon()}
+		{@render cardHandle(true)}
 	</div>
 
-	<!-- Desktop: entire card clickable, hover reveals email -->
-	<div
-		class="hidden pointer-fine:flex items-center justify-between card-padding w-full
-           h-full relative hover:bg-(--color-surface)/50 transition-colors"
-		onmouseenter={reveal}
-		role="none"
+	<a
+		class="pointer-fine:hidden link-action"
+		href={computedHref}
+		target="_blank"
+		rel="noreferrer"
+		onclick={handleLinkClick}
 	>
-		<a
-			href={computedHref}
-			target="_blank"
-			rel="noreferrer"
-			class="absolute inset-0 z-10"
-			aria-label="Open {platform}"
-			onclick={handleLinkClick}
-		></a>
-
-		<div class="flex items-center gap-4 pointer-events-none">
-			{@render cardIcon()}
-			{@render cardHandle(true)}
-		</div>
-	</div>
+		Open
+	</a>
 </li>
 
 <style lang="postcss">
 	@import "./card.css";
-
-	/* SOCIALCARD SPECIFIC PADDING */
-	.card-padding {
-		padding: clamp(0.75rem, 1.5dvh, 1rem);
-	}
 
 	/* EMAIL OBFUSCATION */
 	.shatter-char:not(.revealed) {
@@ -207,5 +180,9 @@
 	.shatter-char:nth-child(3n + 2) {
 		--offset-y: -2px;
 		--rotate: -4deg;
+	}
+
+	p {
+		@apply text-(--text-muted);
 	}
 </style>

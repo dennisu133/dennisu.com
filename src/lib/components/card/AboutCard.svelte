@@ -1,45 +1,44 @@
-<!--  
-  @component
-  A simple boxed card for the "About" section content.
-  Usage:
-  ```html
-  <AboutCard
-    about="I'm a software engineer with a passion for building web applications."
-    proficiencies="Proficient in Python, Typescript, Svelte and C"
-  />
-  ``` 
-  Optional: pass `class` to extend/override wrapper spacing.
--->
-
 <script lang="ts">
-	import type { Snippet } from "svelte";
+	import ImageDispenser from "$lib/components/ImageDispenser.svelte";
+
+	export type AboutSegment = {
+		text: string;
+		images?: Record<string, unknown>;
+	};
 
 	let {
 		about,
 		proficiencies,
 		class: className = ""
 	}: {
-		about: string | Snippet;
-		proficiencies: string | Snippet;
+		about: AboutSegment[];
+		proficiencies: string;
 		class?: string;
 	} = $props();
+
+	let srText = $derived(about.map((s) => s.text).join(""));
 </script>
 
 <div class="card {className}">
 	<div class="grid gap-2 lg:gap-3">
 		<div>
-			{#if typeof about === "string"}
-				{about}
-			{:else}
-				{@render about()}
-			{/if}
+			<span class="sr-only">{srText}</span>
+
+			<span aria-hidden="true">
+				{#each about as segment}
+					{#if segment.images}
+						<ImageDispenser paths={segment.images}>
+							{segment.text}
+						</ImageDispenser>
+					{:else}
+						{segment.text}
+					{/if}
+				{/each}
+			</span>
 		</div>
+
 		<div class="text-(--text-muted)">
-			{#if typeof proficiencies === "string"}
-				{proficiencies}
-			{:else}
-				{@render proficiencies()}
-			{/if}
+			{proficiencies}
 		</div>
 	</div>
 </div>
