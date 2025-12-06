@@ -54,7 +54,7 @@
 
 <svelte:head>
 	<!-- Favicon -->
-	<link rel="icon" href={isVisible ? favicon : alticon} />
+	<link rel="icon" type="image/svg+xml" href={isVisible ? favicon : alticon} />
 
 	<!-- Metadata -->
 	<title>{isVisible ? frames[currentFrame] : altTitle}</title>
