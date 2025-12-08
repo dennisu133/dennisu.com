@@ -1,7 +1,7 @@
 @reference "tailwindcss";
 
 .card {
-	@apply border transition-colors duration-150 ease-linear bg-(--color-surface) border-(--color-border);
+	@apply border border-(--color-border) bg-(--color-surface) transition-colors duration-150 ease-linear;
 	padding: clamp(0.75rem, 1.5dvh, 1rem);
 }
 
@@ -10,11 +10,7 @@
 }
 
 .link-action {
-	@apply tracking-[0.06em] text-(--text-action) 
-  hover:text-(--color-link-hover) 
-  group-hover:text-(--color-link-hover)
-  transition-colors duration-150 ease-linear
-  relative z-20 pointer-events-auto;
+	@apply pointer-events-auto relative z-20 tracking-[0.06em] text-(--text-action) transition-colors duration-150 ease-linear group-hover:text-(--color-link-hover) hover:text-(--color-link-hover);
 	color: var(--color-link);
 }
 

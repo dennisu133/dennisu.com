@@ -114,20 +114,20 @@
 
 <Background />
 
-<header class="flex flex-wrap min-h-40 sm:min-h-36 mt-6">
+<header class="mt-6 flex min-h-40 flex-wrap sm:min-h-36">
 	<hgroup class="transition-colors duration-150 ease-linear">
 		<h1>
 			{profile.name}
 		</h1>
-		<p class="text-subtitle! text-(--text-muted) font-semibold leading-tight">
+		<p class="text-subtitle! leading-tight font-semibold text-(--text-muted)">
 			{profile.title}
 		</p>
 	</hgroup>
 
-	<div class="flex flex-col items-end self-end ml-auto">
+	<div class="ml-auto flex flex-col items-end self-end">
 		<ThemeBar />
 		<!-- TODO: there has to be a better way to do a11y -->
-		<span class="mt-1 sm:mt-2 text-(--text-muted)">
+		<span class="mt-1 text-(--text-muted) sm:mt-2">
 			<span aria-hidden="true">{profile.location.text}</span>
 			<address
 				class="inline-block text-nowrap"
@@ -146,13 +146,13 @@
 	</div>
 </header>
 
-<main class="flex flex-col flex-1">
+<main class="flex flex-1 flex-col">
 	<section class="mb-6 lg:mb-2">
 		<SectionHeader>About</SectionHeader>
 		<AboutCard about={aboutSegments} proficiencies={profile.proficiencies} />
 	</section>
 
-	<div class="flex flex-col lg:flex-row gap-4">
+	<div class="flex flex-col gap-4 lg:flex-row">
 		<section class="lg:basis-2/3">
 			<SectionHeader>Projects</SectionHeader>
 			<ul class="flex flex-col gap-2">
@@ -185,7 +185,7 @@
 	</div>
 </main>
 
-<footer class="text-xs opacity-80 py-4">
+<footer class="py-4 text-xs opacity-80">
 	<a
 		href={siteSource}
 		target="_blank"

@@ -2,7 +2,7 @@
 	let { children, margin = "mb-[clamp(0.5rem,1dvh,1rem)]" } = $props();
 </script>
 
-<header class="flex items-center py-2 uppercase tracking-[0.2em] text-(--text-muted) {margin}">
+<header class="flex items-center py-2 tracking-[0.2em] text-(--text-muted) uppercase {margin}">
 	<h2>
 		{@render children?.()}
 	</h2>

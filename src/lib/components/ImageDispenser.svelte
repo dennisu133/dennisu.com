@@ -234,7 +234,7 @@
 
 <span
 	bind:this={element}
-	class="inline-block underline underline-offset-4 decoration-2"
+	class="inline-block underline decoration-2 underline-offset-4"
 	role="presentation"
 >
 	{@render children()}

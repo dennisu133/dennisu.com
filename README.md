@@ -15,4 +15,3 @@ You can start a development server with `bun run dev`.
 To create a production version run `bun run build`.
 
 Preview the build with `bun run preview`.
-

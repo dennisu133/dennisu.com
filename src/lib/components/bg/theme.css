@@ -20,17 +20,11 @@
 }
 
 .toggle-option {
-	@apply flex items-center justify-center w-8 h-8 rounded-md
-		text-(--text-muted) hover:text-(--text)
-		cursor-pointer transition-all duration-150 ease-linear
-		relative;
+	@apply relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-md text-(--text-muted) transition-all duration-150 ease-linear hover:text-(--text);
 }
 
 .toggle-tooltip {
-	@apply text-(--text) absolute right-0 top-full mt-2 border 
-		shadow-sm px-2 py-1 text-left 
-		opacity-0 pointer-events-none transition-opacity duration-150
-		group-hover:opacity-100 group-focus:opacity-100 min-w-max z-10 rounded-sm text-xs;
+	@apply pointer-events-none absolute top-full right-0 z-10 mt-2 min-w-max rounded-sm border px-2 py-1 text-left text-xs text-(--text) opacity-0 shadow-sm transition-opacity duration-150 group-hover:opacity-100 group-focus:opacity-100;
 	background-color: light-dark(rgb(243, 243, 243), rgb(12, 12, 12));
 	border-color: var(--color-border);
 }
