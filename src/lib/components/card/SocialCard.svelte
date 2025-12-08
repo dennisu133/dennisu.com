@@ -70,14 +70,14 @@
 	<img
 		src={icon}
 		alt={platform}
-		class="h-8 w-8 p-1.5 rounded-md {iconDark ? 'show-on-dark' : ''}"
+		class="h-8 w-8 rounded-md p-1.5 {iconDark ? 'show-on-dark' : ''}"
 		style="background-color: var(--bg-icon)"
 	/>
 	{#if iconDark}
 		<img
 			src={iconDark}
 			alt={platform}
-			class="show-on-light h-8 w-8 p-1.5 rounded-md"
+			class="show-on-light h-8 w-8 rounded-md p-1.5"
 			style="background-color: var(--bg-icon)"
 		/>
 	{/if}
@@ -85,7 +85,7 @@
 
 {#snippet cardHandle(desktopHover: boolean)}
 	<div>
-		<h3 class={desktopHover ? "group-hover:text-(--color-link-hover) transition-colors" : ""}>
+		<h3 class={desktopHover ? "transition-colors group-hover:text-(--color-link-hover)" : ""}>
 			{platform}
 		</h3>
 		{#if isEmail}
@@ -98,7 +98,7 @@
 					>
 				{/each}
 			</p>
-			<noscript class="text-xs opacity-60 text-(--text-muted)">
+			<noscript class="text-xs text-(--text-muted) opacity-60">
 				<br /> Revealing email requires JavaScript.
 			</noscript>
 		{:else}
@@ -107,12 +107,12 @@
 	</div>
 {/snippet}
 
-<li class="flex relative items-center justify-between group card {className}" onmouseenter={reveal}>
+<li class="group card relative flex items-center justify-between {className}" onmouseenter={reveal}>
 	<a
 		href={computedHref}
 		target="_blank"
 		rel="noreferrer"
-		class="hidden pointer-fine:block absolute inset-0 z-10"
+		class="absolute inset-0 z-10 hidden pointer-fine:block"
 		aria-label="Open {platform}"
 		onclick={handleLinkClick}
 	></a>
@@ -123,7 +123,7 @@
 	</div>
 
 	<a
-		class="pointer-fine:hidden link-action"
+		class="link-action pointer-fine:hidden"
 		href={computedHref}
 		target="_blank"
 		rel="noreferrer"

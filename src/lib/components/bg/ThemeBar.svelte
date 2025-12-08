@@ -4,13 +4,13 @@
 </script>
 
 <div
-	class="inline-flex items-center rounded-lg p-0.5 border border-(--color-border) transition-colors duration-150 ease-linear"
+	class="inline-flex items-center rounded-lg border border-(--color-border) p-0.5 transition-colors duration-150 ease-linear"
 	role="toolbar"
 	aria-label="Display settings"
 >
 	<ThemeToggle />
 	<div id="background-wrapper" class="contents">
-		<span class="h-6 w-px bg-(--color-border) ml-0.5 mr-0.5"></span>
+		<span class="mr-0.5 ml-0.5 h-6 w-px bg-(--color-border)"></span>
 		<BackgroundToggle />
 	</div>
 </div>

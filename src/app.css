@@ -84,7 +84,7 @@
 }
 
 h1 {
-	@apply font-semibold leading-tight;
+	@apply leading-tight font-semibold;
 	font-size: var(--text-h1);
 }
 

@@ -19,24 +19,24 @@
 	url ??= repo; // if url is null, set it to repo
 </script>
 
-<li class="flex card relative group {className}">
-	<a href={url} class="hidden pointer-fine:block absolute inset-0 z-10" aria-label="Open {name}"
+<li class="card group relative flex {className}">
+	<a href={url} class="absolute inset-0 z-10 hidden pointer-fine:block" aria-label="Open {name}"
 	></a>
 
-	<div class="flex flex-col flex-1 justify-between gap-2">
+	<div class="flex flex-1 flex-col justify-between gap-2">
 		<h3>{name}</h3>
 		<p>{description}</p>
 	</div>
 
-	<div class="flex flex-col justify-between items-end">
+	<div class="flex flex-col items-end justify-between">
 		<div class="flex gap-2">
 			<a href={url} target="_blank" rel="noreferrer" class="link-action pointer-fine:hidden">Open</a
 			>
-			<span class="h-6 w-px bg-(--color-border) ml-0.5 mr-0.5 pointer-fine:hidden"></span>
+			<span class="mr-0.5 ml-0.5 h-6 w-px bg-(--color-border) pointer-fine:hidden"></span>
 			<a href={repo} target="_blank" rel="noreferrer" class="link-action">GitHub</a>
 		</div>
 
-		<time datetime={date.toISOString()} class="text-xs opacity-60 text-(--text-muted)"
+		<time datetime={date.toISOString()} class="text-xs text-(--text-muted) opacity-60"
 			>{date.toLocaleDateString("en-US", { year: "numeric", month: "long" })}</time
 		>
 	</div>
