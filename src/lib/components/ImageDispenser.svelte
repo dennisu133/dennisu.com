@@ -27,9 +27,7 @@
 
 	let { children, paths = {}, options = {} }: Props = $props();
 
-	const images = Object.values(paths).map((path) => {
-		return path as string;
-	});
+	const images = $derived(Object.values(paths) as string[]);
 
 	let element: HTMLElement;
 
