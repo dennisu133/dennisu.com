@@ -20,9 +20,10 @@
 	let { platform, handle, url, icon, iconDark = null, class: className = "" } = $props();
 
 	// Email obfuscation
-	const isEmail = platform === "Email";
-	let revealed = $state(!isEmail);
-	let computedHref = $derived(revealed || !isEmail ? url : "#");
+	const isEmail = $derived(platform === "Email");
+	let userRevealed = $state(false);
+	const revealed = $derived(!isEmail || userRevealed);
+	let computedHref = $derived(revealed ? url : "#");
 
 	// Base64 encode/decode for DOM obfuscation
 	function b64Encode(str: string) {
@@ -40,19 +41,21 @@
 		return atob(padded + "=".repeat((4 - (padded.length % 4)) % 4));
 	}
 
-	const encodedHandle = isEmail ? b64Encode(handle) : handle;
+	const encodedHandle = $derived(isEmail ? b64Encode(handle) : handle);
 	const displayHandle = $derived(revealed && isEmail ? b64Decode(encodedHandle) : encodedHandle);
 
 	// Scramble for visual obfuscation
 	const scrambleChars = "█▓▒░#$%&*@!?";
-	const scrambledChars = encodedHandle
-		.split("")
-		.map((c: string, i: number) =>
-			c === "@" || c === "." ? c : scrambleChars[(i * 7 + 3) % scrambleChars.length]
-		);
+	const scrambledChars = $derived(
+		encodedHandle
+			.split("")
+			.map((c: string, i: number) =>
+				c === "@" || c === "." ? c : scrambleChars[(i * 7 + 3) % scrambleChars.length]
+			)
+	);
 
 	function reveal() {
-		if (isEmail && !revealed) revealed = true;
+		if (isEmail && !revealed) userRevealed = true;
 	}
 
 	function handleLinkClick(e: MouseEvent) {

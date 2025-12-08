@@ -15,8 +15,8 @@
 -->
 
 <script lang="ts">
-	let { name, description, url, repo, date, class: className = "" } = $props();
-	url ??= repo; // if url is null, set it to repo
+	let { name, description, url: _url, repo, date, class: className = "" } = $props();
+	const url = $derived(_url ?? repo);
 </script>
 
 <li class="card group relative flex {className}">
