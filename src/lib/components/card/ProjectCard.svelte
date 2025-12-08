@@ -19,7 +19,7 @@
 	const url = $derived(_url ?? repo);
 </script>
 
-<li class="card group relative flex {className}">
+<li class="card group relative flex gap-2 {className}">
 	<a href={url} class="absolute inset-0 z-10 hidden pointer-fine:block" aria-label="Open {name}"
 	></a>
 

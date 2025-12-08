@@ -25,22 +25,41 @@
 	}
 
 	const frames = generateFrames();
+	const staticTitle = "Dennisu.com 🐱";
 	const altTitle = "Spicy Singles in Your Area 🌶️";
 	const description = "Personal website of Dennis Karnowitsch. Please hire me.";
 	let currentFrame = $state(0);
 	let isVisible = $state(true);
+	let showStatic = $state(true);
 
 	onMount(() => {
 		isVisible = !document.hidden;
 
+		let timeout: ReturnType<typeof setTimeout>;
+
+		const startAnimation = () => {
+			showStatic = true;
+			clearTimeout(timeout);
+			timeout = setTimeout(() => {
+				if (!document.hidden) {
+					showStatic = false;
+				}
+			}, 1000);
+		};
+
+		startAnimation();
+
 		const handleVisibilityChange = () => {
 			isVisible = !document.hidden;
+			if (isVisible) {
+				startAnimation();
+			}
 		};
 		document.addEventListener("visibilitychange", handleVisibilityChange);
 
 		// Animate title when visible
 		const interval = setInterval(() => {
-			if (isVisible) {
+			if (isVisible && !showStatic) {
 				currentFrame = (currentFrame + 1) % frames.length;
 			}
 		}, 400);
@@ -48,6 +67,7 @@
 		return () => {
 			document.removeEventListener("visibilitychange", handleVisibilityChange);
 			clearInterval(interval);
+			clearTimeout(timeout);
 		};
 	});
 </script>
@@ -57,9 +77,9 @@
 	<link rel="icon" type="image/svg+xml" href={isVisible ? favicon : alticon} />
 
 	<!-- Metadata -->
-	<title>{isVisible ? frames[currentFrame] : altTitle}</title>
+	<title>{isVisible ? (showStatic ? staticTitle : frames[currentFrame]) : altTitle}</title>
 	<noscript>
-		<title>Dennisu.com 🐱</title>
+		<title>{staticTitle}</title>
 	</noscript>
 	<meta name="description" content={description} />
 	<meta name="keywords" content="Dennis Karnowitsch, Dennisu, dennisu, dennisu133, dennisu.com" />
@@ -67,7 +87,7 @@
 	<meta name="theme-color" content="#66b2ff" />
 
 	<!-- Open Graph -->
-	<meta property="og:title" content="🐱 Dennisu.com 🐱" />
+	<meta property="og:title" content={staticTitle} />
 	<meta property="og:description" content={description} />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content="https://dennisu.com" />

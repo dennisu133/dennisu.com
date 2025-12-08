@@ -40,8 +40,7 @@
 			container.setAttribute("id", id);
 			container.setAttribute(
 				"style",
-				"overflow:hidden; position:fixed; height:100%; top:0; left:0; right:0; \
-        bottom:0; pointer-events:none; z-index:9999;"
+				"overflow:hidden; position:fixed; height:100%; inset:0; pointer-events:none; z-index:9999;"
 			);
 			document.body.appendChild(container);
 		}

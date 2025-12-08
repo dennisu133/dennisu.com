@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ThemeToggle from "./ThemeToggle.svelte";
+	import ThemeSelect from "./ThemeSelect.svelte";
 	import BackgroundToggle from "./BackgroundToggle.svelte";
 </script>
 
@@ -8,7 +8,7 @@
 	role="toolbar"
 	aria-label="Display settings"
 >
-	<ThemeToggle />
+	<ThemeSelect />
 	<div id="background-wrapper" class="contents">
 		<span class="mr-0.5 ml-0.5 h-6 w-px bg-(--color-border)"></span>
 		<BackgroundToggle />
