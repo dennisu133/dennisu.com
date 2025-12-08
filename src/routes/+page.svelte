@@ -16,10 +16,10 @@
 
 	const profile = {
 		name: "Dennis Karnowitsch",
-		title: "Aspiring Full Stack Developer",
+		subtitle: "Aspiring Full Stack Developer",
 		proficiencies: "Proficient in Python, Typescript, Svelte and C.",
 		location: {
-			text: "Based in",
+			pretext: "Based in ",
 			label: "Cottbus, Germany",
 			url: "https://maps.app.goo.gl/ebTN6YrvRcUfa5cX8"
 		}
@@ -114,47 +114,42 @@
 
 <Background />
 
-<header class="mt-6 flex min-h-40 flex-wrap sm:min-h-36">
-	<hgroup class="transition-colors duration-150 ease-linear">
+<header class="mt-6 flex min-h-40 flex-wrap gap-4 sm:min-h-36">
+	<div class="transition-colors duration-150 ease-linear">
 		<h1>
 			{profile.name}
 		</h1>
 		<p class="text-subtitle! leading-tight font-semibold text-(--text-muted)">
-			{profile.title}
+			{profile.subtitle}
 		</p>
-	</hgroup>
+	</div>
 
 	<div class="ml-auto flex flex-col items-end self-end">
 		<ThemeBar />
-		<!-- TODO: there has to be a better way to do a11y -->
-		<span class="mt-1 text-(--text-muted) sm:mt-2">
-			<span aria-hidden="true">{profile.location.text}</span>
-			<address
-				class="inline-block text-nowrap"
-				aria-label={`${profile.location.text} ${profile.location.label}`}
+
+		<div class="mt-1 text-right text-(--text-muted) sm:mt-2">
+			<span>{profile.location.pretext}</span>
+			<a
+				class="text-(--color-link) hover:text-(--color-link-hover) focus-visible:text-(--color-link-hover)"
+				href={profile.location.url}
+				target="_blank"
+				rel="noreferrer"
 			>
-				<a
-					class="text-(--color-link) hover:text-(--color-link-hover) focus-visible:text-(--color-link-hover)"
-					href={profile.location.url}
-					target="_blank"
-					rel="noreferrer"
-				>
-					{profile.location.label}
-				</a>
-			</address>
-		</span>
+				{profile.location.label}
+			</a>
+		</div>
 	</div>
 </header>
 
 <main class="flex flex-1 flex-col">
-	<section class="mb-6 lg:mb-2">
-		<SectionHeader>About</SectionHeader>
+	<section class="mb-6 lg:mb-2" aria-labelledby="about-heading">
+		<SectionHeader id="about-heading">About</SectionHeader>
 		<AboutCard about={aboutSegments} proficiencies={profile.proficiencies} />
 	</section>
 
 	<div class="flex flex-col gap-4 lg:flex-row">
-		<section class="lg:basis-2/3">
-			<SectionHeader>Projects</SectionHeader>
+		<section class="lg:basis-2/3" aria-labelledby="projects-heading">
+			<SectionHeader id="projects-heading">Projects</SectionHeader>
 			<ul class="flex flex-col gap-2">
 				{#each projects as project}
 					<ProjectCard
@@ -168,8 +163,8 @@
 			</ul>
 		</section>
 
-		<section class="lg:basis-1/3">
-			<SectionHeader>Socials</SectionHeader>
+		<section class="lg:basis-1/3" aria-labelledby="socials-heading">
+			<SectionHeader id="socials-heading">Socials</SectionHeader>
 			<ul class="flex flex-col gap-2">
 				{#each socials as social}
 					<SocialCard
