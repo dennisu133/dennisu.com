@@ -11,11 +11,11 @@
 	 * with the specified emoji, animating through each position, then reverses all but
 	 * the first and last frames for a seamless loop.
 	 *
-	 * @param name The string to animate. Default: "Dennisu"
+	 * @param name The string to animate. Default: "Welcome!"
 	 * @param emoji The emoji to insert in place of each char. Default: "🐈"
 	 * @returns Array of animated strings with emoji inserted at each position.
 	 */
-	function generateFrames(name: string = "Dennisu", emoji: string = "🐈") {
+	function generateFrames(name: string = "Welcome!", emoji: string = "🐈") {
 		const frames: string[] = [];
 		for (let i = 0; i < name.length; i++) {
 			const frame = name.slice(0, i) + emoji + name.slice(i + 1);
@@ -95,10 +95,8 @@
 
 	<!-- Blocking script to set initial theme attribute -->
 	<script>
-		const storedTheme = localStorage.getItem("theme");
-		document.documentElement.setAttribute("theme", storedTheme || "system");
-		const storedBg = localStorage.getItem("bg");
-		document.documentElement.setAttribute("bg", storedBg || "animated");
+		document.documentElement.setAttribute("theme", localStorage.getItem("theme") || "system");
+		document.documentElement.setAttribute("bg", localStorage.getItem("bg") || "animated");
 	</script>
 </svelte:head>
 

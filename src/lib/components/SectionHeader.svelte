@@ -9,14 +9,23 @@
 -->
 
 <script lang="ts">
-	let { children, margin = "mb-[clamp(0.5rem,1dvh,1rem)]", id, class: className = "" } = $props();
+	import type { Snippet } from "svelte";
+	let {
+		id,
+		class: className = "",
+		children
+	}: {
+		id: string;
+		class?: string;
+		children?: Snippet;
+	} = $props();
 </script>
 
 <div
-	class="flex items-center py-2 tracking-[0.2em] text-(--text-muted) uppercase {margin} {className}"
+	class="mb-[clamp(0.5rem,1dvh,1rem)] flex items-center py-2 tracking-[0.2em] text-(--text-muted) uppercase {className}"
 >
 	<h2 {id}>
 		{@render children?.()}
 	</h2>
-	<span class="ml-4 h-px grow bg-(--color-border)"></span>
+	<span class="bg-border ml-4 h-px grow"></span>
 </div>

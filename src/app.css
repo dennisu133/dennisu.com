@@ -1,26 +1,19 @@
 @import "tailwindcss";
 
-/* TODO: remove all vanilla css */
-
 @theme {
 	--text-h1: clamp(2.1rem, 5vw, 3.4rem);
 	--text-subtitle: clamp(1rem, 2.2vw, 1.2rem);
 	--text-h2: clamp(0.85rem, 3vw, 1.15rem);
 	--text-h3: clamp(1rem, 2.1vw, 1.15rem);
 	--text-p: clamp(0.85rem, 1.8vw, 1.05rem);
-}
-
-:root {
-	color-scheme: light dark;
-	@apply m-0 font-sans;
 
 	--color-accent-300: light-dark(#0ea5e9, #7dd3fc);
 	--color-accent-400: light-dark(#2563eb, #38bdf8);
 	--color-accent-500: light-dark(#1e3a8a, #0ea5e9);
 
-	--bg-base-light: #66b2ff;
-	--bg-base-dark: #000000;
-	--bg-base: light-dark(var(--bg-base-light), var(--bg-base-dark));
+	--bg-base: light-dark(#66b2ff, #000000);
+	--bg-contrast: light-dark(rgba(15, 23, 42, 0.12), transparent);
+	--bg-tooltip: light-dark(rgb(243, 243, 243), rgb(12, 12, 12));
 
 	--text: light-dark(#0f172a, #ebebeb);
 	--text-muted: light-dark(#1e293b, #9ca3af);
@@ -34,6 +27,39 @@
 	--color-link-hover: light-dark(var(--color-accent-400), var(--color-accent-300));
 }
 
+@layer base {
+	html {
+		@apply m-0 font-sans;
+	}
+	p {
+		@apply text-p;
+	}
+	h1 {
+		@apply text-h1 leading-tight font-semibold;
+	}
+	h2 {
+		@apply text-h2;
+	}
+	h3 {
+		@apply text-h3;
+	}
+}
+
+@layer components {
+	.card {
+		@apply border-border bg-surface hover:border-border-hover border p-[clamp(0.75rem,1.5dvh,1rem)] transition-colors duration-150 ease-linear;
+	}
+
+	.toggle-option {
+		@apply relative inline-flex cursor-pointer items-center justify-center rounded-md p-1.5 text-(--text-muted) peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-(--text) hover:text-(--text);
+	}
+
+	.tooltip {
+		@apply border-border pointer-events-none absolute top-full right-0 z-10 mt-2 min-w-max rounded-sm border bg-(--bg-tooltip) px-2 py-1 text-left text-xs text-(--text) opacity-0 shadow-sm transition-opacity duration-150 select-none group-hover:opacity-100;
+	}
+}
+
+/* My hacky way to make a purely CSS based theme toggle */
 :root:not([theme]):has(#theme-system:checked),
 :root[theme="system"] {
 	color-scheme: light dark;
@@ -49,7 +75,7 @@
 	color-scheme: dark;
 }
 
-/* Global theme visibility class */
+/* GLOBAL THEME VISIBILITY CLASS */
 .show-on-light,
 .show-on-dark {
 	display: none;
@@ -83,15 +109,17 @@
 	}
 }
 
-h1 {
-	@apply leading-tight font-semibold;
-	font-size: var(--text-h1);
-}
+/* All of this is just to show what's currently selected */
 
-h2 {
-	font-size: var(--text-h2);
-}
+/* Attribute-based (normal operation) */
+:root[theme="system"] label[for="theme-system"],
+:root[theme="light"] label[for="theme-light"],
+:root[theme="dark"] label[for="theme-dark"],
+:root[bg="animated"] label[for="bg-animated"],
+:root[bg="static"] label[for="bg-static"],
 
-p {
-	font-size: var(--text-p);
+/* Checked-state fallback (no-JS) */
+:root:not([theme]) span:has(input[name="theme"]:checked) > label,
+:root:not([bg]) span:has(input[name="background"]:checked) > label {
+	@apply bg-(--bg-contrast) text-(--text);
 }

@@ -6,6 +6,8 @@
 	import ThemeBar from "$lib/components/bg/ThemeBar.svelte";
 	import SectionHeader from "$lib/components/SectionHeader.svelte";
 
+	import ImageDispenser from "$lib/components/ImageDispenser.svelte";
+
 	import discordIcon from "$lib/assets/icons/discord.svg";
 	import githubIcon from "$lib/assets/icons/github.svg";
 	import steamIcon from "$lib/assets/icons/steam.svg";
@@ -100,19 +102,20 @@
 		query: "?url",
 		import: "default"
 	});
-
-	const aboutSegments = [
-		{ text: "Bachelor in Computer Science. My interests are " },
-		{ text: "programming", images: programmingImages },
-		{ text: ", " },
-		{ text: "music", images: musicImages },
-		{ text: " and " },
-		{ text: "cats", images: catImages },
-		{ text: "." }
-	];
 </script>
 
 <Background />
+
+{#snippet about()}
+	<p aria-hidden="true">
+		Bachelor in Computer Science. My interests are
+		<ImageDispenser paths={programmingImages}>programming</ImageDispenser>,
+		<ImageDispenser paths={musicImages}>music</ImageDispenser> and
+		<ImageDispenser paths={catImages}>cats</ImageDispenser>.
+	</p>
+
+	<p class="sr-only">Bachelor in Computer Science. My interests are programming, music and cats.</p>
+{/snippet}
 
 <header class="mt-6 flex min-h-40 flex-wrap gap-4 sm:min-h-36">
 	<div class="transition-colors duration-150 ease-linear">
@@ -130,7 +133,7 @@
 		<div class="mt-1 text-right text-(--text-muted) sm:mt-2">
 			<span>{profile.location.pretext}</span>
 			<a
-				class="text-(--color-link) hover:text-(--color-link-hover) focus-visible:text-(--color-link-hover)"
+				class="text-link hover:text-link-hover focus-visible:text-link-hover"
 				href={profile.location.url}
 				target="_blank"
 				rel="noreferrer"
@@ -144,11 +147,11 @@
 <main class="flex flex-1 flex-col">
 	<section class="mb-6 lg:mb-2" aria-labelledby="about-heading">
 		<SectionHeader id="about-heading">About</SectionHeader>
-		<AboutCard about={aboutSegments} proficiencies={profile.proficiencies} />
+		<AboutCard {about} proficiencies={profile.proficiencies} />
 	</section>
 
 	<div class="flex flex-col gap-4 lg:flex-row">
-		<section class="lg:basis-2/3" aria-labelledby="projects-heading">
+		<section class="flex-1" aria-labelledby="projects-heading">
 			<SectionHeader id="projects-heading">Projects</SectionHeader>
 			<ul class="flex flex-col gap-2">
 				{#each projects as project}
@@ -163,7 +166,7 @@
 			</ul>
 		</section>
 
-		<section class="lg:basis-1/3" aria-labelledby="socials-heading">
+		<section aria-labelledby="socials-heading">
 			<SectionHeader id="socials-heading">Socials</SectionHeader>
 			<ul class="flex flex-col gap-2">
 				{#each socials as social}
@@ -185,7 +188,6 @@
 		href={siteSource}
 		target="_blank"
 		rel="noreferrer"
-		class="text-(--color-link) hover:text-(--color-link-hover) focus-visible:text-(--color-link-hover)"
-		>View Source</a
+		class="text-link hover:text-link-hover focus-visible:text-link-hover">View Source</a
 	>
 </footer>
