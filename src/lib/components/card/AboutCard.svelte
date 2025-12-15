@@ -1,48 +1,28 @@
-<script lang="ts">
-	import ImageDispenser from "$lib/components/ImageDispenser.svelte";
+<!-- 
+  @component
+  Renders an about card with a list of about segments and a list of proficiencies.
+  Usage:
+  ```html
+  <AboutCard about={aboutSnippet} proficiencies={profile.proficiencies} />
+  ```
+-->
 
-	export type AboutSegment = {
-		text: string;
-		images?: Record<string, unknown>;
-	};
+<script lang="ts">
+	import type { Snippet } from "svelte";
 
 	let {
 		about,
-		proficiencies,
-		class: className = ""
+		proficiencies
 	}: {
-		about: AboutSegment[];
+		about: Snippet;
 		proficiencies: string;
-		class?: string;
 	} = $props();
-
-	let srText = $derived(about.map((s) => s.text).join(""));
 </script>
 
-<div class="card {className}">
-	<div class="grid gap-2 lg:gap-3">
-		<div>
-			<span class="sr-only">{srText}</span>
+<div class="card grid gap-2 lg:gap-3">
+	{@render about?.()}
 
-			<span aria-hidden="true">
-				{#each about as segment}
-					{#if segment.images}
-						<ImageDispenser paths={segment.images}>
-							{segment.text}
-						</ImageDispenser>
-					{:else}
-						{segment.text}
-					{/if}
-				{/each}
-			</span>
-		</div>
-
-		<div class="text-(--text-muted)">
-			{proficiencies}
-		</div>
-	</div>
+	<p class="text-(--text-muted)">
+		{proficiencies}
+	</p>
 </div>
-
-<style lang="postcss">
-	@import "./card.css";
-</style>

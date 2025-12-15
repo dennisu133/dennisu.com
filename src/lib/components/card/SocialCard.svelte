@@ -11,51 +11,42 @@
     iconDark="/github-dark.svg"
   />
   ```
-  Optional: pass `class` to extend/override wrapper spacing.
 -->
 
 <script lang="ts">
-	import { browser } from "$app/environment";
+	import FancyLink from "$lib/components/FancyLink.svelte";
 
-	let { platform, handle, url, icon, iconDark = null, class: className = "" } = $props();
+	let {
+		platform,
+		handle,
+		url,
+		icon,
+		iconDark = null
+	}: {
+		platform: string;
+		handle: string;
+		url: string;
+		icon: string;
+		iconDark?: string | null;
+	} = $props();
+
+	// Preserve initial width to prevent shrinking on reveal
+	const lockWidth = (node: HTMLElement) => {
+		node.style.minWidth = `${node.getBoundingClientRect().width}px`;
+	};
 
 	// Email obfuscation
 	const isEmail = $derived(platform === "Email");
-	let userRevealed = $state(false);
-	const revealed = $derived(!isEmail || userRevealed);
-	let computedHref = $derived(revealed ? url : "#");
+	let revealed = $state(false);
+	let computedHref = $derived(!isEmail || revealed ? url : "#");
 
-	// Base64 encode/decode for DOM obfuscation
-	function b64Encode(str: string) {
-		if (!browser) {
-			// Match client-side base64 length (unpadded) to prevent hydration mismatch
-			const len = Math.ceil((str.length * 4) / 3);
-			return "x".repeat(len);
-		}
-		return btoa(str).replace(/[+/=]/g, (m) => ({ "+": "-", "/": "_", "=": "" })[m]!);
-	}
-
-	function b64Decode(encoded: string) {
-		if (!browser) return encoded;
-		const padded = encoded.replace(/[-_]/g, (m) => (m === "-" ? "+" : "/"));
-		return atob(padded + "=".repeat((4 - (padded.length % 4)) % 4));
-	}
-
-	const encodedHandle = $derived(isEmail ? b64Encode(handle) : handle);
-	const displayHandle = $derived(revealed && isEmail ? b64Decode(encodedHandle) : encodedHandle);
-
-	// Scramble for visual obfuscation
+	// Use a wide placeholder glyph so the locked initial width
+	// won't expand when the real email (variable glyph widths) reveals.
+	const displayHandle = $derived(isEmail && !revealed ? "█".repeat(handle.length) : handle);
 	const scrambleChars = "█▓▒░#$%&*@!?";
-	const scrambledChars = $derived(
-		encodedHandle
-			.split("")
-			.map((c: string, i: number) =>
-				c === "@" || c === "." ? c : scrambleChars[(i * 7 + 3) % scrambleChars.length]
-			)
-	);
 
 	function reveal() {
-		if (isEmail && !revealed) userRevealed = true;
+		if (isEmail && !revealed) revealed = true;
 	}
 
 	function handleLinkClick(e: MouseEvent) {
@@ -67,50 +58,59 @@
 	}
 </script>
 
-<!-- Shared card content -->
 {#snippet cardIcon()}
 	<!-- icon = light-colored (for dark bg), iconDark = dark-colored (for light bg) -->
 	<img
 		src={icon}
 		alt={platform}
 		class="h-8 w-8 rounded-md p-1.5 {iconDark ? 'show-on-dark' : ''}"
-		style="background-color: var(--bg-icon)"
 	/>
 	{#if iconDark}
-		<img
-			src={iconDark}
-			alt={platform}
-			class="show-on-light h-8 w-8 rounded-md p-1.5"
-			style="background-color: var(--bg-icon)"
-		/>
+		<img src={iconDark} alt={platform} class="show-on-light h-8 w-8 rounded-md p-1.5" />
 	{/if}
 {/snippet}
 
-{#snippet cardHandle(desktopHover: boolean)}
+{#snippet cardHandle()}
 	<div>
-		<h3 class={desktopHover ? "transition-colors group-hover:text-(--color-link-hover)" : ""}>
+		<h3 class="group-hover:text-link-hover text-base font-medium">
 			{platform}
 		</h3>
 		{#if isEmail}
-			<p class="inline-flex font-mono" aria-label={revealed ? handle : "Email address"}>
+			<p
+				use:lockWidth
+				class="inline-flex text-(--text-muted) {!revealed && 'gap-px'}"
+				aria-label={revealed ? handle : "Email address"}
+			>
 				{#each displayHandle.split("") as char, i}
+					{@const scramble = scrambleChars[(i * 7 + 3) % scrambleChars.length] ?? "•"}
+					{@const mod = i % 3}
+					{@const offsetY = mod === 0 ? "-3px" : mod === 1 ? "4px" : "-2px"}
+					{@const rotate = mod === 0 ? "-6deg" : mod === 1 ? "8deg" : "-4deg"}
 					<span
-						class="shatter-char relative inline-block"
-						class:revealed
-						style="--i: {i}; --scramble: '{scrambledChars[i] ?? '•'}'">{char}</span
+						class={[
+							"relative inline-block",
+							"transition-all duration-500 ease-out will-change-transform",
+							"after:absolute after:left-0 after:transition-opacity after:duration-500 after:ease-out",
+							revealed
+								? "translate-y-0 rotate-0 text-current blur-none after:opacity-0"
+								: "translate-y-(--offset-y) rotate-(--rotate) text-transparent blur-[1px] after:text-(--text-muted) after:opacity-70 after:content-(--scramble)"
+						].join(" ")}
+						style={`--i: ${i}; --offset-y: ${offsetY}; --rotate: ${rotate}; --scramble: '${scramble}'; transition-delay: calc(var(--i) * 25ms);`}
 					>
+						{char}
+					</span>
 				{/each}
 			</p>
 			<noscript class="text-xs text-(--text-muted) opacity-60">
 				<br /> Revealing email requires JavaScript.
 			</noscript>
 		{:else}
-			<p>{handle}</p>
+			<p class="text-(--text-muted)">{handle}</p>
 		{/if}
 	</div>
 {/snippet}
 
-<li class="group card relative flex items-center justify-between {className}" onmouseenter={reveal}>
+<li class="card group relative flex justify-between gap-2" onmouseenter={reveal}>
 	<a
 		href={computedHref}
 		target="_blank"
@@ -119,73 +119,10 @@
 		aria-label="Open {platform}"
 		onclick={handleLinkClick}
 	></a>
-
-	<div class="flex flex-1 items-center gap-4">
+	<div class="flex items-center gap-4">
 		{@render cardIcon()}
-		{@render cardHandle(true)}
+		{@render cardHandle()}
 	</div>
 
-	<a
-		class="link-action pointer-fine:hidden"
-		href={computedHref}
-		target="_blank"
-		rel="noreferrer"
-		onclick={handleLinkClick}
-	>
-		Open
-	</a>
+	<FancyLink text="Open" url={computedHref} class="pointer-fine:hidden" />
 </li>
-
-<style lang="postcss">
-	@import "./card.css";
-
-	/* EMAIL OBFUSCATION */
-	.shatter-char:not(.revealed) {
-		@apply text-transparent;
-		transform: translateY(var(--offset-y, 2px)) rotate(var(--rotate, 5deg));
-		filter: blur(1px);
-	}
-
-	.shatter-char:not(.revealed)::after {
-		content: var(--scramble);
-		@apply absolute left-0 opacity-60;
-		color: var(--text-muted);
-	}
-
-	/* Revealed: one-shot animation */
-	.shatter-char.revealed {
-		animation: shatter-reveal 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-		animation-delay: calc(var(--i) * 25ms);
-	}
-
-	@keyframes shatter-reveal {
-		from {
-			transform: translateY(var(--offset-y, 2px)) rotate(var(--rotate, 5deg));
-			filter: blur(1px);
-			color: transparent;
-		}
-		to {
-			transform: none;
-			filter: blur(0);
-			color: inherit;
-		}
-	}
-
-	/* Alternating offsets */
-	.shatter-char:nth-child(3n) {
-		--offset-y: -3px;
-		--rotate: -6deg;
-	}
-	.shatter-char:nth-child(3n + 1) {
-		--offset-y: 4px;
-		--rotate: 8deg;
-	}
-	.shatter-char:nth-child(3n + 2) {
-		--offset-y: -2px;
-		--rotate: -4deg;
-	}
-
-	p {
-		@apply text-(--text-muted);
-	}
-</style>

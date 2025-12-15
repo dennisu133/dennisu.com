@@ -17,7 +17,15 @@
 	import fragmentShader from "./shaders/clouds.frag.glsl?raw";
 
 	// Props to fine-tune the effect
-	let { speed = 0.03, scale = 1.1, density = 0.2 } = $props();
+	let {
+		speed = 0.03,
+		scale = 1.1,
+		density = 0.2
+	}: {
+		speed?: number;
+		scale?: number;
+		density?: number;
+	} = $props();
 
 	let canvas: HTMLCanvasElement | null = null;
 	let teardown: (() => void) | undefined;
@@ -189,8 +197,7 @@
 				if (isDestroyed) return; // Guard against stale closure
 
 				const styles = getComputedStyle(document.documentElement);
-				const bgBaseVar = mode === "dark" ? "--bg-base-dark" : "--bg-base-light";
-				const bgBase = styles.getPropertyValue(bgBaseVar).trim();
+				const bgBase = styles.getPropertyValue("--bg-base").trim();
 				const [r, g, b] = parseColor(bgBase);
 
 				gl.uniform3f(uniforms.u_skyColor2, r, g, b);
