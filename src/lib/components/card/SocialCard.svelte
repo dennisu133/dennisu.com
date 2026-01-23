@@ -109,5 +109,9 @@
 		{@render cardHandle()}
 	</div>
 
-	<FancyLink text="Open" url={computedHref} class="pointer-fine:hidden" />
+	<FancyLink
+		text="Open"
+		url={computedHref}
+		class="pointer-fine:hidden pointer-coarse:py-1 pointer-coarse:text-[clamp(0.75rem,4vw,1rem)]"
+	/>
 </li>

@@ -8,18 +8,24 @@
 
 	import ImageDispenser from "$lib/components/ImageDispenser.svelte";
 
-	import discordIcon from "$lib/assets/icons/discord.svg";
-	import githubIcon from "$lib/assets/icons/github.svg";
-	import steamIcon from "$lib/assets/icons/steam.svg";
-	import spotifyIcon from "$lib/assets/icons/spotify.svg";
-	import emailIcon from "$lib/assets/icons/email.svg";
-	import emailDarkIcon from "$lib/assets/icons/email-dark.svg";
-	import githubDarkIcon from "$lib/assets/icons/github-dark.svg";
+	import typescriptIcon from "$lib/assets/icons/stack/typescript.svg";
+	import svelteIcon from "$lib/assets/icons/stack/svelte.svg";
+	import tailwindIcon from "$lib/assets/icons/stack/tailwind.svg";
+	import goIcon from "$lib/assets/icons/stack/go.svg";
+	import reactIcon from "$lib/assets/icons/stack/react.svg";
+
+	import discordIcon from "$lib/assets/icons/social/discord.svg";
+	import githubIcon from "$lib/assets/icons/social/github.svg";
+	import steamIcon from "$lib/assets/icons/social/steam.svg";
+	import spotifyIcon from "$lib/assets/icons/social/spotify.svg";
+	import emailIcon from "$lib/assets/icons/social/email.svg";
+	import emailDarkIcon from "$lib/assets/icons/social/email-dark.svg";
+	import githubDarkIcon from "$lib/assets/icons/social/github-dark.svg";
 
 	const profile = {
 		name: "Dennis Karnowitsch",
 		subtitle: "Aspiring Full Stack Developer",
-		proficiencies: "Proficient in Python, Typescript, Svelte and C.",
+		proficiencies: "Experienced in Python, Typescript, Java, Go and C.",
 		location: {
 			pretext: "Based in ",
 			label: "Cottbus, Germany",
@@ -32,21 +38,24 @@
 			name: "PrivateStream",
 			description: "A private low-latency livestream viewer for friend groups.",
 			repo: "https://github.com/dennisu133/PrivateStream",
-			date: new Date(2025, 9, 1, 12) // Month is 0-indexed: 9 = October, noon to avoid timezone shifts
+			date: new Date(2025, 9, 1, 12), // Month is 0-indexed: 9 = October, noon to avoid timezone shifts
+			stack: [typescriptIcon, svelteIcon, tailwindIcon]
 		},
 		{
 			name: "LetterMaker",
 			description: "Letter creator for the German postal system with stamp support.",
 			url: "https://letter.dennisu.com",
 			repo: "https://github.com/dennisu133/LetterMaker",
-			date: new Date(2025, 7, 1, 12) // 7 = August, noon to avoid timezone shifts
+			date: new Date(2025, 7, 1, 12), // 7 = August, noon to avoid timezone shifts
+			stack: [typescriptIcon, goIcon, reactIcon, tailwindIcon]
 		},
 		{
 			name: "CompetitiveWordle",
 			description: "Wordle clone with a focus on competitive gameplay.",
 			url: "https://wordle.dennisu.com",
 			repo: "https://github.com/dennisu133/CompetitiveWordle",
-			date: new Date(2025, 4, 1, 12) // 4 = May, noon to avoid timezone shifts
+			date: new Date(2025, 4, 1, 12), // 4 = May, noon to avoid timezone shifts
+			stack: [typescriptIcon, svelteIcon]
 		}
 	];
 
@@ -161,6 +170,7 @@
 						url={project.url}
 						repo={project.repo}
 						date={project.date}
+						stack={project.stack}
 					/>
 				{/each}
 			</ul>
@@ -183,12 +193,12 @@
 	</div>
 </main>
 
-<footer class="flex items-center justify-between border-t border-border py-3">
+<footer class="flex items-center justify-between border-t border-border py-3 text-xs">
 	<a
 		href={siteSource}
 		target="_blank"
 		rel="noreferrer"
-		class="font-display text-xs tracking-wide text-(--text-muted) transition-colors hover:text-(--text)"
+		class="font-display tracking-wide text-link hover:text-link-hover"
 	>
 		View Source
 	</a>
