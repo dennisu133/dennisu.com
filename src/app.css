@@ -1,6 +1,33 @@
 @import "tailwindcss";
 
+@font-face {
+	font-family: "Space Mono";
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url("$lib/assets/fonts/SpaceMono-Regular.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "Instrument Sans";
+	font-style: normal;
+	font-weight: 400 600;
+	font-display: swap;
+	src: url("$lib/assets/fonts/InstrumentSans-Variable.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "Geist";
+	font-style: normal;
+	font-weight: 100 900;
+	font-display: swap;
+	src: url("$lib/assets/fonts/GeistSans-Variable.woff2") format("woff2");
+}
+
 @theme {
+	--font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+	--font-heading: "Geist", ui-sans-serif, system-ui, sans-serif;
+	--font-display: "Space Mono", ui-monospace, monospace;
 	--text-h1: clamp(2.1rem, 5vw, 3.4rem);
 	--text-subtitle: clamp(1rem, 2.2vw, 1.2rem);
 	--text-h2: clamp(0.85rem, 3vw, 1.15rem);
@@ -35,10 +62,10 @@
 		@apply text-p;
 	}
 	h1 {
-		@apply text-h1 leading-tight font-semibold;
+		@apply font-heading text-h1 leading-tight font-semibold;
 	}
 	h2 {
-		@apply text-h2;
+		@apply font-heading text-h2;
 	}
 	h3 {
 		@apply text-h3;
@@ -47,7 +74,7 @@
 
 @layer components {
 	.card {
-		@apply border-border bg-surface hover:border-border-hover border p-[clamp(0.75rem,1.5dvh,1rem)] transition-colors duration-150 ease-linear;
+		@apply relative overflow-hidden border border-border bg-surface p-[clamp(0.75rem,1.5dvh,1rem)] backdrop-blur-md transition-all duration-200 ease-out;
 	}
 
 	.toggle-option {
@@ -55,7 +82,7 @@
 	}
 
 	.tooltip {
-		@apply border-border pointer-events-none absolute top-full right-0 z-10 mt-2 min-w-max rounded-sm border bg-(--bg-tooltip) px-2 py-1 text-left text-xs text-(--text) opacity-0 shadow-sm transition-opacity duration-150 select-none group-hover:opacity-100;
+		@apply pointer-events-none absolute top-full right-0 z-10 mt-2 min-w-max rounded-sm border border-border bg-(--bg-tooltip) px-2 py-1 text-left text-xs text-(--text) opacity-0 shadow-sm transition-opacity duration-150 select-none group-hover:opacity-100;
 	}
 }
 

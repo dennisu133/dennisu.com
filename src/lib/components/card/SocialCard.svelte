@@ -1,18 +1,3 @@
-<!-- 
-  @component
-  Renders a social entry as a boxed list item with an action link.
-  Usage:
-  ```html
-  <SocialCard
-    platform="GitHub"
-    handle="@user"
-    url="https://..."
-    icon="/github.svg"
-    iconDark="/github-dark.svg"
-  />
-  ```
--->
-
 <script lang="ts">
 	import FancyLink from "$lib/components/FancyLink.svelte";
 
@@ -42,8 +27,8 @@
 
 	// Use a wide placeholder glyph so the locked initial width
 	// won't expand when the real email (variable glyph widths) reveals.
-	const displayHandle = $derived(isEmail && !revealed ? "█".repeat(handle.length) : handle);
-	const scrambleChars = "█▓▒░#$%&*@!?";
+	const displayHandle = $derived(isEmail && !revealed ? "\u2588".repeat(handle.length) : handle);
+	const scrambleChars = "\u2588\u2593\u2592\u2591#$%&*@!?";
 
 	function reveal() {
 		if (isEmail && !revealed) revealed = true;
@@ -63,26 +48,26 @@
 	<img
 		src={icon}
 		alt={platform}
-		class="h-8 w-8 rounded-md p-1.5 {iconDark ? 'show-on-dark' : ''}"
+		class="h-7 w-7 rounded-sm p-1 {iconDark ? 'show-on-dark' : ''}"
 	/>
 	{#if iconDark}
-		<img src={iconDark} alt={platform} class="show-on-light h-8 w-8 rounded-md p-1.5" />
+		<img src={iconDark} alt={platform} class="show-on-light h-7 w-7 rounded-sm p-1" />
 	{/if}
 {/snippet}
 
 {#snippet cardHandle()}
-	<div>
-		<h3 class="group-hover:text-link-hover text-base font-medium">
+	<div class="min-w-0">
+		<h3 class="group-hover:text-link-hover text-sm font-medium transition-colors duration-150">
 			{platform}
 		</h3>
 		{#if isEmail}
 			<p
 				use:lockWidth
-				class="inline-flex text-(--text-muted) {!revealed && 'gap-px'}"
+				class="inline-flex text-xs text-(--text-muted) {!revealed && 'gap-px'}"
 				aria-label={revealed ? handle : "Email address"}
 			>
 				{#each displayHandle.split("") as char, i}
-					{@const scramble = scrambleChars[(i * 7 + 3) % scrambleChars.length] ?? "•"}
+					{@const scramble = scrambleChars[(i * 7 + 3) % scrambleChars.length] ?? "\u2022"}
 					{@const mod = i % 3}
 					{@const offsetY = mod === 0 ? "-3px" : mod === 1 ? "4px" : "-2px"}
 					{@const rotate = mod === 0 ? "-6deg" : mod === 1 ? "8deg" : "-4deg"}
@@ -105,12 +90,12 @@
 				<br /> Revealing email requires JavaScript.
 			</noscript>
 		{:else}
-			<p class="text-(--text-muted)">{handle}</p>
+			<p class="text-xs text-(--text-muted)">{handle}</p>
 		{/if}
 	</div>
 {/snippet}
 
-<li class="card group relative flex justify-between gap-2" onmouseenter={reveal}>
+<li class="card group relative flex items-center justify-between gap-2" onmouseenter={reveal}>
 	<a
 		href={computedHref}
 		target="_blank"
@@ -119,7 +104,7 @@
 		aria-label="Open {platform}"
 		onclick={handleLinkClick}
 	></a>
-	<div class="flex items-center gap-4">
+	<div class="flex items-center gap-3">
 		{@render cardIcon()}
 		{@render cardHandle()}
 	</div>

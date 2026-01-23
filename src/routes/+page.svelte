@@ -183,11 +183,13 @@
 	</div>
 </main>
 
-<footer class="py-4 text-xs opacity-80">
+<footer class="flex items-center justify-between border-t border-border py-3">
 	<a
 		href={siteSource}
 		target="_blank"
 		rel="noreferrer"
-		class="text-link hover:text-link-hover focus-visible:text-link-hover">View Source</a
+		class="font-display text-xs tracking-wide text-(--text-muted) transition-colors hover:text-(--text)"
 	>
+		View Source
+	</a>
 </footer>

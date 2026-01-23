@@ -1,13 +1,3 @@
-<!--
-  @component
-  Renders a section header with a title and a border.
-  Usage:
-  ```html
-  <SectionHeader id="projects-heading">Projects</SectionHeader>
-  ```
-  Optional: pass `class` to extend/override wrapper spacing.
--->
-
 <script lang="ts">
 	import type { Snippet } from "svelte";
 	let {
