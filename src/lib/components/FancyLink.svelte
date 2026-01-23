@@ -14,10 +14,10 @@
 	href={url}
 	target="_blank"
 	rel="noreferrer"
-	class="group/link text-link group-hover:text-link-hover hover:text-link-hover pointer-events-auto relative z-20 tracking-[0.06em] {className}"
+	class="group/link pointer-events-auto relative z-20 inline-flex items-center text-[clamp(0.6rem,2.4vw,0.8rem)] leading-none tracking-[0.06em] text-link uppercase group-hover:text-link-hover hover:text-link-hover {className}"
 >
 	{text}
 	<span
-		class="bg-link-hover absolute bottom-0 left-0 h-px w-0 transition-[width] duration-300 ease-out group-hover/link:w-full"
+		class="absolute bottom-0 left-0 h-px w-0 bg-link-hover transition-[width] duration-300 ease-out group-hover/link:w-full"
 	></span>
 </a>

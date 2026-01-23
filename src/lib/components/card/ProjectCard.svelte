@@ -1,18 +1,3 @@
-<!-- 
-  @component
-  Renders a single project as a boxed list item with responsive action links.
-  Usage:
-  ```html
-  <ProjectCard
-    name="My App"
-    description="..."
-    url="https://..."
-    repo="https://..."
-    date="2025-01-01"
-  />
-  ```
--->
-
 <script lang="ts">
 	import FancyLink from "$lib/components/FancyLink.svelte";
 	let {
@@ -31,25 +16,32 @@
 	const url = $derived(_url ?? repo);
 </script>
 
-<li class="card group relative flex flex-col gap-2">
+<li class="card group relative flex items-center gap-4">
 	<a href={url} class="absolute inset-0 z-10 hidden pointer-fine:block" aria-label="Open {name}"
 	></a>
 
-	<div class="flex flex-1 items-start justify-between gap-2">
-		<h3 class="group-hover:text-link-hover font-medium transition-colors duration-150 ease-linear">
-			{name}
-		</h3>
-		<div class="flex gap-2">
+	<div class="flex flex-1 items-center justify-between gap-3">
+		<div class="flex-1">
+			<div class="mb-3 flex items-center gap-3">
+				<h3
+					class="leading-none font-medium transition-colors duration-150 group-hover:text-link-hover"
+				>
+					{name}
+				</h3>
+				<time
+					datetime={date.toISOString()}
+					class="shrink-0 font-display text-[0.65rem] leading-none tracking-wide text-(--text-muted) opacity-50"
+				>
+					{date.toLocaleDateString("en-US", { year: "numeric", month: "short" })}
+				</time>
+			</div>
+			<p class="mt-1 text-sm text-(--text-muted)">{description}</p>
+		</div>
+
+		<div class="flex shrink-0 gap-2">
 			<FancyLink text="Open" {url} class="pointer-fine:hidden" />
-			<span class="bg-border mr-0.5 ml-0.5 h-6 w-px pointer-fine:hidden"></span>
+			<span class="mx-0.5 h-[0.9em] w-px self-center bg-border/70 pointer-fine:hidden"></span>
 			<FancyLink text="GitHub" url={repo} />
 		</div>
-	</div>
-
-	<div class="flex items-end justify-between gap-2">
-		<p class="text-(--text-muted)">{description}</p>
-		<time datetime={date.toISOString()} class="text-xs text-(--text-muted) opacity-60"
-			>{date.toLocaleDateString("en-US", { year: "numeric", month: "long" })}</time
-		>
 	</div>
 </li>

@@ -1,15 +1,3 @@
-<!--
-  @component
-  Renders a 2D clouds shader as a background using raw WebGL2.
-  Adapted from Shadertoy "2D clouds" by drift. 
-  Permission has been granted to use the shader in any way that you choose.
-
-  Usage:
-  ```html
-  <Background speed={0.03} scale={1.1} density={0.2} />
-  ```
--->
-
 <script lang="ts">
 	import { onMount, onDestroy } from "svelte";
 	import { themeState } from "./theme.svelte";
