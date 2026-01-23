@@ -15,7 +15,7 @@
 		{@render about?.()}
 	</div>
 
-	<p class="font-display text-sm tracking-wide text-(--text-muted)">
+	<p class="text-[clamp(0.75rem,1.5vw,0.9rem)] tracking-wide text-(--text-muted)">
 		{proficiencies}
 	</p>
 </div>
