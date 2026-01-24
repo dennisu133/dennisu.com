@@ -4,6 +4,10 @@
 	import favicon from "$lib/assets/favicon.svg";
 	import alticon from "$lib/assets/alticon.svg";
 
+	import fontGeist from "$lib/assets/fonts/GeistSans-Variable.woff2";
+	import fontInstrument from "$lib/assets/fonts/InstrumentSans-Variable.woff2";
+	import fontSpaceMono from "$lib/assets/fonts/SpaceMono-Regular.woff2";
+
 	let { children } = $props();
 
 	/**
@@ -73,6 +77,11 @@
 </script>
 
 <svelte:head>
+	<!-- Preload fonts to avoid FOUC on first load -->
+	<link rel="preload" href={fontGeist} as="font" type="font/woff2" crossorigin="anonymous" />
+	<link rel="preload" href={fontInstrument} as="font" type="font/woff2" crossorigin="anonymous" />
+	<link rel="preload" href={fontSpaceMono} as="font" type="font/woff2" crossorigin="anonymous" />
+
 	<!-- Favicon -->
 	<link rel="icon" type="image/svg+xml" href={isVisible ? favicon : alticon} />
 

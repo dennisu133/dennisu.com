@@ -45,11 +45,7 @@
 
 {#snippet cardIcon()}
 	<!-- icon = light-colored (for dark bg), iconDark = dark-colored (for light bg) -->
-	<img
-		src={icon}
-		alt={platform}
-		class="h-7 w-7 rounded-sm p-1 {iconDark ? 'show-on-dark' : ''}"
-	/>
+	<img src={icon} alt={platform} class="h-7 w-7 rounded-sm p-1 {iconDark ? 'show-on-dark' : ''}" />
 	{#if iconDark}
 		<img src={iconDark} alt={platform} class="show-on-light h-7 w-7 rounded-sm p-1" />
 	{/if}
@@ -57,7 +53,7 @@
 
 {#snippet cardHandle()}
 	<div class="min-w-0">
-		<h3 class="group-hover:text-link-hover text-sm font-medium transition-colors duration-150">
+		<h3 class="text-sm font-medium transition-colors duration-150 group-hover:text-link-hover">
 			{platform}
 		</h3>
 		{#if isEmail}
@@ -112,6 +108,6 @@
 	<FancyLink
 		text="Open"
 		url={computedHref}
-		class="pointer-fine:hidden pointer-coarse:py-1 pointer-coarse:text-[clamp(0.75rem,4vw,1rem)]"
+		class="pointer-coarse:py-1 pointer-coarse:text-[clamp(0.75rem,4vw,1rem)] pointer-fine:hidden"
 	/>
 </li>

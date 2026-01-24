@@ -15,9 +15,9 @@
 
 	interface Particle {
 		element: HTMLElement;
-		left: number;
+		x: number;
+		y: number;
 		size: number;
-		top: number;
 		direction: number;
 		speedHorz: number;
 		speedUp: number;
@@ -37,11 +37,9 @@
 
 		if (!container) {
 			container = document.createElement("div");
-			container.setAttribute("id", id);
-			container.setAttribute(
-				"style",
-				"overflow:hidden; position:fixed; height:100%; inset:0; pointer-events:none; z-index:9999;"
-			);
+			container.id = id;
+			container.style.cssText =
+				"overflow:hidden; position:fixed; height:100%; inset:0; pointer-events:none; z-index:9999;";
 			document.body.appendChild(container);
 		}
 		return container;
@@ -51,62 +49,63 @@
 		if (!element) return;
 
 		let particles: Particle[] = [];
-		let animationFrame: number;
-		let autoAddParticle = false;
-		let lastParticleTimestamp = 0;
+		let raf = 0;
+		let active = false;
+		let prevTimestamp = 0;
+		let lastSpawnTime = 0;
 		let mouseX = 0;
 		let mouseY = 0;
-		const limit = 50;
-		const particleGenerationDelay = 80;
+
+		const LIMIT = 50;
+		const SPAWN_INTERVAL = 80;
+		const GRAVITY = 0.2;
 
 		const container = getContainer();
 
-		function generateParticle() {
+		function spawnParticle(now: number) {
+			if (particles.length >= LIMIT) return;
+			if (now - lastSpawnTime < SPAWN_INTERVAL) return;
+			lastSpawnTime = now;
+
 			const size = options.size || 50 + Math.random() * 20;
 			const speedHorz = options.speedHorz || Math.random() * 8;
 			const speedUp = options.speedUp || 6 + Math.random() * 6;
 			const spinVal = Math.random() * 360;
 			const spinSpeed = Math.random() * 10 * (Math.random() <= 0.5 ? -1 : 1);
-			const top = mouseY - size / 2;
-			const left = mouseX - size / 2;
+			const x = mouseX - size / 2;
+			const y = mouseY - size / 2;
 			const direction = Math.random() <= 0.5 ? -1 : 1;
 
-			const particle = document.createElement("div");
+			const el = document.createElement("div");
+			el.style.cssText = `position:absolute; left:0; top:0; will-change:transform; transform:translate3d(${x}px, ${y}px, 0) rotate(${spinVal}deg);`;
 
-			// Content
-			if (images && images.length > 0) {
-				const imgSrc = images[Math.floor(Math.random() * images.length)];
+			if (images.length > 0) {
 				const img = document.createElement("img");
-				img.src = imgSrc;
+				img.src = images[Math.floor(Math.random() * images.length)];
 				img.width = size;
 				img.height = size;
-				img.style.borderRadius = "8px"; // Optional rounding
-				img.style.objectFit = "cover";
-				particle.appendChild(img);
+				img.style.cssText = "border-radius:8px; object-fit:cover; display:block;";
+				el.appendChild(img);
 			} else {
-				// Fallback: Colored Circle
 				const svgNS = "http://www.w3.org/2000/svg";
-				const circleSVG = document.createElementNS(svgNS, "svg");
+				const svg = document.createElementNS(svgNS, "svg");
 				const circle = document.createElementNS(svgNS, "circle");
-				circle.setAttributeNS(null, "cx", (size / 2).toString());
-				circle.setAttributeNS(null, "cy", (size / 2).toString());
-				circle.setAttributeNS(null, "r", (size / 2).toString());
-				circle.setAttributeNS(null, "fill", `hsl(${Math.random() * 360}, 70%, 50%)`);
-				circleSVG.appendChild(circle);
-				circleSVG.setAttribute("width", size.toString());
-				circleSVG.setAttribute("height", size.toString());
-				particle.appendChild(circleSVG);
+				circle.setAttribute("cx", String(size / 2));
+				circle.setAttribute("cy", String(size / 2));
+				circle.setAttribute("r", String(size / 2));
+				circle.setAttribute("fill", `hsl(${Math.random() * 360}, 70%, 50%)`);
+				svg.appendChild(circle);
+				svg.setAttribute("width", String(size));
+				svg.setAttribute("height", String(size));
+				el.appendChild(svg);
 			}
 
-			particle.style.position = "absolute";
-			particle.style.transform = `translate3d(${left}px, ${top}px, 0px) rotate(${spinVal}deg)`;
-
-			container.appendChild(particle);
+			container.appendChild(el);
 
 			particles.push({
-				element: particle,
-				left,
-				top,
+				element: el,
+				x,
+				y,
 				size,
 				direction,
 				speedHorz,
@@ -116,68 +115,69 @@
 			});
 		}
 
-		let lastFrameTime = 0;
+		function tick(now: number) {
+			// On first frame just record timestamp
+			if (prevTimestamp === 0) {
+				prevTimestamp = now;
+				raf = requestAnimationFrame(tick);
+				return;
+			}
 
-		function refreshParticles() {
-			const currentTime = performance.now();
-			// Calculate delta time in seconds (defaulting to ~60fps on first frame)
-			const dt = lastFrameTime ? (currentTime - lastFrameTime) / 1000 : 0.016;
-			lastFrameTime = currentTime;
-
-			// Target 60 FPS as the baseline (dt approx 0.016s)
-			// If screen is 120Hz (dt approx 0.008s), this factor will be 0.5, slowing down per-frame movement
+			const dt = Math.min((now - prevTimestamp) / 1000, 0.1);
+			prevTimestamp = now;
 			const timeScale = dt * 60;
+
+			if (active) {
+				spawnParticle(now);
+			}
+
+			const viewH = window.innerHeight;
 
 			for (let i = particles.length - 1; i >= 0; i--) {
 				const p = particles[i];
-				p.left = p.left - p.speedHorz * p.direction * timeScale;
-				p.top = p.top - p.speedUp * timeScale;
-				p.speedUp = p.speedUp - 0.2 * timeScale;
-				p.spinVal = p.spinVal + p.spinSpeed * timeScale;
+				p.x -= p.speedHorz * p.direction * timeScale;
+				p.y -= p.speedUp * timeScale;
+				p.speedUp -= GRAVITY * timeScale;
+				p.spinVal += p.spinSpeed * timeScale;
 
-				// Remove if out of bounds (bottom)
-				if (p.top >= window.innerHeight + p.size) {
-					particles.splice(i, 1);
+				if (p.y > viewH + p.size) {
 					p.element.remove();
+					particles.splice(i, 1);
 					continue;
 				}
 
-				p.element.style.top = `${p.top}px`;
-				p.element.style.left = `${p.left}px`;
-				p.element.style.transform = `rotate(${p.spinVal}deg)`;
+				p.element.style.transform = `translate3d(${p.x}px, ${p.y}px, 0) rotate(${p.spinVal}deg)`;
+			}
+
+			// Stop the loop when there's nothing left to animate
+			if (particles.length > 0 || active) {
+				raf = requestAnimationFrame(tick);
+			} else {
+				raf = 0;
+				prevTimestamp = 0;
 			}
 		}
 
-		function loop(currentTime: number) {
-			if (
-				autoAddParticle &&
-				particles.length < limit &&
-				currentTime - lastParticleTimestamp > particleGenerationDelay
-			) {
-				generateParticle();
-				lastParticleTimestamp = currentTime;
+		function start() {
+			active = true;
+			if (!raf) {
+				prevTimestamp = 0;
+				raf = requestAnimationFrame(tick);
 			}
-
-			refreshParticles();
-			animationFrame = requestAnimationFrame(loop);
 		}
 
-		animationFrame = requestAnimationFrame(loop);
+		function stop() {
+			active = false;
+		}
 
-		const onMouseEnter = () => {
-			autoAddParticle = true;
-		};
+		let touchTimer: ReturnType<typeof setTimeout>;
 
-		const onMouseLeave = () => {
-			autoAddParticle = false;
-		};
-
+		const onMouseEnter = () => start();
+		const onMouseLeave = () => stop();
 		const onMouseMove = (e: MouseEvent) => {
 			mouseX = e.clientX;
 			mouseY = e.clientY;
 		};
-
-		let touchTimeout: ReturnType<typeof setTimeout>;
 
 		const onTouch = (e: TouchEvent) => {
 			const touch = e.touches[0];
@@ -185,46 +185,40 @@
 				mouseX = touch.clientX;
 				mouseY = touch.clientY;
 			}
+			start();
+			clearTimeout(touchTimer);
+			touchTimer = setTimeout(stop, 2000);
+		};
 
-			autoAddParticle = true;
-
-			clearTimeout(touchTimeout);
-
-			touchTimeout = setTimeout(() => {
-				autoAddParticle = false;
-			}, 2000);
+		const onClick = (e: MouseEvent) => {
+			mouseX = e.clientX;
+			mouseY = e.clientY;
+			start();
+			clearTimeout(touchTimer);
+			touchTimer = setTimeout(stop, 2000);
 		};
 
 		element.addEventListener("mouseenter", onMouseEnter);
 		element.addEventListener("mouseleave", onMouseLeave);
 		element.addEventListener("mousemove", onMouseMove);
-
-		// Mobile support
 		element.addEventListener("touchstart", onTouch, { passive: true });
 		element.addEventListener("touchmove", onTouch, { passive: true });
-		// Also handle click just in case for hybrid devices or simple click interaction
-		element.addEventListener("click", (e) => {
-			mouseX = e.clientX;
-			mouseY = e.clientY;
-			autoAddParticle = true;
-			clearTimeout(touchTimeout);
-			touchTimeout = setTimeout(() => {
-				autoAddParticle = false;
-			}, 2000);
-		});
+		element.addEventListener("click", onClick);
 
 		return () => {
-			cancelAnimationFrame(animationFrame);
+			if (raf) cancelAnimationFrame(raf);
+			clearTimeout(touchTimer);
 			element.removeEventListener("mouseenter", onMouseEnter);
 			element.removeEventListener("mouseleave", onMouseLeave);
 			element.removeEventListener("mousemove", onMouseMove);
 			element.removeEventListener("touchstart", onTouch);
 			element.removeEventListener("touchmove", onTouch);
+			element.removeEventListener("click", onClick);
 
-			// Cleanup remaining particles
-			particles.forEach((p) => p.element.remove());
+			for (let i = 0; i < particles.length; i++) {
+				particles[i].element.remove();
+			}
 			particles = [];
-			clearTimeout(touchTimeout);
 		};
 	});
 </script>

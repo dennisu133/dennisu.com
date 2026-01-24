@@ -17,5 +17,5 @@
 	<h2 {id}>
 		{@render children?.()}
 	</h2>
-	<span class="bg-border ml-4 h-px grow"></span>
+	<span class="ml-4 h-px grow bg-border"></span>
 </div>
