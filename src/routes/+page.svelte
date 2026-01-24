@@ -176,9 +176,9 @@
 			</ul>
 		</section>
 
-		<section aria-labelledby="socials-heading">
+		<section class="flex flex-col" aria-labelledby="socials-heading">
 			<SectionHeader id="socials-heading">Socials</SectionHeader>
-			<ul class="flex flex-col gap-2">
+			<ul class="flex flex-1 flex-col justify-between gap-2">
 				{#each socials as social}
 					<SocialCard
 						platform={social.platform}
