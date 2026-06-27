@@ -21,7 +21,7 @@
 	const url = $derived(_url ?? repo);
 </script>
 
-<li class="card group relative flex flex-col gap-3">
+<li class="card group relative flex h-full flex-col gap-3">
 	<!-- Desktop: entire card is clickable -->
 	<a href={url} class="absolute inset-0 z-10 hidden pointer-fine:block" aria-label="Open {name}">
 	</a>
@@ -43,7 +43,7 @@
 	<p class="text-sm leading-relaxed text-(--text-muted)">{description}</p>
 
 	<!-- Bottom bar: Stack icons left, actions right -->
-	<div class="flex items-center justify-between gap-3 border-t border-border/50 pt-2.5">
+	<div class="mt-auto flex items-center justify-between gap-3 border-t border-border/50 pt-2.5">
 		<!-- Tech stack icons -->
 		<div class="flex items-center gap-1.5">
 			{#each stack as icon}
