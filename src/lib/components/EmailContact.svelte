@@ -82,7 +82,7 @@
 	<FancyLink
 		text="Open"
 		url={computedHref}
-		class="ml-auto py-1 text-[clamp(0.75rem,4vw,1rem)] pointer-fine:hidden"
+		class="pointer-events-auto z-20 ml-auto items-center py-1 text-[clamp(0.75rem,4vw,1rem)] leading-none tracking-[0.06em] text-link uppercase group-hover:text-link-hover hover:text-link-hover pointer-fine:hidden"
 		onclick={handleLinkClick}
 	/>
 </div>

@@ -4,6 +4,7 @@
 	import EmailContact from "$lib/components/EmailContact.svelte";
 	import Background from "$lib/components/bg/Background.svelte";
 	import ThemeBar from "$lib/components/bg/ThemeBar.svelte";
+	import FancyLink from "$lib/components/FancyLink.svelte";
 	import SectionHeader from "$lib/components/SectionHeader.svelte";
 	import { getStackIcons } from "$lib/stackIcons";
 
@@ -149,14 +150,11 @@
 
 		<div class="mt-1 text-right text-(--text-muted) sm:mt-2">
 			<span>{profile.location.pretext}</span>
-			<a
+			<FancyLink
+				text={profile.location.label}
+				url={profile.location.url}
 				class="text-link hover:text-link-hover focus-visible:text-link-hover"
-				href={profile.location.url}
-				target="_blank"
-				rel="noreferrer"
-			>
-				{profile.location.label}
-			</a>
+			/>
 		</div>
 	</div>
 </header>
@@ -190,14 +188,11 @@
 </main>
 
 <footer class="flex items-center justify-between border-t border-border py-3 text-xs">
-	<a
-		href={siteSource}
-		target="_blank"
-		rel="noreferrer"
+	<FancyLink
+		text="View Source"
+		url={siteSource}
 		class="font-display tracking-wide text-link hover:text-link-hover"
-	>
-		View Source
-	</a>
+	/>
 
 	<nav aria-label="Social links">
 		<ul class="flex items-center gap-3">
