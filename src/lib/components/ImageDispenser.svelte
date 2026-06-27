@@ -1,3 +1,39 @@
+<script module lang="ts">
+	interface CachedImage {
+		source: string;
+		template: HTMLImageElement;
+	}
+
+	const imageCache = new Map<string, Promise<CachedImage | null>>();
+
+	function preloadImage(source: string): Promise<CachedImage | null> {
+		const cached = imageCache.get(source);
+		if (cached) return cached;
+
+		const pending = (async () => {
+			const image = new Image();
+			image.decoding = "async";
+			image.fetchPriority = "low";
+			image.src = source;
+
+			try {
+				await image.decode();
+				return { source, template: image };
+			} catch {
+				return null;
+			}
+		})();
+
+		imageCache.set(source, pending);
+		void pending.then((image) => {
+			if (!image && imageCache.get(source) === pending) {
+				imageCache.delete(source);
+			}
+		});
+		return pending;
+	}
+</script>
+
 <script lang="ts">
 	import { onMount, type Snippet } from "svelte";
 
@@ -15,6 +51,7 @@
 
 	interface Particle {
 		element: HTMLElement;
+		source: string | null;
 		x: number;
 		y: number;
 		size: number;
@@ -30,6 +67,37 @@
 	const images = $derived(Object.values(paths) as string[]);
 
 	let element: HTMLElement;
+	let decodedImages: CachedImage[] = [];
+	let pendingImages = 0;
+	let configuredSources = new Set<string>();
+	const particlePools = new Map<string | null, HTMLElement[]>();
+	let pooledParticleCount = 0;
+
+	$effect(() => {
+		const sources = [...new Set(images)];
+		const resolved = new Array<CachedImage | undefined>(sources.length);
+		let cancelled = false;
+
+		decodedImages = [];
+		pendingImages = sources.length;
+		configuredSources = new Set(sources);
+		particlePools.clear();
+		pooledParticleCount = 0;
+
+		sources.forEach((source, index) => {
+			void preloadImage(source).then((image) => {
+				if (cancelled) return;
+
+				pendingImages--;
+				if (image) resolved[index] = image;
+				decodedImages = resolved.filter((entry): entry is CachedImage => entry !== undefined);
+			});
+		});
+
+		return () => {
+			cancelled = true;
+		};
+	});
 
 	function getContainer(): HTMLElement {
 		const id = "_image_dispenser_container";
@@ -62,9 +130,58 @@
 
 		const container = getContainer();
 
+		function acquireParticle(source: CachedImage | null, size: number): HTMLElement {
+			const poolKey = source?.source ?? null;
+			const pool = particlePools.get(poolKey);
+			let particle = pool?.pop();
+			if (particle) pooledParticleCount--;
+
+			if (!particle) {
+				if (source) {
+					particle = source.template.cloneNode(false) as HTMLImageElement;
+				} else {
+					particle = document.createElement("div");
+				}
+			}
+
+			if (particle instanceof HTMLImageElement) {
+				particle.width = size;
+				particle.height = size;
+				particle.style.cssText =
+					"position:absolute; left:0; top:0; border-radius:8px; object-fit:cover; display:block; will-change:transform;";
+			} else {
+				particle.style.cssText = `position:absolute; left:0; top:0; width:${size}px; height:${size}px; border-radius:50%; background:hsl(${Math.random() * 360}, 70%, 50%); will-change:transform;`;
+			}
+
+			return particle;
+		}
+
+		function releaseParticle(particle: Particle) {
+			particle.element.remove();
+
+			const sourceIsCurrent = particle.source === null || configuredSources.has(particle.source);
+			if (!sourceIsCurrent || pooledParticleCount >= LIMIT) return;
+
+			let pool = particlePools.get(particle.source);
+			if (!pool) {
+				pool = [];
+				particlePools.set(particle.source, pool);
+			}
+			pool.push(particle.element);
+			pooledParticleCount++;
+		}
+
 		function spawnParticle(now: number) {
 			if (particles.length >= LIMIT) return;
 			if (now - lastSpawnTime < SPAWN_INTERVAL) return;
+
+			const source =
+				decodedImages.length > 0
+					? decodedImages[Math.floor(Math.random() * decodedImages.length)]
+					: null;
+
+			if (!source && images.length > 0 && pendingImages > 0) return;
+
 			lastSpawnTime = now;
 
 			const size = options.size || 50 + Math.random() * 20;
@@ -76,34 +193,14 @@
 			const y = mouseY - size / 2;
 			const direction = Math.random() <= 0.5 ? -1 : 1;
 
-			const el = document.createElement("div");
-			el.style.cssText = `position:absolute; left:0; top:0; will-change:transform; transform:translate3d(${x}px, ${y}px, 0) rotate(${spinVal}deg);`;
-
-			if (images.length > 0) {
-				const img = document.createElement("img");
-				img.src = images[Math.floor(Math.random() * images.length)];
-				img.width = size;
-				img.height = size;
-				img.style.cssText = "border-radius:8px; object-fit:cover; display:block;";
-				el.appendChild(img);
-			} else {
-				const svgNS = "http://www.w3.org/2000/svg";
-				const svg = document.createElementNS(svgNS, "svg");
-				const circle = document.createElementNS(svgNS, "circle");
-				circle.setAttribute("cx", String(size / 2));
-				circle.setAttribute("cy", String(size / 2));
-				circle.setAttribute("r", String(size / 2));
-				circle.setAttribute("fill", `hsl(${Math.random() * 360}, 70%, 50%)`);
-				svg.appendChild(circle);
-				svg.setAttribute("width", String(size));
-				svg.setAttribute("height", String(size));
-				el.appendChild(svg);
-			}
+			const el = acquireParticle(source, size);
+			el.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${spinVal}deg)`;
 
 			container.appendChild(el);
 
 			particles.push({
 				element: el,
+				source: source?.source ?? null,
 				x,
 				y,
 				size,
@@ -141,7 +238,7 @@
 				p.spinVal += p.spinSpeed * timeScale;
 
 				if (p.y > viewH + p.size) {
-					p.element.remove();
+					releaseParticle(p);
 					particles.splice(i, 1);
 					continue;
 				}
@@ -219,6 +316,8 @@
 				particles[i].element.remove();
 			}
 			particles = [];
+			particlePools.clear();
+			pooledParticleCount = 0;
 		};
 	});
 </script>
