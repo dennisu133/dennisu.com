@@ -1,8 +1,6 @@
 <script lang="ts">
 	import "../app.css";
 	import { onMount } from "svelte";
-	import favicon from "$lib/assets/favicon.svg";
-	import alticon from "$lib/assets/alticon.svg";
 
 	import fontGeist from "$lib/assets/fonts/GeistSans-Variable.woff2";
 	import fontInstrument from "$lib/assets/fonts/InstrumentSans-Variable.woff2";
@@ -30,7 +28,7 @@
 
 	const frames = generateFrames();
 	const staticTitle = "Dennisu.com 🐱";
-	const altTitle = "Spicy Singles in Your Area 🌶️";
+	const altTitle = "👀";
 	const description = "Personal website of Dennis Karnowitsch. Please hire me.";
 	let currentFrame = $state(0);
 	let isVisible = $state(true);
@@ -82,8 +80,24 @@
 	<link rel="preload" href={fontInstrument} as="font" type="font/woff2" crossorigin="anonymous" />
 	<link rel="preload" href={fontSpaceMono} as="font" type="font/woff2" crossorigin="anonymous" />
 
-	<!-- Favicon -->
-	<link rel="icon" type="image/svg+xml" href={isVisible ? favicon : alticon} />
+	<!-- Switch favicon when the page gains or loses focus -->
+	<link
+		rel="icon"
+		type="image/svg+xml"
+		href={isVisible ? "/favicon.svg?v=20260627" : "/alticon.svg?v=20260627"}
+	/>
+	<link
+		rel="icon"
+		type="image/png"
+		href={isVisible ? "/favicon-96x96.png?v=20260627" : "/alticon-96x96.png?v=20260627"}
+		sizes="96x96"
+	/>
+	<link rel="icon" href={isVisible ? "/favicon.ico?v=20260627" : "/alticon.ico?v=20260627"} />
+
+	<!-- Platform icons -->
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=20260627" />
+	<meta name="apple-mobile-web-app-title" content="dennisu.com" />
+	<link rel="manifest" href="/site.webmanifest?v=20260627" />
 
 	<!-- Metadata -->
 	<title>{isVisible ? (showStatic ? staticTitle : frames[currentFrame]) : altTitle}</title>
