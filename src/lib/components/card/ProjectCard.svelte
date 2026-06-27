@@ -9,6 +9,7 @@
 		url: _url,
 		repo,
 		date,
+		disclaimer,
 		stack = []
 	}: {
 		name: string;
@@ -16,6 +17,7 @@
 		url?: string;
 		repo: string;
 		date: Date;
+		disclaimer?: string;
 		stack?: StackIcon[];
 	} = $props();
 
@@ -66,12 +68,23 @@
 
 	<!-- Header: Title + Date -->
 	<div class="flex items-baseline justify-between gap-3">
-		<h3 class="leading-none font-medium transition-colors duration-150 group-hover:text-link-hover">
-			{name}
-		</h3>
+		<div class="relative w-fit min-w-0">
+			<h3
+				class="leading-none font-medium transition-colors duration-150 group-hover:text-link-hover"
+			>
+				{name}
+			</h3>
+			{#if disclaimer}
+				<p
+					class="project-disclaimer pointer-events-none absolute top-[75%] left-[72%] z-20 w-max -rotate-3 font-display text-[0.65rem] leading-none font-bold text-project-disclaimer"
+				>
+					{disclaimer}
+				</p>
+			{/if}
+		</div>
 		<time
 			datetime={date.toISOString()}
-			class="shrink-0 font-display text-[0.6rem] leading-none tracking-wide text-(--text-muted) opacity-50"
+			class="shrink-0 self-start font-display text-[0.6rem] leading-none tracking-wide text-(--text-muted) opacity-50"
 		>
 			{date.toLocaleDateString("en-US", { year: "numeric", month: "short" })}
 		</time>
@@ -147,3 +160,11 @@
 		</div>
 	</div>
 </li>
+
+<style>
+	@media (min-width: 80rem) and (max-height: 48rem) {
+		.project-disclaimer {
+			left: 42%;
+		}
+	}
+</style>

@@ -115,14 +115,6 @@
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content="https://dennisu.com" />
 	<meta property="og:image" content={"/dancing.gif"} />
-
-	<!-- Blocking script to set initial theme attribute -->
-	<script>
-		document.documentElement.setAttribute("theme", localStorage.getItem("theme") || "system");
-		document.documentElement.setAttribute("bg", localStorage.getItem("bg") || "animated");
-	</script>
 </svelte:head>
 
-<div class="mx-auto flex min-h-screen max-w-6xl flex-col px-6 sm:px-10">
-	{@render children?.()}
-</div>
+{@render children?.()}

@@ -52,11 +52,19 @@
 
 	--color-link: light-dark(var(--color-accent-500), var(--color-accent-400));
 	--color-link-hover: light-dark(var(--color-accent-400), var(--color-accent-300));
+	--color-project-disclaimer: light-dark(#be123c, #fb7185);
 }
 
 @layer base {
 	html {
 		@apply font-sans;
+		color-scheme: light dark;
+		background-color: var(--bg-base);
+	}
+	body {
+		min-height: 100vh;
+		background-color: var(--bg-base);
+		color: var(--text);
 	}
 	p {
 		@apply text-p;
@@ -77,27 +85,15 @@
 		@apply relative overflow-hidden border border-border bg-surface p-[clamp(0.75rem,1.5dvh,1rem)] backdrop-blur-md transition-all duration-200 ease-out;
 	}
 
-	.toggle-option {
-		@apply relative inline-flex cursor-pointer items-center justify-center rounded-md p-1.5 text-(--text-muted) peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-(--text) hover:text-(--text);
-	}
-
 	.tooltip {
 		@apply pointer-events-none absolute top-full right-0 z-10 mt-2 min-w-max rounded-sm border border-border bg-(--bg-tooltip) px-2 py-1 text-left text-xs text-(--text) opacity-0 shadow-sm transition-opacity duration-150 select-none group-hover:opacity-100;
 	}
 }
 
-/* My hacky way to make a purely CSS based theme toggle */
-:root:not([theme]):has(#theme-system:checked),
-:root[theme="system"] {
-	color-scheme: light dark;
-}
-
-:root:not([theme]):has(#theme-light:checked),
 :root[theme="light"] {
 	color-scheme: light;
 }
 
-:root:not([theme]):has(#theme-dark:checked),
 :root[theme="dark"] {
 	color-scheme: dark;
 }
@@ -109,44 +105,24 @@
 }
 
 /* Show class on forced light */
-:root:not([theme]):has(#theme-light:checked) .show-on-light,
 :root[theme="light"] .show-on-light {
 	display: block;
 }
 
-/* Show class on system preference light */
+/* Follow the system preference before JavaScript initializes the toggle. */
 @media (prefers-color-scheme: light) {
-	:root:not([theme]):has(#theme-system:checked) .show-on-light,
-	:root[theme="system"] .show-on-light {
+	:root:not([theme]) .show-on-light {
 		display: block;
 	}
 }
 
 /* Show class on forced dark */
-:root:not([theme]):has(#theme-dark:checked) .show-on-dark,
 :root[theme="dark"] .show-on-dark {
 	display: block;
 }
 
-/* Show class on system preference dark */
 @media (prefers-color-scheme: dark) {
-	:root:not([theme]):has(#theme-system:checked) .show-on-dark,
-	:root[theme="system"] .show-on-dark {
+	:root:not([theme]) .show-on-dark {
 		display: block;
 	}
-}
-
-/* All of this is just to show what's currently selected */
-
-/* Attribute-based (normal operation) */
-:root[theme="system"] label[for="theme-system"],
-:root[theme="light"] label[for="theme-light"],
-:root[theme="dark"] label[for="theme-dark"],
-:root[bg="animated"] label[for="bg-animated"],
-:root[bg="static"] label[for="bg-static"],
-
-/* Checked-state fallback (no-JS) */
-:root:not([theme]) span:has(input[name="theme"]:checked) > label,
-:root:not([bg]) span:has(input[name="background"]:checked) > label {
-	@apply bg-(--bg-contrast) text-(--text);
 }

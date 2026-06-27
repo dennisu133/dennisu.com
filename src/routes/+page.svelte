@@ -2,8 +2,7 @@
 	import AboutCard from "$lib/components/card/AboutCard.svelte";
 	import ProjectCard from "$lib/components/card/ProjectCard.svelte";
 	import EmailContact from "$lib/components/EmailContact.svelte";
-	import Background from "$lib/components/bg/Background.svelte";
-	import ThemeBar from "$lib/components/bg/ThemeBar.svelte";
+	import ThemeToggle from "$lib/components/theme/ThemeToggle.svelte";
 	import FancyLink from "$lib/components/FancyLink.svelte";
 	import SectionHeader from "$lib/components/SectionHeader.svelte";
 	import { getStackIcons } from "$lib/stackIcons";
@@ -57,6 +56,7 @@
 		{
 			name: "CompetitiveWordle",
 			description: "Wordle clone with a focus on competitive gameplay.",
+			disclaimer: "Early university project",
 			url: "https://wordle.dennisu.com",
 			repo: "https://github.com/dennisu133/CompetitiveWordle",
 			date: new Date(2025, 4, 1, 12), // 4 = May, noon to avoid timezone shifts
@@ -118,8 +118,6 @@
 	});
 </script>
 
-<Background />
-
 {#snippet about()}
 	<p aria-hidden="true">
 		Bachelor in Computer Science. My interests are
@@ -135,101 +133,104 @@
 	<EmailContact handle={email.handle} url={email.url} icon={email.icon} iconDark={email.iconDark} />
 {/snippet}
 
-<header class="mt-6 flex min-h-40 flex-wrap gap-4 sm:min-h-36">
-	<div class="transition-colors duration-150 ease-linear">
-		<h1>
-			{profile.name}
-		</h1>
-		<p class="text-subtitle! leading-tight font-semibold text-(--text-muted)">
-			{profile.subtitle}
-		</p>
-	</div>
-
-	<div class="ml-auto flex flex-col items-end self-end">
-		<ThemeBar />
-
-		<div class="mt-1 text-right text-(--text-muted) sm:mt-2">
-			<span>{profile.location.pretext}</span>
-			<FancyLink
-				text={profile.location.label}
-				url={profile.location.url}
-				class="text-link hover:text-link-hover focus-visible:text-link-hover"
-			/>
+<div class="mx-auto flex min-h-screen max-w-6xl flex-col px-6 sm:px-10">
+	<header class="mt-6 flex min-h-40 flex-wrap gap-4 sm:min-h-36">
+		<div class="transition-colors duration-150 ease-linear">
+			<h1>
+				{profile.name}
+			</h1>
+			<p class="text-subtitle! leading-tight font-semibold text-(--text-muted)">
+				{profile.subtitle}
+			</p>
 		</div>
-	</div>
-</header>
 
-<main class="flex flex-1 flex-col">
-	<section class="mb-6 lg:mb-2" aria-labelledby="about-heading">
-		<SectionHeader id="about-heading">About</SectionHeader>
-		<AboutCard
-			{about}
-			proficiencies={profile.proficiencies}
-			availability={profile.availability}
-			{contact}
-		/>
-	</section>
+		<div class="ml-auto flex flex-col items-end self-end">
+			<ThemeToggle />
 
-	<section aria-labelledby="projects-heading">
-		<SectionHeader id="projects-heading">Projects</SectionHeader>
-		<ul class="projects-grid grid grid-cols-1 gap-2 lg:grid-cols-2">
-			{#each projects as project}
-				<ProjectCard
-					name={project.name}
-					description={project.description}
-					url={project.url}
-					repo={project.repo}
-					date={project.date}
-					stack={project.stack}
+			<div class="mt-1 text-right text-(--text-muted) sm:mt-2">
+				<span>{profile.location.pretext}</span>
+				<FancyLink
+					text={profile.location.label}
+					url={profile.location.url}
+					class="text-link hover:text-link-hover focus-visible:text-link-hover"
 				/>
-			{/each}
-		</ul>
-	</section>
-</main>
+			</div>
+		</div>
+	</header>
 
-<footer class="flex items-center justify-between border-t border-border py-3 text-xs">
-	<FancyLink
-		text="View Source"
-		url={siteSource}
-		class="font-display tracking-wide text-link hover:text-link-hover"
-	/>
+	<main class="flex flex-1 flex-col">
+		<section class="mb-6 lg:mb-2" aria-labelledby="about-heading">
+			<SectionHeader id="about-heading">About</SectionHeader>
+			<AboutCard
+				{about}
+				proficiencies={profile.proficiencies}
+				availability={profile.availability}
+				{contact}
+			/>
+		</section>
 
-	<nav aria-label="Social links">
-		<ul class="flex items-center gap-3">
-			{#each socials as social}
-				<li>
-					<a
-						href={social.url}
-						target="_blank"
-						rel="noreferrer"
-						class="group/social block rounded-sm p-1 opacity-60 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--text)"
-						aria-label="Open {social.platform}"
-						title={social.platform}
-					>
-						{#if social.iconDark}
-							<img
-								src={social.icon}
-								alt=""
-								class="show-on-dark h-[1.1rem] w-[1.1rem] transition-transform duration-150 group-hover/social:-translate-y-0.5"
-							/>
-							<img
-								src={social.iconDark}
-								alt=""
-								class="show-on-light h-[1.1rem] w-[1.1rem] transition-transform duration-150 group-hover/social:-translate-y-0.5"
-							/>
-						{:else}
-							<img
-								src={social.icon}
-								alt=""
-								class="h-[1.1rem] w-[1.1rem] transition-transform duration-150 group-hover/social:-translate-y-0.5"
-							/>
-						{/if}
-					</a>
-				</li>
-			{/each}
-		</ul>
-	</nav>
-</footer>
+		<section class="mb-6 lg:mb-0" aria-labelledby="projects-heading">
+			<SectionHeader id="projects-heading">Projects</SectionHeader>
+			<ul class="projects-grid grid grid-cols-1 gap-2 lg:grid-cols-2">
+				{#each projects as project}
+					<ProjectCard
+						name={project.name}
+						description={project.description}
+						url={project.url}
+						repo={project.repo}
+						date={project.date}
+						disclaimer={project.disclaimer}
+						stack={project.stack}
+					/>
+				{/each}
+			</ul>
+		</section>
+	</main>
+
+	<footer class="flex items-center justify-between border-t border-border py-3 text-xs">
+		<FancyLink
+			text="View Source"
+			url={siteSource}
+			class="font-display tracking-wide text-link hover:text-link-hover"
+		/>
+
+		<nav aria-label="Social links">
+			<ul class="flex items-center gap-3">
+				{#each socials as social}
+					<li>
+						<a
+							href={social.url}
+							target="_blank"
+							rel="noreferrer"
+							class="group/social block rounded-sm p-1 opacity-60 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--text)"
+							aria-label="Open {social.platform}"
+							title={social.platform}
+						>
+							{#if social.iconDark}
+								<img
+									src={social.icon}
+									alt=""
+									class="show-on-dark h-[1.1rem] w-[1.1rem] transition-transform duration-150 group-hover/social:-translate-y-0.5"
+								/>
+								<img
+									src={social.iconDark}
+									alt=""
+									class="show-on-light h-[1.1rem] w-[1.1rem] transition-transform duration-150 group-hover/social:-translate-y-0.5"
+								/>
+							{:else}
+								<img
+									src={social.icon}
+									alt=""
+									class="h-[1.1rem] w-[1.1rem] transition-transform duration-150 group-hover/social:-translate-y-0.5"
+								/>
+							{/if}
+						</a>
+					</li>
+				{/each}
+			</ul>
+		</nav>
+	</footer>
+</div>
 
 <style>
 	@media (min-width: 80rem) and (max-height: 48rem) {
