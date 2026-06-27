@@ -5,16 +5,9 @@
 	import Background from "$lib/components/bg/Background.svelte";
 	import ThemeBar from "$lib/components/bg/ThemeBar.svelte";
 	import SectionHeader from "$lib/components/SectionHeader.svelte";
+	import { getStackIcons } from "$lib/stackIcons";
 
 	import ImageDispenser from "$lib/components/ImageDispenser.svelte";
-
-	import typescriptIcon from "$lib/assets/icons/stack/typescript.svg";
-	import svelteIcon from "$lib/assets/icons/stack/svelte.svg";
-	import tailwindIcon from "$lib/assets/icons/stack/tailwind.svg";
-	import goIcon from "$lib/assets/icons/stack/go.svg";
-	import reactIcon from "$lib/assets/icons/stack/react.svg";
-	import androidIcon from "$lib/assets/icons/stack/android.svg";
-	import kotlinIcon from "$lib/assets/icons/stack/kotlin.svg";
 
 	import discordIcon from "$lib/assets/icons/social/discord.svg";
 	import githubIcon from "$lib/assets/icons/social/github.svg";
@@ -43,14 +36,14 @@
 			url: "https://riichi.dennisu.com/",
 			repo: "https://github.com/dennisu133/RiichiCalc",
 			date: new Date(2026, 2, 1, 12), // 2 = March, noon to avoid timezone shifts
-			stack: [androidIcon, kotlinIcon]
+			stack: getStackIcons("android", "kotlin")
 		},
 		{
 			name: "PrivateStream",
 			description: "A private low-latency livestream viewer for friend groups.",
 			repo: "https://github.com/dennisu133/PrivateStream",
 			date: new Date(2025, 9, 1, 12), // Month is 0-indexed: 9 = October, noon to avoid timezone shifts
-			stack: [typescriptIcon, svelteIcon, tailwindIcon]
+			stack: getStackIcons("typescript", "svelte", "tailwind")
 		},
 		{
 			name: "LetterMaker",
@@ -58,7 +51,7 @@
 			url: "https://letter.dennisu.com",
 			repo: "https://github.com/dennisu133/LetterMaker",
 			date: new Date(2025, 7, 1, 12), // 7 = August, noon to avoid timezone shifts
-			stack: [typescriptIcon, goIcon, reactIcon, tailwindIcon]
+			stack: getStackIcons("typescript", "go", "react", "tailwind")
 		},
 		{
 			name: "CompetitiveWordle",
@@ -66,7 +59,7 @@
 			url: "https://wordle.dennisu.com",
 			repo: "https://github.com/dennisu133/CompetitiveWordle",
 			date: new Date(2025, 4, 1, 12), // 4 = May, noon to avoid timezone shifts
-			stack: [typescriptIcon, svelteIcon]
+			stack: getStackIcons("typescript", "svelte")
 		}
 	];
 

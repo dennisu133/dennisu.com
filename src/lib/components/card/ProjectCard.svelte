@@ -1,6 +1,7 @@
 <script lang="ts">
 	import githubIcon from "$lib/assets/icons/social/github.svg";
 	import githubDarkIcon from "$lib/assets/icons/social/github-dark.svg";
+	import type { StackIcon } from "$lib/stackIcons";
 
 	let {
 		name,
@@ -15,13 +16,50 @@
 		url?: string;
 		repo: string;
 		date: Date;
-		stack?: string[];
+		stack?: StackIcon[];
 	} = $props();
 
 	const url = $derived(_url ?? repo);
+	let cardElement: HTMLLIElement;
+	let activeStackIcon = $state<string | null>(null);
+
+	function getStackTooltipId(iconName: string) {
+		return `stack-tooltip-${name}-${iconName}`.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+	}
+
+	function toggleStackTooltip(iconName: string) {
+		activeStackIcon = activeStackIcon === iconName ? null : iconName;
+	}
+
+	function closeStackTooltip() {
+		activeStackIcon = null;
+	}
+
+	function handleWindowClick(event: MouseEvent) {
+		if (!activeStackIcon) return;
+
+		const target = event.target;
+		const trigger = target instanceof Element && target.closest("[data-stack-tooltip-trigger]");
+
+		if (!trigger || !cardElement.contains(trigger)) {
+			closeStackTooltip();
+		}
+	}
+
+	function handleWindowKeydown(event: KeyboardEvent) {
+		if (event.key === "Escape") {
+			closeStackTooltip();
+		}
+	}
 </script>
 
-<li class="card group relative flex h-full flex-col gap-3">
+<svelte:window
+	onclick={handleWindowClick}
+	onkeydown={handleWindowKeydown}
+	onscroll={closeStackTooltip}
+/>
+
+<li bind:this={cardElement} class="card group relative flex h-full flex-col gap-3">
 	<!-- Desktop: entire card is clickable -->
 	<a href={url} class="absolute inset-0 z-10 hidden pointer-fine:block" aria-label="Open {name}">
 	</a>
@@ -47,11 +85,36 @@
 		<!-- Tech stack icons -->
 		<div class="flex items-center gap-1.5">
 			{#each stack as icon}
-				<img
-					src={icon}
-					alt=""
-					class="h-[1.1rem] w-[1.1rem] opacity-55 transition-opacity duration-150 group-hover:opacity-85"
-				/>
+				<span class="group/stack relative z-20 block">
+					<img
+						src={icon.src}
+						alt=""
+						class="h-[1.1rem] w-[1.1rem] opacity-55 transition-opacity duration-150 group-hover:opacity-85"
+					/>
+					<span
+						id={getStackTooltipId(icon.name)}
+						role="tooltip"
+						style:opacity={activeStackIcon === icon.name ? 1 : null}
+						class="pointer-events-none absolute bottom-full left-0 mb-1.5 min-w-max rounded-sm border border-border bg-(--bg-tooltip) px-2 py-1 text-left text-xs text-(--text) opacity-0 shadow-sm transition-opacity duration-150 select-none group-hover/stack:opacity-100"
+					>
+						{icon.name}
+					</span>
+					<a
+						href={url}
+						aria-hidden="true"
+						tabindex="-1"
+						class="absolute inset-0 hidden pointer-fine:block"
+					></a>
+					<button
+						type="button"
+						class="absolute inset-0 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--text) pointer-fine:hidden"
+						aria-label={icon.name}
+						aria-controls={getStackTooltipId(icon.name)}
+						aria-expanded={activeStackIcon === icon.name}
+						data-stack-tooltip-trigger
+						onclick={() => toggleStackTooltip(icon.name)}
+					></button>
+				</span>
 			{/each}
 		</div>
 
