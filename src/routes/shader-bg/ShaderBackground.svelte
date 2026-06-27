@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy } from "svelte";
-	import { themeState } from "./theme.svelte";
+	import { themeState } from "$lib/components/theme/theme.svelte";
 	import vertexShader from "./shaders/clouds.vert.glsl?raw";
 	import fragmentShader from "./shaders/clouds.frag.glsl?raw";
 
@@ -16,9 +16,7 @@
 
 	let canvas: HTMLCanvasElement | null = null;
 	let teardown: (() => void) | undefined;
-	let glContext:
-		| { updateColors: (mode: "light" | "dark") => void; updateQuality: (level: 0 | 1 | 2) => void }
-		| undefined = $state();
+	let glContext: { updateColors: (mode: "light" | "dark") => void } | undefined = $state();
 	let isInitializing = $state(false);
 	let isVisible = $state(false);
 
@@ -28,6 +26,17 @@
 	const DT_SMOOTHING = 0.12;
 	const MAX_CANVAS_W = 1920;
 	const MAX_CANVAS_H = 1080;
+
+	const detectQualityLevel = (): 0 | 1 | 2 => {
+		const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+			navigator.userAgent
+		);
+		const isLowPower = navigator.hardwareConcurrency <= 4;
+		const isSmallScreen = window.innerWidth < 768;
+		if (isMobile || (isLowPower && isSmallScreen)) return 0;
+		if (isLowPower || isSmallScreen) return 1;
+		return 2;
+	};
 
 	const compileShader = (gl: WebGL2RenderingContext, type: number, source: string) => {
 		const shader = gl.createShader(type);
@@ -91,7 +100,7 @@
 	};
 
 	const initialize = async () => {
-		if (themeState.bg !== "animated" || !canvas || teardown || isInitializing) return;
+		if (!canvas || teardown || isInitializing) return;
 
 		isInitializing = true;
 
@@ -104,7 +113,7 @@
 			}
 		});
 
-		if (themeState.bg !== "animated" || !canvas || !isInitializing) {
+		if (!canvas || !isInitializing) {
 			isInitializing = false;
 			return;
 		}
@@ -164,13 +173,14 @@
 		gl.uniform1f(uniforms.u_scale, scale);
 		gl.uniform1f(uniforms.u_speed, speed);
 		gl.uniform1f(uniforms.u_density, density);
-		gl.uniform1i(uniforms.u_quality, themeState.qualityLevel);
+		const qualityLevel = detectQualityLevel();
+		gl.uniform1i(uniforms.u_quality, qualityLevel);
 
 		const vao = gl.createVertexArray();
 		gl.bindVertexArray(vao);
 
 		let isDestroyed = false;
-		let currentScale = RESOLUTION_SCALES[themeState.qualityLevel];
+		let currentScale = RESOLUTION_SCALES[qualityLevel];
 
 		const applyColors = (mode: "light" | "dark") => {
 			if (isDestroyed || !canvas) return;
@@ -201,12 +211,6 @@
 			requestAnimationFrame(() => applyColors(mode));
 		};
 
-		const doUpdateQuality = (level: 0 | 1 | 2) => {
-			gl.uniform1i(uniforms.u_quality, level);
-			currentScale = RESOLUTION_SCALES[level];
-			resize();
-		};
-
 		const resize = () => {
 			if (!canvas) return;
 			const w = window.innerWidth;
@@ -223,10 +227,10 @@
 		window.addEventListener("resize", resize);
 
 		// Apply initial colors synchronously (CSS vars are already set at this point)
-		applyColors(themeState.current);
+		applyColors(themeState.mode);
 
 		// Expose for reactive effects
-		glContext = { updateColors: doUpdateColors, updateQuality: doUpdateQuality };
+		glContext = { updateColors: doUpdateColors };
 
 		let raf = 0;
 		let time = 0;
@@ -260,7 +264,7 @@
 			gl.drawArrays(gl.TRIANGLES, 0, 3);
 
 			// Adaptive resolution: adjust scale based on frame time
-			const scaleMax = RESOLUTION_SCALES[themeState.qualityLevel];
+			const scaleMax = RESOLUTION_SCALES[qualityLevel];
 			const ms = smoothedDt * 1000;
 			let nextScale = currentScale;
 			if (ms > 19.0 && currentScale > SCALE_MIN) {
@@ -334,41 +338,16 @@
 	};
 
 	onMount(() => {
-		if (themeState.bg === "animated") {
-			initialize();
-		}
+		initialize();
 	});
 
 	onDestroy(() => {
 		teardown?.();
 	});
 
-	// React to background toggle
-	$effect(() => {
-		const isAnimated = themeState.bg === "animated";
-
-		if (isAnimated && !teardown && !isInitializing) {
-			initialize();
-		} else if (!isAnimated && (teardown || isInitializing)) {
-			isVisible = false;
-			setTimeout(() => {
-				if (teardown) {
-					teardown();
-					teardown = undefined;
-				}
-			}, 300);
-			isInitializing = false;
-		}
-	});
-
 	// React to theme changes
 	$effect(() => {
-		glContext?.updateColors(themeState.current);
-	});
-
-	// React to quality changes
-	$effect(() => {
-		glContext?.updateQuality(themeState.qualityLevel);
+		glContext?.updateColors(themeState.mode);
 	});
 </script>
 
@@ -380,7 +359,7 @@
 	.clouds-layer {
 		position: fixed;
 		inset: 0;
-		z-index: -10;
+		z-index: 0;
 		pointer-events: none;
 		background-color: var(--bg-base);
 	}
