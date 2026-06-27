@@ -1,7 +1,7 @@
 <script lang="ts">
 	import AboutCard from "$lib/components/card/AboutCard.svelte";
 	import ProjectCard from "$lib/components/card/ProjectCard.svelte";
-	import SocialCard from "$lib/components/card/SocialCard.svelte";
+	import EmailContact from "$lib/components/EmailContact.svelte";
 	import Background from "$lib/components/bg/Background.svelte";
 	import ThemeBar from "$lib/components/bg/ThemeBar.svelte";
 	import SectionHeader from "$lib/components/SectionHeader.svelte";
@@ -13,6 +13,8 @@
 	import tailwindIcon from "$lib/assets/icons/stack/tailwind.svg";
 	import goIcon from "$lib/assets/icons/stack/go.svg";
 	import reactIcon from "$lib/assets/icons/stack/react.svg";
+	import androidIcon from "$lib/assets/icons/stack/android.svg";
+	import kotlinIcon from "$lib/assets/icons/stack/kotlin.svg";
 
 	import discordIcon from "$lib/assets/icons/social/discord.svg";
 	import githubIcon from "$lib/assets/icons/social/github.svg";
@@ -26,6 +28,7 @@
 		name: "Dennis Karnowitsch",
 		subtitle: "Aspiring Full Stack Developer",
 		proficiencies: "Experienced in Python, Typescript, Java, Go and C.",
+		availability: "Currently looking for a full-time software role and open to freelance projects.",
 		location: {
 			pretext: "Based in ",
 			label: "Cottbus, Germany",
@@ -34,6 +37,14 @@
 	};
 
 	const projects = [
+		{
+			name: "RiichiCalc",
+			description: "A Riichi Mahjong scoring companion for real-life play.",
+			url: "https://riichi.dennisu.com/",
+			repo: "https://github.com/dennisu133/RiichiCalc",
+			date: new Date(2026, 2, 1, 12), // 2 = March, noon to avoid timezone shifts
+			stack: [androidIcon, kotlinIcon]
+		},
 		{
 			name: "PrivateStream",
 			description: "A private low-latency livestream viewer for friend groups.",
@@ -59,14 +70,14 @@
 		}
 	];
 
+	const email = {
+		handle: "denniskarnowitsch@gmail.com",
+		url: "mailto:denniskarnowitsch@gmail.com",
+		icon: emailIcon,
+		iconDark: emailDarkIcon
+	};
+
 	const socials = [
-		{
-			platform: "Email",
-			handle: "d@dennisu.com",
-			url: "mailto:d@dennisu.com",
-			icon: emailIcon,
-			iconDark: emailDarkIcon
-		},
 		{
 			platform: "GitHub",
 			handle: "dennisu133",
@@ -126,6 +137,10 @@
 	<p class="sr-only">Bachelor in Computer Science. My interests are programming, music and cats.</p>
 {/snippet}
 
+{#snippet contact()}
+	<EmailContact handle={email.handle} url={email.url} icon={email.icon} iconDark={email.iconDark} />
+{/snippet}
+
 <header class="mt-6 flex min-h-40 flex-wrap gap-4 sm:min-h-36">
 	<div class="transition-colors duration-150 ease-linear">
 		<h1>
@@ -156,41 +171,29 @@
 <main class="flex flex-1 flex-col">
 	<section class="mb-6 lg:mb-2" aria-labelledby="about-heading">
 		<SectionHeader id="about-heading">About</SectionHeader>
-		<AboutCard {about} proficiencies={profile.proficiencies} />
+		<AboutCard
+			{about}
+			proficiencies={profile.proficiencies}
+			availability={profile.availability}
+			{contact}
+		/>
 	</section>
 
-	<div class="flex flex-col gap-4 lg:flex-row">
-		<section class="flex-1" aria-labelledby="projects-heading">
-			<SectionHeader id="projects-heading">Projects</SectionHeader>
-			<ul class="flex flex-col gap-2">
-				{#each projects as project}
-					<ProjectCard
-						name={project.name}
-						description={project.description}
-						url={project.url}
-						repo={project.repo}
-						date={project.date}
-						stack={project.stack}
-					/>
-				{/each}
-			</ul>
-		</section>
-
-		<section class="flex flex-col" aria-labelledby="socials-heading">
-			<SectionHeader id="socials-heading">Socials</SectionHeader>
-			<ul class="flex flex-1 flex-col justify-between gap-2">
-				{#each socials as social}
-					<SocialCard
-						platform={social.platform}
-						handle={social.handle}
-						url={social.url}
-						icon={social.icon}
-						iconDark={social.iconDark}
-					/>
-				{/each}
-			</ul>
-		</section>
-	</div>
+	<section aria-labelledby="projects-heading">
+		<SectionHeader id="projects-heading">Projects</SectionHeader>
+		<ul class="projects-grid grid grid-cols-1 gap-2 lg:grid-cols-2">
+			{#each projects as project}
+				<ProjectCard
+					name={project.name}
+					description={project.description}
+					url={project.url}
+					repo={project.repo}
+					date={project.date}
+					stack={project.stack}
+				/>
+			{/each}
+		</ul>
+	</section>
 </main>
 
 <footer class="flex items-center justify-between border-t border-border py-3 text-xs">
@@ -202,4 +205,48 @@
 	>
 		View Source
 	</a>
+
+	<nav aria-label="Social links">
+		<ul class="flex items-center gap-3">
+			{#each socials as social}
+				<li>
+					<a
+						href={social.url}
+						target="_blank"
+						rel="noreferrer"
+						class="group/social block rounded-sm p-1 opacity-60 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--text)"
+						aria-label="Open {social.platform}"
+						title={social.platform}
+					>
+						{#if social.iconDark}
+							<img
+								src={social.icon}
+								alt=""
+								class="show-on-dark h-[1.1rem] w-[1.1rem] transition-transform duration-150 group-hover/social:-translate-y-0.5"
+							/>
+							<img
+								src={social.iconDark}
+								alt=""
+								class="show-on-light h-[1.1rem] w-[1.1rem] transition-transform duration-150 group-hover/social:-translate-y-0.5"
+							/>
+						{:else}
+							<img
+								src={social.icon}
+								alt=""
+								class="h-[1.1rem] w-[1.1rem] transition-transform duration-150 group-hover/social:-translate-y-0.5"
+							/>
+						{/if}
+					</a>
+				</li>
+			{/each}
+		</ul>
+	</nav>
 </footer>
+
+<style>
+	@media (min-width: 80rem) and (max-height: 48rem) {
+		.projects-grid {
+			grid-template-columns: repeat(4, minmax(0, 1fr));
+		}
+	}
+</style>
