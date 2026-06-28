@@ -96,7 +96,7 @@
 	<!-- Bottom bar: Stack icons left, actions right -->
 	<div class="mt-auto flex items-center justify-between gap-3 border-t border-border/50 pt-2.5">
 		<!-- Tech stack icons -->
-		<div class="flex items-center gap-1.5">
+		<div class="flex items-center gap-2">
 			{#each stack as icon}
 				<span class="stack-icon-trigger group/stack relative z-20 block">
 					<img
@@ -151,7 +151,7 @@
 				href={repo}
 				target="_blank"
 				rel="noreferrer"
-				class="pointer-events-auto inline-flex opacity-50 transition-opacity duration-150 hover:opacity-100"
+				class="pointer-events-auto -m-1 inline-flex rounded-sm p-1 opacity-50 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--text)"
 				aria-label="View {name} on GitHub"
 			>
 				<img src={githubIcon} alt="GitHub" class="show-on-dark h-[1.05rem] w-[1.05rem]" />
