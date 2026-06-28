@@ -3,6 +3,16 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<script>
+			try {
+				const theme = localStorage.getItem("theme");
+				if (theme === "light" || theme === "dark") {
+					document.documentElement.setAttribute("theme", theme);
+				}
+			} catch {
+				// Storage can be unavailable without preventing the system theme fallback.
+			}
+		</script>
 		%sveltekit.head%
 	</head>
 

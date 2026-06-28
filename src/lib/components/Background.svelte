@@ -49,6 +49,26 @@
 		}
 	}
 
+	@media (scripting: none) and (prefers-color-scheme: light) {
+		:global(:root:not([theme]):has(#no-script-theme-toggle:checked)) .background {
+			--light-atmosphere-display: none;
+			--dither-opacity: 0.045;
+
+			background: #020407;
+		}
+	}
+
+	@media (scripting: none) and (prefers-color-scheme: dark) {
+		:global(:root:not([theme]):has(#no-script-theme-toggle:checked)) .background {
+			--light-atmosphere-display: block;
+			--dither-opacity: 0;
+
+			background:
+				radial-gradient(circle at 50% -20%, rgba(255, 255, 255, 0.14), transparent 42%),
+				linear-gradient(155deg, var(--sky-top) 0%, var(--sky-middle) 48%, var(--sky-bottom) 100%);
+		}
+	}
+
 	.light-atmosphere {
 		display: var(--light-atmosphere-display);
 	}
