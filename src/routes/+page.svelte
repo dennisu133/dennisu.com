@@ -5,6 +5,7 @@
 	import ThemeToggle from "$lib/components/theme/ThemeToggle.svelte";
 	import FancyLink from "$lib/components/FancyLink.svelte";
 	import ImagePreview from "$lib/components/ImagePreview.svelte";
+	import NekoChase from "$lib/components/NekoChase.svelte";
 	import SectionHeader from "$lib/components/SectionHeader.svelte";
 	import { getStackIcons } from "$lib/stackIcons";
 
@@ -107,11 +108,6 @@
 		query: "?url",
 		import: "default"
 	});
-	const catImages = import.meta.glob("$lib/assets/images/catImages/*", {
-		eager: true,
-		query: "?url",
-		import: "default"
-	});
 </script>
 
 {#snippet about()}
@@ -121,7 +117,7 @@
 		<ImagePreview src="/topsters.png" alt="A Topsters chart of Dennis's favorite albums">
 			music
 		</ImagePreview> and
-		<ImageDispenser paths={catImages}>cats</ImageDispenser>.
+		<NekoChase>cats</NekoChase>.
 	</p>
 {/snippet}
 
