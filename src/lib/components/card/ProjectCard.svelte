@@ -98,11 +98,11 @@
 		<!-- Tech stack icons -->
 		<div class="flex items-center gap-1.5">
 			{#each stack as icon}
-				<span class="group/stack relative z-20 block">
+				<span class="stack-icon-trigger group/stack relative z-20 block">
 					<img
 						src={icon.src}
 						alt=""
-						class="h-[1.1rem] w-[1.1rem] opacity-55 transition-opacity duration-150 group-hover:opacity-85"
+						class="stack-icon h-[1.1rem] w-[1.1rem] transition-[filter,opacity] duration-150"
 					/>
 					<span
 						id={getStackTooltipId(icon.name)}
@@ -162,6 +162,16 @@
 </li>
 
 <style>
+	.stack-icon {
+		opacity: var(--stack-icon-opacity);
+		filter: drop-shadow(0 0 0.7px var(--stack-icon-shadow))
+			drop-shadow(0 1px 0.5px var(--stack-icon-shadow));
+	}
+
+	.stack-icon-trigger:hover .stack-icon {
+		opacity: var(--stack-icon-hover-opacity);
+	}
+
 	@media (min-width: 80rem) and (max-height: 48rem) {
 		.project-disclaimer {
 			left: 42%;
