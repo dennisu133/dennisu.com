@@ -21,7 +21,6 @@
 	let isVisible = $state(false);
 
 	const RESOLUTION_SCALES: Record<0 | 1 | 2, number> = { 0: 0.5, 1: 0.7, 2: 0.85 };
-	const SCALE_MIN = 0.4;
 	const MAX_DT = 0.1;
 	const DT_SMOOTHING = 0.12;
 	const MAX_CANVAS_W = 1920;
@@ -180,7 +179,7 @@
 		gl.bindVertexArray(vao);
 
 		let isDestroyed = false;
-		let currentScale = RESOLUTION_SCALES[qualityLevel];
+		const resolutionScale = RESOLUTION_SCALES[qualityLevel];
 
 		const applyColors = (mode: "light" | "dark") => {
 			if (isDestroyed || !canvas) return;
@@ -212,19 +211,24 @@
 		};
 
 		const resize = () => {
-			if (!canvas) return;
+			if (!canvas) return false;
 			const w = window.innerWidth;
 			const h = window.innerHeight;
-			const iw = Math.max(1, Math.min(MAX_CANVAS_W, Math.round(w * currentScale)));
-			const ih = Math.max(1, Math.min(MAX_CANVAS_H, Math.round(h * currentScale)));
-			canvas.width = iw;
-			canvas.height = ih;
+			const iw = Math.max(1, Math.min(MAX_CANVAS_W, Math.round(w * resolutionScale)));
+			const ih = Math.max(1, Math.min(MAX_CANVAS_H, Math.round(h * resolutionScale)));
+			const dimensionsChanged = canvas.width !== iw || canvas.height !== ih;
+
+			if (dimensionsChanged) {
+				canvas.width = iw;
+				canvas.height = ih;
+			}
+
 			gl.viewport(0, 0, iw, ih);
 			gl.uniform1f(uniforms.u_aspect, w / h);
+			return dimensionsChanged;
 		};
 
 		resize();
-		window.addEventListener("resize", resize);
 
 		// Apply initial colors synchronously (CSS vars are already set at this point)
 		applyColors(themeState.mode);
@@ -239,14 +243,23 @@
 		let inView = true;
 		let prevTimestamp = 0;
 
+		const drawFrame = () => {
+			gl.uniform1f(uniforms.u_time, time);
+			gl.drawArrays(gl.TRIANGLES, 0, 3);
+		};
+
+		const onResize = () => {
+			if (resize()) drawFrame();
+		};
+		window.addEventListener("resize", onResize);
+
 		const tick = (now: number) => {
 			if (!running || !inView) return;
 
 			// On first frame (or after resume), just record timestamp without advancing time
 			if (prevTimestamp === 0) {
 				prevTimestamp = now;
-				gl.uniform1f(uniforms.u_time, time);
-				gl.drawArrays(gl.TRIANGLES, 0, 3);
+				drawFrame();
 				raf = requestAnimationFrame(tick);
 				return;
 			}
@@ -260,23 +273,7 @@
 			smoothedDt = smoothedDt * (1 - DT_SMOOTHING) + dt * DT_SMOOTHING;
 			time += smoothedDt;
 
-			gl.uniform1f(uniforms.u_time, time);
-			gl.drawArrays(gl.TRIANGLES, 0, 3);
-
-			// Adaptive resolution: adjust scale based on frame time
-			const scaleMax = RESOLUTION_SCALES[qualityLevel];
-			const ms = smoothedDt * 1000;
-			let nextScale = currentScale;
-			if (ms > 19.0 && currentScale > SCALE_MIN) {
-				nextScale = Math.max(SCALE_MIN, currentScale - 0.01);
-			} else if (ms < 15.0 && currentScale < scaleMax) {
-				nextScale = Math.min(scaleMax, currentScale + 0.01);
-			}
-			if (Math.abs(nextScale - currentScale) > 0.001) {
-				currentScale = nextScale;
-				resize();
-			}
-
+			drawFrame();
 			raf = requestAnimationFrame(tick);
 		};
 
@@ -315,8 +312,7 @@
 		// Draw the first frame, then fade in
 		raf = requestAnimationFrame((now) => {
 			prevTimestamp = now;
-			gl.uniform1f(uniforms.u_time, time);
-			gl.drawArrays(gl.TRIANGLES, 0, 3);
+			drawFrame();
 			isVisible = true;
 			raf = requestAnimationFrame(tick);
 		});
@@ -326,7 +322,7 @@
 			pause();
 			document.removeEventListener("visibilitychange", onVisibility);
 			io.disconnect();
-			window.removeEventListener("resize", resize);
+			window.removeEventListener("resize", onResize);
 			gl.deleteProgram(program);
 			gl.deleteShader(vs);
 			gl.deleteShader(fs);
