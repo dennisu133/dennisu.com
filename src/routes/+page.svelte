@@ -1,5 +1,6 @@
 <script lang="ts">
 	import AboutCard from "$lib/components/card/AboutCard.svelte";
+	import Background from "$lib/components/Background.svelte";
 	import ProjectCard from "$lib/components/card/ProjectCard.svelte";
 	import EmailContact from "$lib/components/EmailContact.svelte";
 	import ThemeToggle from "$lib/components/theme/ThemeToggle.svelte";
@@ -125,7 +126,9 @@
 	<EmailContact handle={email.handle} url={email.url} icon={email.icon} iconDark={email.iconDark} />
 {/snippet}
 
-<div class="mx-auto flex min-h-screen max-w-6xl flex-col px-6 sm:px-10">
+<Background />
+
+<div class="relative z-10 mx-auto flex min-h-screen max-w-6xl flex-col px-6 sm:px-10">
 	<header class="mt-6 flex min-h-40 flex-wrap gap-4 sm:min-h-36">
 		<div class="transition-colors duration-150 ease-linear">
 			<h1>
