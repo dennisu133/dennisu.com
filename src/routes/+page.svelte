@@ -4,6 +4,7 @@
 	import EmailContact from "$lib/components/EmailContact.svelte";
 	import ThemeToggle from "$lib/components/theme/ThemeToggle.svelte";
 	import FancyLink from "$lib/components/FancyLink.svelte";
+	import ImagePreview from "$lib/components/ImagePreview.svelte";
 	import SectionHeader from "$lib/components/SectionHeader.svelte";
 	import { getStackIcons } from "$lib/stackIcons";
 
@@ -101,12 +102,7 @@
 
 	const siteSource = "https://github.com/dennisu133/dennisu.com";
 
-	const programmingImages = import.meta.glob("$lib/assets/images/programmingImages/*", {
-		eager: true,
-		query: "?url",
-		import: "default"
-	});
-	const musicImages = import.meta.glob("$lib/assets/images/musicImages/*", {
+	const programmingImages = import.meta.glob("$lib/assets/icons/stack/*.svg", {
 		eager: true,
 		query: "?url",
 		import: "default"
@@ -119,14 +115,14 @@
 </script>
 
 {#snippet about()}
-	<p aria-hidden="true">
+	<p>
 		Bachelor in Computer Science. My interests are
 		<ImageDispenser paths={programmingImages}>programming</ImageDispenser>,
-		<ImageDispenser paths={musicImages}>music</ImageDispenser> and
+		<ImagePreview src="/topsters.png" alt="A Topsters chart of Dennis's favorite albums">
+			music
+		</ImagePreview> and
 		<ImageDispenser paths={catImages}>cats</ImageDispenser>.
 	</p>
-
-	<p class="sr-only">Bachelor in Computer Science. My interests are programming, music and cats.</p>
 {/snippet}
 
 {#snippet contact()}
