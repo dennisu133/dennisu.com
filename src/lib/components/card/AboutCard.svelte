@@ -15,7 +15,9 @@
 	} = $props();
 </script>
 
-<div class="card grid gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-stretch md:gap-5">
+<div
+	class="card grid grid-cols-[minmax(0,1fr)] gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-stretch md:gap-5"
+>
 	<div class="grid min-w-0 gap-2">
 		<div class="text-(--text)">
 			{@render about?.()}
@@ -39,7 +41,7 @@
 	</div>
 
 	<div
-		class="flex border-t border-border/50 pt-3 md:min-w-52 md:items-center md:border-t-0 md:border-l md:pt-0 md:pl-5"
+		class="flex min-w-0 border-t border-border/50 pt-3 md:min-w-52 md:items-center md:border-t-0 md:border-l md:pt-0 md:pl-5"
 	>
 		{@render contact?.()}
 	</div>

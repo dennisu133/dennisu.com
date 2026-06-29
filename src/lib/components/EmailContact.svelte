@@ -30,7 +30,7 @@
 	}
 </script>
 
-<div class="group/email relative flex w-full items-center gap-3">
+<div class="group/email relative flex w-full min-w-0 items-center gap-3">
 	<a
 		href={computedHref}
 		class="absolute inset-0 z-10 hidden pointer-fine:block"
@@ -51,7 +51,7 @@
 			Get in touch
 		</h3>
 		<p
-			class="inline-flex text-sm text-(--text-muted)"
+			class="inline-flex flex-wrap text-sm text-(--text-muted)"
 			aria-label={revealed ? handle : "Email address hidden until interaction"}
 		>
 			{#each handle.split("") as char, i}
