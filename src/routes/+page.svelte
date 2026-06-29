@@ -195,7 +195,7 @@
 							href={social.url}
 							target="_blank"
 							rel="noreferrer"
-							class="group/social block rounded-sm p-1 opacity-60 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--text)"
+							class="group/social block rounded-sm p-1 opacity-90 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--text)"
 							aria-label="Open {social.platform}"
 							title={social.platform}
 						>
@@ -203,18 +203,18 @@
 								<img
 									src={social.icon}
 									alt=""
-									class="show-on-dark h-[1.1rem] w-[1.1rem] transition-transform duration-150 group-hover/social:-translate-y-0.5"
+									class="social-icon show-on-dark h-[1.1rem] w-[1.1rem] transition-transform duration-150 group-hover/social:-translate-y-0.5"
 								/>
 								<img
 									src={social.iconDark}
 									alt=""
-									class="show-on-light h-[1.1rem] w-[1.1rem] transition-transform duration-150 group-hover/social:-translate-y-0.5"
+									class="social-icon show-on-light h-[1.1rem] w-[1.1rem] transition-transform duration-150 group-hover/social:-translate-y-0.5"
 								/>
 							{:else}
 								<img
 									src={social.icon}
 									alt=""
-									class="h-[1.1rem] w-[1.1rem] transition-transform duration-150 group-hover/social:-translate-y-0.5"
+									class="social-icon h-[1.1rem] w-[1.1rem] transition-transform duration-150 group-hover/social:-translate-y-0.5"
 								/>
 							{/if}
 						</a>
@@ -226,6 +226,11 @@
 </div>
 
 <style>
+	.social-icon {
+		filter: drop-shadow(0 0 0.7px var(--social-icon-shadow))
+			drop-shadow(0 1px 0.5px var(--social-icon-shadow));
+	}
+
 	@media (min-width: 80rem) and (max-height: 48rem) {
 		.projects-grid {
 			grid-template-columns: repeat(4, minmax(0, 1fr));
