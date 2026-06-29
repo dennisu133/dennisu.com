@@ -68,8 +68,6 @@
 	];
 
 	const email = {
-		handle: "denniskarnowitsch@gmail.com",
-		url: "mailto:denniskarnowitsch@gmail.com",
 		icon: emailIcon,
 		iconDark: emailDarkIcon
 	};
@@ -123,7 +121,7 @@
 {/snippet}
 
 {#snippet contact()}
-	<EmailContact handle={email.handle} url={email.url} icon={email.icon} iconDark={email.iconDark} />
+	<EmailContact icon={email.icon} iconDark={email.iconDark} />
 {/snippet}
 
 <Background />
