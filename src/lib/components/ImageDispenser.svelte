@@ -66,7 +66,7 @@
 
 	const images = $derived(Object.values(paths) as string[]);
 
-	let element: HTMLElement;
+	let element: HTMLButtonElement;
 	let decodedImages: CachedImage[] = [];
 	let pendingImages = 0;
 	let configuredSources = new Set<string>();
@@ -288,8 +288,9 @@
 		};
 
 		const onClick = (e: MouseEvent) => {
-			mouseX = e.clientX;
-			mouseY = e.clientY;
+			const triggerRect = element.getBoundingClientRect();
+			mouseX = e.detail === 0 ? triggerRect.left + triggerRect.width / 2 : e.clientX;
+			mouseY = e.detail === 0 ? triggerRect.top + triggerRect.height / 2 : e.clientY;
 			start();
 			clearTimeout(touchTimer);
 			touchTimer = setTimeout(stop, 2000);
@@ -322,10 +323,18 @@
 	});
 </script>
 
-<span
+<button
 	bind:this={element}
-	class="inline-block underline decoration-2 underline-offset-4"
-	role="presentation"
+	type="button"
+	class="image-dispenser-trigger inline-block cursor-pointer appearance-none border-0 bg-transparent p-0 underline decoration-2 underline-offset-4"
+	aria-label="programming — dispense technology icons"
 >
 	{@render children()}
-</span>
+</button>
+
+<style>
+	.image-dispenser-trigger {
+		font: inherit;
+		color: inherit;
+	}
+</style>
