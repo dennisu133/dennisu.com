@@ -63,7 +63,11 @@
 
 <li bind:this={cardElement} class="card group relative flex h-full flex-col gap-3">
 	<!-- Desktop: entire card is clickable -->
-	<a href={url} class="absolute inset-0 z-10 hidden pointer-fine:block" aria-label="Open {name}">
+	<a
+		href={url}
+		class="card-primary-link absolute inset-0 z-10 hidden pointer-fine:block"
+		aria-label="Open {name}"
+	>
 	</a>
 
 	<!-- Header: Title + Date -->
@@ -162,6 +166,11 @@
 </li>
 
 <style>
+	.card-primary-link:focus-visible {
+		outline: 2px solid var(--text);
+		outline-offset: -3px;
+	}
+
 	.stack-icon {
 		opacity: var(--stack-icon-opacity);
 		filter: drop-shadow(0 0 0.7px var(--stack-icon-shadow))
