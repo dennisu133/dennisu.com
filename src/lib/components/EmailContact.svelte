@@ -1,31 +1,35 @@
 <script lang="ts">
 	import FancyLink from "$lib/components/FancyLink.svelte";
+	import {
+		decodeEmail,
+		EMAIL_CHARACTER_COUNT,
+		EMAIL_DISPLAY_WIDTH_EM
+	} from "$lib/emailObfuscation";
 
 	let {
-		handle,
-		url,
 		icon,
 		iconDark
 	}: {
-		handle: string;
-		url: string;
 		icon: string;
 		iconDark: string;
 	} = $props();
 
-	let revealed = $state(false);
-	const computedHref = $derived(revealed ? url : "#");
+	let handle = $state<string | null>(null);
+	const revealed = $derived(handle !== null);
+	const computedHref = $derived(handle === null ? "#" : `mailto:${handle}`);
+	const characterSlots = Array.from({ length: EMAIL_CHARACTER_COUNT }, (_, index) => index);
 	const scrambleChars = "\u2588\u2593\u2592\u2591#$%&*@!?";
 
 	function reveal() {
-		if (!revealed) revealed = true;
+		if (handle === null) handle = decodeEmail();
+		return handle;
 	}
 
 	function handleLinkClick(event: MouseEvent) {
 		if (!revealed) {
 			event.preventDefault();
-			reveal();
-			setTimeout(() => (window.location.href = url), 150);
+			const email = reveal();
+			setTimeout(() => (window.location.href = `mailto:${email}`), 150);
 		}
 	}
 </script>
@@ -36,6 +40,7 @@
 		class="absolute inset-0 z-10 hidden pointer-fine:block"
 		aria-label="Send me an email"
 		onmouseenter={reveal}
+		onfocusin={reveal}
 		onclick={handleLinkClick}
 	></a>
 
@@ -50,29 +55,35 @@
 		>
 			Get in touch
 		</h3>
-		<p
-			class="inline-flex flex-wrap text-sm text-(--text-muted)"
-			aria-label={revealed ? handle : "Email address hidden until interaction"}
-		>
-			{#each handle.split("") as char, i}
-				{@const scramble = scrambleChars[(i * 7 + 3) % scrambleChars.length] ?? "\u2022"}
-				{@const mod = i % 3}
-				{@const offsetY = mod === 0 ? "-3px" : mod === 1 ? "4px" : "-2px"}
-				{@const rotate = mod === 0 ? "-6deg" : mod === 1 ? "8deg" : "-4deg"}
-				<span
-					class={[
-						"reveal-character relative inline-block",
-						"transition-all duration-500 ease-out will-change-transform",
-						"after:absolute after:left-0 after:text-xs after:text-(--text-muted) after:transition-opacity after:duration-500 after:ease-out after:content-(--scramble)",
-						revealed
-							? "translate-y-0 rotate-0 text-current blur-none after:opacity-0"
-							: "translate-y-(--offset-y) rotate-(--rotate) text-transparent blur-[1px] after:opacity-70"
-					].join(" ")}
-					style={`--i: ${i}; --offset-y: ${offsetY}; --rotate: ${rotate}; --scramble: '${scramble}'; transition-delay: calc(var(--i) * 25ms);`}
-				>
-					{char}
-				</span>
-			{/each}
+		<p class="text-sm text-(--text-muted)">
+			<span class="sr-only">
+				{handle ?? "Email address hidden until interaction"}
+			</span>
+			<span
+				class="inline-flex max-w-full flex-wrap"
+				style:width={`${EMAIL_DISPLAY_WIDTH_EM}em`}
+				aria-hidden="true"
+			>
+				{#each characterSlots as i}
+					{@const scramble = scrambleChars[(i * 7 + 3) % scrambleChars.length] ?? "\u2022"}
+					{@const mod = i % 3}
+					{@const offsetY = mod === 0 ? "-3px" : mod === 1 ? "4px" : "-2px"}
+					{@const rotate = mod === 0 ? "-6deg" : mod === 1 ? "8deg" : "-4deg"}
+					<span
+						class={[
+							"reveal-character relative inline-block",
+							"transition-all duration-500 ease-out will-change-transform",
+							"after:absolute after:left-0 after:text-xs after:text-(--text-muted) after:transition-opacity after:duration-500 after:ease-out after:content-(--scramble)",
+							revealed
+								? "w-auto translate-y-0 rotate-0 text-current blur-none after:opacity-0"
+								: "w-[0.5em] translate-y-(--offset-y) rotate-(--rotate) text-transparent blur-[1px] after:opacity-70"
+						].join(" ")}
+						style={`--i: ${i}; --offset-y: ${offsetY}; --rotate: ${rotate}; --scramble: '${scramble}'; transition-delay: calc(var(--i) * 25ms);`}
+					>
+						{handle?.[i] ?? "\u00a0"}
+					</span>
+				{/each}
+			</span>
 		</p>
 		<noscript class="text-xs text-(--text-muted) opacity-60">
 			<br /> Revealing email requires JavaScript.

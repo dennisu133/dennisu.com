@@ -5,13 +5,14 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
-		"build": "vite build",
+		"build": "vite build && bun scripts/verify-email-obfuscation.ts",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"format": "prettier --write .",
-		"lint": "prettier --check ."
+		"lint": "prettier --check .",
+		"verify:email": "bun scripts/verify-email-obfuscation.ts"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-static": "^3.0.10",
