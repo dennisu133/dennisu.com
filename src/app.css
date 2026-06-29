@@ -34,16 +34,16 @@
 	--text-h3: clamp(1rem, 2.1vw, 1.15rem);
 	--text-p: clamp(0.85rem, 1.8vw, 1.05rem);
 
-	--color-accent-300: light-dark(#0ea5e9, #7dd3fc);
-	--color-accent-400: light-dark(#172554, #38bdf8);
-	--color-accent-500: light-dark(#193078, #0ea5e9);
+	--color-accent-300: light-dark(oklch(68.469% 0.1479 237.323), oklch(82.759% 0.1013 230.318));
+	--color-accent-400: light-dark(oklch(28.226% 0.0874 267.935), oklch(75.351% 0.139 232.661));
+	--color-accent-500: light-dark(oklch(33.962% 0.1264 266.189), oklch(68.469% 0.1479 237.323));
 
-	--bg-base: light-dark(#66b2ff, #000000);
+	--bg-base: light-dark(oklch(74.685% 0.1352 250.366), oklch(0% 0 0));
 	--bg-contrast: light-dark(rgba(15, 23, 42, 0.12), transparent);
 	--bg-tooltip: light-dark(rgb(243, 243, 243), rgb(12, 12, 12));
 
-	--text: light-dark(#0f172a, #ebebeb);
-	--text-muted: light-dark(#1e293b, #9ca3af);
+	--text: light-dark(oklch(20.768% 0.0398 265.755), oklch(94.007% 0 0));
+	--text-muted: light-dark(oklch(27.95% 0.0368 260.031), oklch(71.366% 0.0192 261.325));
 	--text-action-color: light-dark(var(--color-accent-500), var(--color-accent-400));
 
 	--color-surface: light-dark(rgba(239, 248, 255, 0.28), rgba(12, 12, 12, 0.6));
@@ -61,7 +61,7 @@
 
 	--color-link: light-dark(var(--color-accent-500), var(--color-accent-400));
 	--color-link-hover: light-dark(var(--color-accent-400), var(--color-accent-300));
-	--color-project-disclaimer: light-dark(#881337, #fb7185);
+	--color-project-disclaimer: light-dark(oklch(41.033% 0.1502 10.272), oklch(71.919% 0.169 13.428));
 }
 
 @layer base {
