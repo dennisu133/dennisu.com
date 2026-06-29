@@ -10,9 +10,9 @@
 
 <style>
 	.background {
-		--sky-top: #92ceff;
-		--sky-middle: #66b2ff;
-		--sky-bottom: #3f8fe0;
+		--sky-top: oklch(82.836% 0.0927 243.863);
+		--sky-middle: oklch(74.685% 0.1352 250.366);
+		--sky-bottom: oklch(63.867% 0.1448 251.385);
 		--primary-glow: rgba(255, 255, 255, 0.72);
 		--secondary-glow: rgba(186, 230, 253, 0.62);
 		--accent-glow: rgba(224, 242, 254, 0.52);
@@ -37,7 +37,7 @@
 		--light-atmosphere-display: none;
 		--dither-opacity: 0.045;
 
-		background: #020407;
+		background: oklch(10.457% 0.0125 250.212);
 	}
 
 	@media (prefers-color-scheme: dark) {
@@ -45,7 +45,7 @@
 			--light-atmosphere-display: none;
 			--dither-opacity: 0.045;
 
-			background: #020407;
+			background: oklch(10.457% 0.0125 250.212);
 		}
 	}
 
@@ -54,7 +54,7 @@
 			--light-atmosphere-display: none;
 			--dither-opacity: 0.045;
 
-			background: #020407;
+			background: oklch(10.457% 0.0125 250.212);
 		}
 	}
 
