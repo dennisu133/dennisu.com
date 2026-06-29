@@ -34,6 +34,37 @@
 	}
 </script>
 
+{#snippet emailAddress()}
+	<span class="sr-only">
+		{handle ?? "Email address hidden until interaction"}
+	</span>
+	<span
+		class="inline-flex max-w-full flex-wrap"
+		style:width={`${EMAIL_DISPLAY_WIDTH_EM}em`}
+		aria-hidden="true"
+	>
+		{#each characterSlots as i}
+			{@const scramble = scrambleChars[(i * 7 + 3) % scrambleChars.length] ?? "\u2022"}
+			{@const mod = i % 3}
+			{@const offsetY = mod === 0 ? "-3px" : mod === 1 ? "4px" : "-2px"}
+			{@const rotate = mod === 0 ? "-6deg" : mod === 1 ? "8deg" : "-4deg"}
+			<span
+				class={[
+					"reveal-character relative inline-block",
+					"transition-[translate,rotate,filter] duration-500 ease-out will-change-[translate,rotate,filter]",
+					"after:absolute after:left-0 after:text-xs after:text-(--text-muted) after:transition-opacity after:duration-500 after:ease-out after:content-(--scramble)",
+					revealed
+						? "w-auto translate-y-0 rotate-0 text-current blur-none after:opacity-0"
+						: "w-[0.5em] translate-y-(--offset-y) rotate-(--rotate) text-transparent blur-[1px] after:opacity-80"
+				].join(" ")}
+				style={`--i: ${i}; --offset-y: ${offsetY}; --rotate: ${rotate}; --scramble: '${scramble}'; transition-delay: calc(var(--i) * 25ms);`}
+			>
+				{handle?.[i] ?? "\u00a0"}
+			</span>
+		{/each}
+	</span>
+{/snippet}
+
 <div class="group/email relative flex w-full min-w-0 items-center gap-3">
 	<a
 		href={computedHref}
@@ -55,35 +86,15 @@
 		>
 			Get in touch
 		</h3>
-		<p class="text-sm text-(--text-muted)">
-			<span class="sr-only">
-				{handle ?? "Email address hidden until interaction"}
-			</span>
-			<span
-				class="inline-flex max-w-full flex-wrap"
-				style:width={`${EMAIL_DISPLAY_WIDTH_EM}em`}
-				aria-hidden="true"
-			>
-				{#each characterSlots as i}
-					{@const scramble = scrambleChars[(i * 7 + 3) % scrambleChars.length] ?? "\u2022"}
-					{@const mod = i % 3}
-					{@const offsetY = mod === 0 ? "-3px" : mod === 1 ? "4px" : "-2px"}
-					{@const rotate = mod === 0 ? "-6deg" : mod === 1 ? "8deg" : "-4deg"}
-					<span
-						class={[
-							"reveal-character relative inline-block",
-							"transition-[translate,rotate,filter] duration-500 ease-out will-change-[translate,rotate,filter]",
-							"after:absolute after:left-0 after:text-xs after:text-(--text-muted) after:transition-opacity after:duration-500 after:ease-out after:content-(--scramble)",
-							revealed
-								? "w-auto translate-y-0 rotate-0 text-current blur-none after:opacity-0"
-								: "w-[0.5em] translate-y-(--offset-y) rotate-(--rotate) text-transparent blur-[1px] after:opacity-80"
-						].join(" ")}
-						style={`--i: ${i}; --offset-y: ${offsetY}; --rotate: ${rotate}; --scramble: '${scramble}'; transition-delay: calc(var(--i) * 25ms);`}
-					>
-						{handle?.[i] ?? "\u00a0"}
-					</span>
-				{/each}
-			</span>
+		<button
+			type="button"
+			class="block max-w-full cursor-pointer text-left text-sm text-(--text-muted) pointer-fine:hidden"
+			onclick={reveal}
+		>
+			{@render emailAddress()}
+		</button>
+		<p class="hidden text-sm text-(--text-muted) pointer-fine:block">
+			{@render emailAddress()}
 		</p>
 		<noscript class="text-xs text-(--text-muted) opacity-80">
 			<br /> Revealing email requires JavaScript.
@@ -91,7 +102,7 @@
 	</div>
 
 	<FancyLink
-		text="Open"
+		text="Email"
 		url={computedHref}
 		class="pointer-events-auto z-20 ml-auto items-center py-1 text-[clamp(0.75rem,4vw,1rem)] leading-none tracking-[0.06em] text-link uppercase group-hover:text-link-hover hover:text-link-hover pointer-fine:hidden"
 		onclick={handleLinkClick}
