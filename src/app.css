@@ -35,8 +35,8 @@
 	--text-p: clamp(0.85rem, 1.8vw, 1.05rem);
 
 	--color-accent-300: light-dark(#0ea5e9, #7dd3fc);
-	--color-accent-400: light-dark(#2563eb, #38bdf8);
-	--color-accent-500: light-dark(#1e3a8a, #0ea5e9);
+	--color-accent-400: light-dark(#172554, #38bdf8);
+	--color-accent-500: light-dark(#193078, #0ea5e9);
 
 	--bg-base: light-dark(#66b2ff, #000000);
 	--bg-contrast: light-dark(rgba(15, 23, 42, 0.12), transparent);
@@ -54,13 +54,14 @@
 	--card-sheen-end: light-dark(transparent, rgba(255, 255, 255, 0.012));
 	--card-inset-highlight: light-dark(rgba(255, 255, 255, 0.48), rgba(255, 255, 255, 0.09));
 	--card-depth-shadow: light-dark(rgba(30, 64, 175, 0.07), rgba(0, 0, 0, 0.32));
-	--stack-icon-opacity: 0.55;
-	--stack-icon-hover-opacity: 0.85;
+	--stack-icon-opacity: 0.85;
+	--stack-icon-hover-opacity: 1;
 	--stack-icon-shadow: transparent;
+	--social-icon-shadow: light-dark(rgba(15, 23, 42, 0.75), transparent);
 
 	--color-link: light-dark(var(--color-accent-500), var(--color-accent-400));
 	--color-link-hover: light-dark(var(--color-accent-400), var(--color-accent-300));
-	--color-project-disclaimer: light-dark(#be123c, #fb7185);
+	--color-project-disclaimer: light-dark(#881337, #fb7185);
 }
 
 @layer base {
@@ -162,8 +163,8 @@
 @media (scripting: none) and (prefers-color-scheme: light) {
 	:root:not([theme]):has(#no-script-theme-toggle:checked) {
 		color-scheme: dark;
-		--stack-icon-opacity: 0.55;
-		--stack-icon-hover-opacity: 0.85;
+		--stack-icon-opacity: 0.85;
+		--stack-icon-hover-opacity: 1;
 		--stack-icon-shadow: transparent;
 	}
 

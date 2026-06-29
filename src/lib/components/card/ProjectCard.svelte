@@ -88,7 +88,7 @@
 		</div>
 		<time
 			datetime={date.toISOString()}
-			class="shrink-0 self-start font-display text-[0.6rem] leading-none tracking-wide text-(--text-muted) opacity-50"
+			class="shrink-0 self-start font-display text-[0.6rem] leading-none tracking-wide text-(--text-muted) opacity-80"
 		>
 			{date.toLocaleDateString("en-US", { year: "numeric", month: "short" })}
 		</time>

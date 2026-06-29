@@ -76,7 +76,7 @@
 							"after:absolute after:left-0 after:text-xs after:text-(--text-muted) after:transition-opacity after:duration-500 after:ease-out after:content-(--scramble)",
 							revealed
 								? "w-auto translate-y-0 rotate-0 text-current blur-none after:opacity-0"
-								: "w-[0.5em] translate-y-(--offset-y) rotate-(--rotate) text-transparent blur-[1px] after:opacity-70"
+								: "w-[0.5em] translate-y-(--offset-y) rotate-(--rotate) text-transparent blur-[1px] after:opacity-80"
 						].join(" ")}
 						style={`--i: ${i}; --offset-y: ${offsetY}; --rotate: ${rotate}; --scramble: '${scramble}'; transition-delay: calc(var(--i) * 25ms);`}
 					>
@@ -85,7 +85,7 @@
 				{/each}
 			</span>
 		</p>
-		<noscript class="text-xs text-(--text-muted) opacity-60">
+		<noscript class="text-xs text-(--text-muted) opacity-80">
 			<br /> Revealing email requires JavaScript.
 		</noscript>
 	</div>
