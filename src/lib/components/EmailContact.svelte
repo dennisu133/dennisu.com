@@ -72,7 +72,7 @@
 					<span
 						class={[
 							"reveal-character relative inline-block",
-							"transition-all duration-500 ease-out will-change-transform",
+							"transition-[translate,rotate,filter] duration-500 ease-out will-change-[translate,rotate,filter]",
 							"after:absolute after:left-0 after:text-xs after:text-(--text-muted) after:transition-opacity after:duration-500 after:ease-out after:content-(--scramble)",
 							revealed
 								? "w-auto translate-y-0 rotate-0 text-current blur-none after:opacity-0"
