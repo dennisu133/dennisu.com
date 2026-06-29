@@ -23,7 +23,7 @@
 	const profile = {
 		name: "Dennis Karnowitsch",
 		subtitle: "Aspiring Full Stack Developer",
-		proficiencies: "Experienced in Python, Typescript, Java, Go and C.",
+		proficiencies: "Experienced in Python, TypeScript, Java, Go and C.",
 		availability: "Currently looking for a full-time software role and open to freelance projects.",
 		location: {
 			pretext: "Based in ",
