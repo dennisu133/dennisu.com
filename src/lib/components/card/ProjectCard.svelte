@@ -10,7 +10,7 @@
 		repo,
 		date,
 		disclaimer,
-		stack = []
+		stack
 	}: {
 		name: string;
 		description: string;
@@ -18,11 +18,10 @@
 		repo: string;
 		date: Date;
 		disclaimer?: string;
-		stack?: StackIcon[];
+		stack: StackIcon[];
 	} = $props();
 
 	const url = $derived(_url ?? repo);
-	let cardElement: HTMLLIElement;
 	let activeStackIcon = $state<string | null>(null);
 
 	function getStackTooltipId(iconName: string) {
@@ -33,36 +32,20 @@
 		activeStackIcon = activeStackIcon === iconName ? null : iconName;
 	}
 
-	function closeStackTooltip() {
-		activeStackIcon = null;
-	}
-
 	function handleWindowClick(event: MouseEvent) {
-		if (!activeStackIcon) return;
-
-		const target = event.target;
-		const trigger = target instanceof Element && target.closest("[data-stack-tooltip-trigger]");
-
-		if (!trigger || !cardElement.contains(trigger)) {
-			closeStackTooltip();
-		}
-	}
-
-	function handleWindowKeydown(event: KeyboardEvent) {
-		if (event.key === "Escape") {
-			closeStackTooltip();
-		}
+		const trigger = event.target instanceof Element && event.target.closest("[data-stack-project]");
+		if (trigger && trigger.getAttribute("data-stack-project") === name) return;
+		activeStackIcon = null;
 	}
 </script>
 
 <svelte:window
 	onclick={handleWindowClick}
-	onkeydown={handleWindowKeydown}
-	onscroll={closeStackTooltip}
+	onkeydown={(event) => event.key === "Escape" && (activeStackIcon = null)}
+	onscroll={() => (activeStackIcon = null)}
 />
 
-<li bind:this={cardElement} class="card group relative flex h-full flex-col gap-3">
-	<!-- Desktop: entire card is clickable -->
+<li class="card group relative flex h-full flex-col gap-3">
 	<a
 		href={url}
 		class="card-primary-link absolute inset-0 z-10 hidden pointer-fine:block"
@@ -70,7 +53,6 @@
 	>
 	</a>
 
-	<!-- Header: Title + Date -->
 	<div class="flex items-baseline justify-between gap-3">
 		<div class="relative w-fit min-w-0">
 			<h3
@@ -94,14 +76,12 @@
 		</time>
 	</div>
 
-	<!-- Description -->
 	<p class="text-sm leading-relaxed text-(--text-muted)">{description}</p>
 
-	<!-- Bottom bar: Stack icons left, actions right -->
 	<div class="mt-auto flex items-center justify-between gap-3 border-t border-border/50 pt-2.5">
-		<!-- Tech stack icons -->
 		<div class="flex items-center gap-2">
 			{#each stack as icon}
+				{@const tooltipId = getStackTooltipId(icon.name)}
 				<span class="stack-icon-trigger group/stack relative z-20 block">
 					<img
 						src={icon.src}
@@ -109,7 +89,7 @@
 						class="stack-icon h-[1.1rem] w-[1.1rem] transition-[filter,opacity] duration-150"
 					/>
 					<span
-						id={getStackTooltipId(icon.name)}
+						id={tooltipId}
 						role="tooltip"
 						style:opacity={activeStackIcon === icon.name ? 1 : null}
 						class="pointer-events-none absolute bottom-full left-0 mb-1.5 min-w-max rounded-sm border border-border bg-(--bg-tooltip) px-2 py-1 text-left text-xs text-(--text) opacity-0 shadow-sm transition-opacity duration-150 select-none group-hover/stack:opacity-100"
@@ -126,18 +106,16 @@
 						type="button"
 						class="absolute inset-0 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--text) pointer-fine:hidden"
 						aria-label={icon.name}
-						aria-controls={getStackTooltipId(icon.name)}
+						aria-controls={tooltipId}
 						aria-expanded={activeStackIcon === icon.name}
-						data-stack-tooltip-trigger
+						data-stack-project={name}
 						onclick={() => toggleStackTooltip(icon.name)}
 					></button>
 				</span>
 			{/each}
 		</div>
 
-		<!-- Actions -->
 		<div class="relative z-20 flex items-center gap-2">
-			<!-- Mobile: Open button -->
 			<a
 				href={url}
 				class="pointer-events-auto hidden items-center text-[clamp(0.75rem,2.4vw,0.85rem)] leading-none tracking-[0.06em] text-link uppercase transition-colors duration-150 hover:text-link-hover pointer-coarse:inline-flex"
@@ -150,7 +128,6 @@
 			<span class="mx-0.5 hidden h-[0.85em] w-px self-center bg-border/70 pointer-coarse:block"
 			></span>
 
-			<!-- GitHub icon link -->
 			<a
 				href={repo}
 				target="_blank"

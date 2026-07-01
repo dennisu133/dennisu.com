@@ -107,6 +107,16 @@
 	.tooltip {
 		@apply pointer-events-none absolute top-full right-0 z-10 mt-2 min-w-max rounded-sm border border-border bg-(--bg-tooltip) px-2 py-1 text-left text-xs text-(--text) opacity-0 shadow-sm transition-opacity duration-150 select-none group-hover:opacity-100;
 	}
+
+	.section-heading {
+		@apply mb-[clamp(0.5rem,1dvh,1rem)] flex items-center gap-4 py-2 tracking-[0.2em] text-(--text-muted) uppercase after:h-px after:grow after:bg-border after:content-[''];
+	}
+
+	.interactive-word {
+		@apply inline-block cursor-pointer appearance-none border-0 bg-transparent p-0 underline decoration-2 underline-offset-4;
+		font: inherit;
+		color: inherit;
+	}
 }
 
 :root[theme="light"] {
