@@ -6,8 +6,6 @@
 		children: Snippet;
 	}
 
-	type Direction = "N" | "NE" | "E" | "SE" | "S" | "SW" | "W" | "NW";
-	type Frame = readonly [column: number, row: number];
 	type Phase = "idle" | "chasing" | "caught" | "returning" | "resting";
 
 	const SPRITE_SIZE = 64;
@@ -17,46 +15,14 @@
 	const CATCH_DISTANCE = 22;
 	const HOLD_DURATION = 320;
 
-	const frames: Record<Direction, readonly [Frame, Frame]> = {
-		S: [
-			[0, 0],
-			[1, 0]
-		],
-		SE: [
-			[2, 0],
-			[3, 0]
-		],
-		E: [
-			[4, 0],
-			[5, 0]
-		],
-		NE: [
-			[6, 0],
-			[7, 0]
-		],
-		N: [
-			[0, 1],
-			[1, 1]
-		],
-		NW: [
-			[2, 1],
-			[3, 1]
-		],
-		W: [
-			[4, 1],
-			[5, 1]
-		],
-		SW: [
-			[6, 1],
-			[7, 1]
-		]
-	};
+	const SPRITE_DIRECTIONS = ["S", "SE", "E", "NE", "N", "NW", "W", "SW"] as const;
+	type Direction = (typeof SPRITE_DIRECTIONS)[number];
+	const ANGLE_DIRECTIONS = ["E", "SE", "S", "SW", "W", "NW", "N", "NE"] as const;
 
 	let { children }: Props = $props();
 
 	let trigger: HTMLButtonElement;
-	let catElement = $state<HTMLDivElement>();
-	let isActive = $state(false);
+	let catElement = $state<HTMLSpanElement>();
 	let phase = $state<Phase>("idle");
 	let direction = $state<Direction>("W");
 	let frameIndex = $state(0);
@@ -75,7 +41,11 @@
 	let reducedMotion = false;
 	let reducedMotionTimer: ReturnType<typeof setTimeout>;
 
-	const currentFrame = $derived(frames[direction][frameIndex]);
+	const isActive = $derived(phase !== "idle");
+	const currentFrame = $derived.by(() => {
+		const index = SPRITE_DIRECTIONS.indexOf(direction) * 2 + frameIndex;
+		return [index % 8, Math.floor(index / 8)] as const;
+	});
 	const catStyle = $derived(
 		[
 			`transform:translate3d(${catX - SPRITE_SIZE / 2}px, ${catY - SPRITE_SIZE / 2}px, 0)`,
@@ -105,16 +75,8 @@
 	}
 
 	function getDirection(dx: number, dy: number): Direction {
-		const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
-
-		if (angle >= -22.5 && angle < 22.5) return "E";
-		if (angle >= 22.5 && angle < 67.5) return "SE";
-		if (angle >= 67.5 && angle < 112.5) return "S";
-		if (angle >= 112.5 && angle < 157.5) return "SW";
-		if (angle >= 157.5 || angle < -157.5) return "W";
-		if (angle >= -157.5 && angle < -112.5) return "NW";
-		if (angle >= -112.5 && angle < -67.5) return "N";
-		return "NE";
+		const octant = Math.round(Math.atan2(dy, dx) / (Math.PI / 4));
+		return ANGLE_DIRECTIONS[(octant + 8) % 8];
 	}
 
 	function trackPointer(event: PointerEvent) {
@@ -188,7 +150,6 @@
 		direction = offsetX > 0 ? "W" : "E";
 		frameIndex = 0;
 		phase = "resting";
-		isActive = true;
 		void showCat();
 		announcement = "Java appeared beside the pointer.";
 		reducedMotionTimer = setTimeout(() => stopChase("Java went back off screen."), 1200);
@@ -219,7 +180,6 @@
 		direction = getDirection(targetX - catX, targetY - catY);
 		frameIndex = 0;
 		phase = "chasing";
-		isActive = true;
 		void showCat();
 		announcement = "Java is chasing the pointer.";
 		startedAt = performance.now();
@@ -233,7 +193,7 @@
 		document.documentElement.classList.remove("java-caught-pointer");
 		animationFrame = 0;
 		previousTimestamp = 0;
-		isActive = false;
+		if (catElement?.matches(":popover-open")) catElement.hidePopover();
 		phase = "idle";
 		announcement = message;
 	}
@@ -244,7 +204,7 @@
 <button
 	bind:this={trigger}
 	type="button"
-	class="neko-trigger inline-block cursor-pointer appearance-none border-0 bg-transparent p-0 underline decoration-2 underline-offset-4"
+	class="interactive-word"
 	aria-label="cats — summon Java"
 	aria-busy={isActive}
 	onmouseenter={startChase}
@@ -254,24 +214,19 @@
 </button>
 
 {#if isActive}
-	<div
+	<span
 		bind:this={catElement}
 		popover="manual"
 		class="neko fixed inset-auto top-0 left-0 m-0 h-16 w-16 border-0 bg-transparent p-0"
 		class:resting={phase === "resting"}
 		style={catStyle}
 		aria-hidden="true"
-	></div>
+	></span>
 {/if}
 
 <span class="sr-only" aria-live="polite">{announcement}</span>
 
 <style>
-	.neko-trigger {
-		font: inherit;
-		color: inherit;
-	}
-
 	.neko {
 		pointer-events: none;
 		background-repeat: no-repeat;

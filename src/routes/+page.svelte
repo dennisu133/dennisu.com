@@ -1,5 +1,6 @@
 <script lang="ts">
-	import AboutCard from "$lib/components/card/AboutCard.svelte";
+	import { ArrowRight } from "@lucide/svelte";
+
 	import Background from "$lib/components/Background.svelte";
 	import ProjectCard from "$lib/components/card/ProjectCard.svelte";
 	import EmailContact from "$lib/components/EmailContact.svelte";
@@ -7,8 +8,7 @@
 	import FancyLink from "$lib/components/FancyLink.svelte";
 	import ImagePreview from "$lib/components/ImagePreview.svelte";
 	import NekoChase from "$lib/components/NekoChase.svelte";
-	import SectionHeader from "$lib/components/SectionHeader.svelte";
-	import { getStackIcons } from "$lib/stackIcons";
+	import { allStackIconUrls, getStackIcons } from "$lib/stackIcons";
 
 	import ImageDispenser from "$lib/components/ImageDispenser.svelte";
 
@@ -16,8 +16,6 @@
 	import githubIcon from "$lib/assets/icons/social/github.svg";
 	import steamIcon from "$lib/assets/icons/social/steam.svg";
 	import spotifyIcon from "$lib/assets/icons/social/spotify.svg";
-	import emailIcon from "$lib/assets/icons/social/email.svg";
-	import emailDarkIcon from "$lib/assets/icons/social/email-dark.svg";
 	import githubDarkIcon from "$lib/assets/icons/social/github-dark.svg";
 
 	const profile = {
@@ -26,7 +24,6 @@
 		proficiencies: "Experienced in Python, TypeScript, Java, Go and C.",
 		availability: "Currently looking for a full-time software role and open to freelance projects.",
 		location: {
-			pretext: "Based in ",
 			label: "Cottbus, Germany",
 			url: "https://maps.app.goo.gl/ebTN6YrvRcUfa5cX8"
 		}
@@ -67,62 +64,32 @@
 		}
 	];
 
-	const email = {
-		icon: emailIcon,
-		iconDark: emailDarkIcon
-	};
-
 	const socials = [
 		{
 			platform: "GitHub",
-			handle: "dennisu133",
-			url: `https://github.com/dennisu133`,
+			url: "https://github.com/dennisu133",
 			icon: githubIcon,
 			iconDark: githubDarkIcon
 		},
 		{
 			platform: "Discord",
-			handle: "dennisu",
 			url: "https://discord.com/users/193137218964029440",
 			icon: discordIcon
 		},
 		{
 			platform: "Steam",
-			handle: "dennisuchan",
 			url: "https://steamcommunity.com/id/dennisuchan/",
 			icon: steamIcon
 		},
 		{
 			platform: "Spotify",
-			handle: "dennisu-chan",
 			url: "https://open.spotify.com/user/dennisu-chan",
 			icon: spotifyIcon
 		}
 	];
 
 	const siteSource = "https://github.com/dennisu133/dennisu.com";
-
-	const programmingImages = import.meta.glob("$lib/assets/icons/stack/*.svg", {
-		eager: true,
-		query: "?url",
-		import: "default"
-	});
 </script>
-
-{#snippet about()}
-	<p>
-		Bachelor in Computer Science. My interests are
-		<ImageDispenser paths={programmingImages}>programming</ImageDispenser>,
-		<ImagePreview src="/topsters.png" alt="A Topsters chart of Dennis's favorite albums">
-			music
-		</ImagePreview> and
-		<NekoChase>cats</NekoChase>.
-	</p>
-{/snippet}
-
-{#snippet contact()}
-	<EmailContact icon={email.icon} iconDark={email.iconDark} />
-{/snippet}
 
 <Background />
 
@@ -141,7 +108,7 @@
 			<ThemeToggle />
 
 			<div class="mt-1 text-right text-(--text-muted) sm:mt-2">
-				<span>{profile.location.pretext}</span>
+				<span>Based in </span>
 				<FancyLink
 					text={profile.location.label}
 					url={profile.location.url}
@@ -153,28 +120,50 @@
 
 	<main class="flex flex-1 flex-col">
 		<section class="mb-6 lg:mb-2" aria-labelledby="about-heading">
-			<SectionHeader id="about-heading">About</SectionHeader>
-			<AboutCard
-				{about}
-				proficiencies={profile.proficiencies}
-				availability={profile.availability}
-				{contact}
-			/>
+			<h2 id="about-heading" class="section-heading">About</h2>
+			<div
+				class="card grid grid-cols-[minmax(0,1fr)] gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-stretch md:gap-5"
+			>
+				<div class="grid min-w-0 gap-2">
+					<p class="text-(--text)">
+						Bachelor in Computer Science. My interests are
+						<ImageDispenser images={allStackIconUrls}>programming</ImageDispenser>,
+						<ImagePreview src="/topsters.png" alt="A Topsters chart of Dennis's favorite albums">
+							music
+						</ImagePreview> and
+						<NekoChase>cats</NekoChase>.
+					</p>
+
+					<p class="text-[clamp(0.75rem,1.5vw,0.9rem)] tracking-wide text-(--text-muted)">
+						{profile.proficiencies}
+					</p>
+
+					<div class="flex items-center gap-2">
+						<span class="h-1.5 w-1.5 shrink-0 rounded-full bg-link" aria-hidden="true"></span>
+						<p class="text-[clamp(0.75rem,1.5vw,0.9rem)] leading-relaxed text-(--text-muted)">
+							{profile.availability}
+						</p>
+						<ArrowRight
+							aria-hidden="true"
+							strokeWidth={1.5}
+							class="h-4 w-4 shrink-0 rotate-90 text-link md:ml-auto md:rotate-0"
+						/>
+					</div>
+				</div>
+
+				<div
+					class="flex min-w-0 border-t border-border/50 pt-3 md:min-w-52 md:items-center md:border-t-0 md:border-l md:pt-0 md:pl-5"
+				>
+					<EmailContact />
+				</div>
+			</div>
 		</section>
 
 		<section class="mb-6 lg:mb-0" aria-labelledby="projects-heading">
-			<SectionHeader id="projects-heading">Projects</SectionHeader>
+			<h2 id="projects-heading" class="section-heading">Projects</h2>
 			<ul class="projects-grid grid grid-cols-1 gap-2 lg:grid-cols-2">
 				{#each projects as project}
-					<ProjectCard
-						name={project.name}
-						description={project.description}
-						url={project.url}
-						repo={project.repo}
-						date={project.date}
-						disclaimer={project.disclaimer}
-						stack={project.stack}
-					/>
+					<ProjectCard {...project} />
 				{/each}
 			</ul>
 		</section>

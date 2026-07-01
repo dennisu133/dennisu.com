@@ -35,7 +35,7 @@
 	});
 
 	function positionPreview() {
-		if (!isOpen || !trigger) return;
+		if (!isOpen) return;
 
 		const triggerRect = trigger.getBoundingClientRect();
 		const margin = 12;
@@ -57,6 +57,7 @@
 
 	async function showPreview() {
 		clearTimeout(closeTimer);
+		if (isOpen) return;
 		isOpen = true;
 		await tick();
 		preview?.showPopover();
@@ -65,6 +66,7 @@
 
 	function hidePreview() {
 		clearTimeout(closeTimer);
+		preview?.hidePopover();
 		isOpen = false;
 	}
 
@@ -73,21 +75,10 @@
 		closeTimer = setTimeout(hidePreview, 120);
 	}
 
-	function handleTriggerClick() {
-		void showPreview();
-	}
-
 	function handleWindowClick(event: MouseEvent) {
-		if (!isOpen) return;
-
-		const target = event.target as Node;
-		if (trigger.contains(target) || preview?.contains(target)) return;
-
+		if (!isOpen || !(event.target instanceof Node)) return;
+		if (trigger.contains(event.target) || preview?.contains(event.target)) return;
 		hidePreview();
-	}
-
-	function handleWindowKeydown(event: KeyboardEvent) {
-		if (event.key === "Escape") hidePreview();
 	}
 
 	function handleImageLoad(event: Event) {
@@ -99,7 +90,7 @@
 
 <svelte:window
 	onclick={handleWindowClick}
-	onkeydown={handleWindowKeydown}
+	onkeydown={(event) => event.key === "Escape" && hidePreview()}
 	onresize={positionPreview}
 	onscroll={positionPreview}
 />
@@ -107,14 +98,14 @@
 <button
 	bind:this={trigger}
 	type="button"
-	class="preview-trigger inline-block cursor-pointer appearance-none border-0 bg-transparent p-0 underline decoration-2 underline-offset-4"
+	class="interactive-word"
 	aria-expanded={isOpen}
 	aria-controls={previewId}
 	onmouseenter={() => void showPreview()}
 	onmouseleave={() => supportsHover && scheduleHide()}
 	onfocus={() => void showPreview()}
 	onblur={() => supportsHover && scheduleHide()}
-	onclick={handleTriggerClick}
+	onclick={() => void showPreview()}
 >
 	{@render children()}
 </button>
@@ -149,10 +140,3 @@
 		</span>
 	</a>
 {/if}
-
-<style>
-	.preview-trigger {
-		font: inherit;
-		color: inherit;
-	}
-</style>

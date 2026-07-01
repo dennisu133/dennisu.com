@@ -9,6 +9,8 @@ const iconFiles = import.meta.glob<string>("$lib/assets/icons/stack/*.svg", {
 	import: "default"
 });
 
+export const allStackIconUrls = Object.values(iconFiles);
+
 const iconsByName = new Map(
 	Object.entries(iconFiles).map(([path, src]) => {
 		const filename = path.split("/").at(-1);

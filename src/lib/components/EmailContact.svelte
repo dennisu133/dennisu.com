@@ -1,18 +1,12 @@
 <script lang="ts">
+	import { AtSign } from "@lucide/svelte";
+
 	import FancyLink from "$lib/components/FancyLink.svelte";
 	import {
 		decodeEmail,
 		EMAIL_CHARACTER_COUNT,
 		EMAIL_DISPLAY_WIDTH_EM
 	} from "$lib/emailObfuscation";
-
-	let {
-		icon,
-		iconDark
-	}: {
-		icon: string;
-		iconDark: string;
-	} = $props();
 
 	let handle = $state<string | null>(null);
 	const revealed = $derived(handle !== null);
@@ -35,9 +29,6 @@
 </script>
 
 {#snippet emailAddress()}
-	<span class="sr-only">
-		{handle ?? "Email address hidden until interaction"}
-	</span>
 	<span
 		class="inline-flex max-w-full flex-wrap"
 		style:width={`${EMAIL_DISPLAY_WIDTH_EM}em`}
@@ -75,10 +66,7 @@
 		onclick={handleLinkClick}
 	></a>
 
-	<div class="relative h-7 w-7 shrink-0">
-		<img src={icon} alt="" class="show-on-dark absolute inset-0 h-7 w-7 rounded-sm p-1" />
-		<img src={iconDark} alt="" class="show-on-light absolute inset-0 h-7 w-7 rounded-sm p-1" />
-	</div>
+	<AtSign aria-hidden="true" class="h-7 w-7 shrink-0 rounded-sm p-1" />
 
 	<div class="min-w-0">
 		<h3
@@ -86,16 +74,15 @@
 		>
 			Get in touch
 		</h3>
-		<button
-			type="button"
-			class="block max-w-full cursor-pointer text-left text-sm text-(--text-muted) pointer-fine:hidden"
-			onclick={reveal}
-		>
+		<div class="relative max-w-full text-sm text-(--text-muted)">
 			{@render emailAddress()}
-		</button>
-		<p class="hidden text-sm text-(--text-muted) pointer-fine:block">
-			{@render emailAddress()}
-		</p>
+			<button
+				type="button"
+				class="absolute inset-0 cursor-pointer rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--text) pointer-fine:hidden"
+				aria-label={handle ?? "Email address hidden until interaction"}
+				onclick={reveal}
+			></button>
+		</div>
 		<noscript class="text-xs text-(--text-muted) opacity-80">
 			<br /> Revealing email requires JavaScript.
 		</noscript>
