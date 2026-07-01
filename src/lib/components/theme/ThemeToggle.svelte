@@ -3,13 +3,24 @@
 	import { Moon, Sun } from "@lucide/svelte";
 
 	const nextTheme = $derived(themeState.mode === "light" ? "dark" : "light");
+
+	function toggleTheme(event: MouseEvent) {
+		const button = event.currentTarget as HTMLButtonElement;
+		const bounds = button.getBoundingClientRect();
+		const wasTriggeredByKeyboard = event.detail === 0;
+
+		themeState.toggle({
+			x: wasTriggeredByKeyboard ? bounds.left + bounds.width / 2 : event.clientX,
+			y: wasTriggeredByKeyboard ? bounds.top + bounds.height / 2 : event.clientY
+		});
+	}
 </script>
 
 {#snippet toggleContents()}
-	<span aria-hidden="true" class="show-on-light">
+	<span aria-hidden="true" class="theme-toggle-icon show-on-light">
 		<Moon size={20} />
 	</span>
-	<span aria-hidden="true" class="show-on-dark">
+	<span aria-hidden="true" class="theme-toggle-icon show-on-dark">
 		<Sun size={20} />
 	</span>
 	<span aria-hidden="true" class="tooltip show-on-light">Switch to dark mode</span>
@@ -20,7 +31,7 @@
 	type="button"
 	class="script-theme-toggle group relative inline-flex items-center justify-center rounded-lg border border-border bg-(--bg-contrast) p-2 text-(--text-muted) transition-colors hover:text-(--text) focus-visible:text-(--text) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--text)"
 	aria-label="Switch to {nextTheme} mode"
-	onclick={() => themeState.toggle()}
+	onclick={toggleTheme}
 >
 	{@render toggleContents()}
 </button>

@@ -91,7 +91,7 @@
 
 @layer components {
 	.card {
-		@apply relative overflow-hidden border border-border bg-surface p-[clamp(0.75rem,1.5dvh,1rem)] backdrop-blur-md transition-all duration-200 ease-out;
+		@apply relative overflow-hidden border border-border bg-surface p-[clamp(0.75rem,1.5dvh,1rem)] backdrop-blur-md;
 		border-color: var(--color-card-border);
 		background-image: linear-gradient(
 			135deg,
@@ -118,6 +118,96 @@
 
 :root[theme="dark"] {
 	color-scheme: dark;
+}
+
+/*
+ * The theme transition owns the color change. Prevent component-level color
+ * transitions from being captured halfway between themes.
+ */
+:root.theme-transition-capture *,
+:root.theme-transition-capture *::before,
+:root.theme-transition-capture *::after {
+	transition: none !important;
+}
+
+.script-theme-toggle .theme-toggle-icon {
+	view-transition-name: theme-toggle-icon;
+}
+
+@property --theme-reveal {
+	syntax: "<percentage>";
+	inherits: false;
+	initial-value: 12%;
+}
+
+:root.theme-transition-active::view-transition-old(root) {
+	z-index: 1;
+	animation: none;
+}
+
+:root.theme-transition-active::view-transition-new(root) {
+	--theme-reveal: var(--theme-transition-start, 12%);
+	z-index: 2;
+	animation: theme-twilight-reveal 760ms cubic-bezier(0.4, 0, 0.2, 1) both;
+	mask-image:
+		linear-gradient(
+			225deg,
+			black 0%,
+			black calc(var(--theme-reveal) - 2.2%),
+			rgb(0 0 0 / 92%) calc(var(--theme-reveal) - 1.7%),
+			rgb(0 0 0 / 68%) calc(var(--theme-reveal) - 1.05%),
+			rgb(0 0 0 / 32%) calc(var(--theme-reveal) - 0.4%),
+			transparent calc(var(--theme-reveal) + 0.35%)
+		),
+		radial-gradient(circle, rgb(0 0 0 / 98%) 0 0.55px, black 0.9px);
+	mask-repeat: no-repeat, repeat;
+	mask-size:
+		100% 100%,
+		4px 4px;
+	mask-composite: intersect;
+}
+
+:root.theme-transition-active::view-transition-group(theme-toggle-icon) {
+	z-index: 3;
+}
+
+:root.theme-transition-active::view-transition-old(theme-toggle-icon) {
+	animation: theme-icon-out 160ms ease-in both;
+	transform-origin: center;
+}
+
+:root.theme-transition-active::view-transition-new(theme-toggle-icon) {
+	animation: theme-icon-in 360ms cubic-bezier(0.16, 1, 0.3, 1) both;
+	transform-origin: center;
+}
+
+@keyframes theme-twilight-reveal {
+	to {
+		--theme-reveal: 106%;
+	}
+}
+
+@keyframes theme-icon-out {
+	to {
+		opacity: 0;
+		transform: rotate(-70deg) scale(0.55);
+	}
+}
+
+@keyframes theme-icon-in {
+	from {
+		opacity: 0;
+		transform: rotate(70deg) scale(0.55);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	:root.theme-transition-active::view-transition-old(root),
+	:root.theme-transition-active::view-transition-new(root),
+	:root.theme-transition-active::view-transition-old(theme-toggle-icon),
+	:root.theme-transition-active::view-transition-new(theme-toggle-icon) {
+		animation: none;
+	}
 }
 
 /* GLOBAL THEME VISIBILITY CLASS */
