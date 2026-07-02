@@ -39,10 +39,12 @@
 		isVisible = !document.hidden;
 
 		let timeout: ReturnType<typeof setTimeout>;
+		const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 		const startAnimation = () => {
 			showStatic = true;
 			clearTimeout(timeout);
+			if (motionQuery.matches) return;
 			timeout = setTimeout(() => {
 				if (!document.hidden) {
 					showStatic = false;
@@ -51,6 +53,7 @@
 		};
 
 		startAnimation();
+		motionQuery.addEventListener("change", startAnimation);
 
 		const handleVisibilityChange = () => {
 			isVisible = !document.hidden;
@@ -68,6 +71,7 @@
 		}, 400);
 
 		return () => {
+			motionQuery.removeEventListener("change", startAnimation);
 			document.removeEventListener("visibilitychange", handleVisibilityChange);
 			clearInterval(interval);
 			clearTimeout(timeout);

@@ -119,14 +119,14 @@
 	}
 }
 
-:root[theme="light"] {
+:root[data-theme="light"] {
 	color-scheme: light;
 	--stack-icon-opacity: 0.9;
 	--stack-icon-hover-opacity: 1;
 	--stack-icon-shadow: rgba(15, 23, 42, 0.65);
 }
 
-:root[theme="dark"] {
+:root[data-theme="dark"] {
 	color-scheme: dark;
 }
 
@@ -227,30 +227,30 @@
 }
 
 /* Show class on forced light */
-:root[theme="light"] .show-on-light {
+:root[data-theme="light"] .show-on-light {
 	display: block;
 }
 
 /* Follow the system preference before JavaScript initializes the toggle. */
 @media (prefers-color-scheme: light) {
-	:root:not([theme]) {
+	:root:not([data-theme]) {
 		--stack-icon-opacity: 0.9;
 		--stack-icon-hover-opacity: 1;
 		--stack-icon-shadow: rgba(15, 23, 42, 0.65);
 	}
 
-	:root:not([theme]) .show-on-light {
+	:root:not([data-theme]) .show-on-light {
 		display: block;
 	}
 }
 
 /* Show class on forced dark */
-:root[theme="dark"] .show-on-dark {
+:root[data-theme="dark"] .show-on-dark {
 	display: block;
 }
 
 @media (prefers-color-scheme: dark) {
-	:root:not([theme]) .show-on-dark {
+	:root:not([data-theme]) .show-on-dark {
 		display: block;
 	}
 }
@@ -261,35 +261,35 @@
  * input while still allowing a single-control, current-page override.
  */
 @media (scripting: none) and (prefers-color-scheme: light) {
-	:root:not([theme]):has(#no-script-theme-toggle:checked) {
+	:root:not([data-theme]):has(#no-script-theme-toggle:checked) {
 		color-scheme: dark;
 		--stack-icon-opacity: 0.85;
 		--stack-icon-hover-opacity: 1;
 		--stack-icon-shadow: transparent;
 	}
 
-	:root:not([theme]):has(#no-script-theme-toggle:checked) .show-on-light {
+	:root:not([data-theme]):has(#no-script-theme-toggle:checked) .show-on-light {
 		display: none;
 	}
 
-	:root:not([theme]):has(#no-script-theme-toggle:checked) .show-on-dark {
+	:root:not([data-theme]):has(#no-script-theme-toggle:checked) .show-on-dark {
 		display: block;
 	}
 }
 
 @media (scripting: none) and (prefers-color-scheme: dark) {
-	:root:not([theme]):has(#no-script-theme-toggle:checked) {
+	:root:not([data-theme]):has(#no-script-theme-toggle:checked) {
 		color-scheme: light;
 		--stack-icon-opacity: 0.9;
 		--stack-icon-hover-opacity: 1;
 		--stack-icon-shadow: rgba(15, 23, 42, 0.65);
 	}
 
-	:root:not([theme]):has(#no-script-theme-toggle:checked) .show-on-light {
+	:root:not([data-theme]):has(#no-script-theme-toggle:checked) .show-on-light {
 		display: block;
 	}
 
-	:root:not([theme]):has(#no-script-theme-toggle:checked) .show-on-dark {
+	:root:not([data-theme]):has(#no-script-theme-toggle:checked) .show-on-dark {
 		display: none;
 	}
 }

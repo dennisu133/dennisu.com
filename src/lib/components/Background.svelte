@@ -33,7 +33,7 @@
 		isolation: isolate;
 	}
 
-	:global(:root[theme="dark"]) .background {
+	:global(:root[data-theme="dark"]) .background {
 		--light-atmosphere-display: none;
 		--dither-opacity: 0.045;
 
@@ -41,7 +41,7 @@
 	}
 
 	@media (prefers-color-scheme: dark) {
-		:global(:root:not([theme])) .background {
+		:global(:root:not([data-theme])) .background {
 			--light-atmosphere-display: none;
 			--dither-opacity: 0.045;
 
@@ -50,7 +50,7 @@
 	}
 
 	@media (scripting: none) and (prefers-color-scheme: light) {
-		:global(:root:not([theme]):has(#no-script-theme-toggle:checked)) .background {
+		:global(:root:not([data-theme]):has(#no-script-theme-toggle:checked)) .background {
 			--light-atmosphere-display: none;
 			--dither-opacity: 0.045;
 
@@ -59,7 +59,7 @@
 	}
 
 	@media (scripting: none) and (prefers-color-scheme: dark) {
-		:global(:root:not([theme]):has(#no-script-theme-toggle:checked)) .background {
+		:global(:root:not([data-theme]):has(#no-script-theme-toggle:checked)) .background {
 			--light-atmosphere-display: block;
 			--dither-opacity: 0;
 
