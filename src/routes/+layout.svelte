@@ -31,6 +31,23 @@
 	const altTitle = "👀";
 	const description = "Personal website of Dennis Karnowitsch. Please hire me.";
 	const siteUrl = "https://dennisu.com";
+
+	// Structured data for search engines. Deliberately omits the email address:
+	// it would expose it in plaintext and fail the obfuscation build check.
+	const personSchema = JSON.stringify({
+		"@context": "https://schema.org",
+		"@type": "Person",
+		name: "Dennis Karnowitsch",
+		url: siteUrl,
+		jobTitle: "Full-Stack Developer",
+		address: {
+			"@type": "PostalAddress",
+			addressLocality: "Cottbus",
+			addressCountry: "DE"
+		},
+		sameAs: ["https://github.com/dennisu133"],
+		knowsAbout: ["Python", "TypeScript", "Java", "Go", "C"]
+	});
 	let currentFrame = $state(0);
 	let isVisible = $state(true);
 	let showStatic = $state(true);
@@ -124,6 +141,9 @@
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:image" content="{siteUrl}/Twitter.webp" />
 	<meta name="twitter:image:alt" content="Rust, a black cat with green eyes, lying on the floor" />
+
+	<!-- Structured data ({@html} because Svelte can't emit literal script tags) -->
+	{@html `<script type="application/ld+json">${personSchema}</script>`}
 </svelte:head>
 
 {@render children?.()}
