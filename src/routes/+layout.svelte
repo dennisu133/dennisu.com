@@ -30,6 +30,7 @@
 	const staticTitle = "Dennisu.com 🐱";
 	const altTitle = "👀";
 	const description = "Personal website of Dennis Karnowitsch. Please hire me.";
+	const siteUrl = "https://dennisu.com";
 	let currentFrame = $state(0);
 	let isVisible = $state(true);
 	let showStatic = $state(true);
@@ -111,8 +112,14 @@
 	<meta property="og:title" content={staticTitle} />
 	<meta property="og:description" content={description} />
 	<meta property="og:type" content="website" />
-	<meta property="og:url" content="https://dennisu.com" />
-	<meta property="og:image" content={"/dancing.gif"} />
+	<meta property="og:url" content={siteUrl} />
+	<meta property="og:image" content="{siteUrl}/dancing.gif" />
+	<meta property="og:image:alt" content="Dancing anime girl" />
+
+	<!-- X / Twitter card (title, description and site fall back to Open Graph) -->
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:image" content="{siteUrl}/Twitter.webp" />
+	<meta name="twitter:image:alt" content="Rust, a black cat with green eyes, lying on the floor" />
 </svelte:head>
 
 {@render children?.()}
