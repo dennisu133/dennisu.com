@@ -128,7 +128,7 @@
 					<p class="text-(--text)">
 						Bachelor in Computer Science. My interests are
 						<ImageDispenser images={allStackIconUrls}>programming</ImageDispenser>,
-						<ImagePreview src="/topsters.png" alt="A Topsters chart of Dennis's favorite albums">
+						<ImagePreview src="/topsters.webp" alt="A Topsters chart of Dennis's favorite albums">
 							music
 						</ImagePreview> and
 						<NekoChase>cats</NekoChase>.

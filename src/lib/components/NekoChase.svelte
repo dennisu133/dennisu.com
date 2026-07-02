@@ -201,6 +201,8 @@
 
 <svelte:window onpointermove={trackPointer} onblur={() => stopChase()} />
 
+<!-- Kept flush against the button: intervening whitespace would render as a
+     stray space between the trigger word and adjacent punctuation. -->
 <button
 	bind:this={trigger}
 	type="button"
@@ -211,9 +213,7 @@
 	onclick={startChase}
 >
 	{@render children()}
-</button>
-
-{#if isActive}
+</button>{#if isActive}
 	<span
 		bind:this={catElement}
 		popover="manual"
@@ -222,9 +222,7 @@
 		style={catStyle}
 		aria-hidden="true"
 	></span>
-{/if}
-
-<span class="sr-only" aria-live="polite">{announcement}</span>
+{/if}<span class="sr-only" aria-live="polite">{announcement}</span>
 
 <style>
 	.neko {

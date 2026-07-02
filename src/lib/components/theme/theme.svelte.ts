@@ -19,7 +19,7 @@ class ThemeState {
 		if (browser) {
 			const doc = document.documentElement;
 			const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-			let override = doc.getAttribute("theme");
+			let override = doc.getAttribute("data-theme");
 
 			// The blocking script normally supplies this before CSS loads. Reading
 			// storage here as well keeps the component robust if it is used alone.
@@ -32,14 +32,14 @@ class ThemeState {
 			}
 
 			if (isTheme(override)) {
-				doc.setAttribute("theme", override);
+				doc.setAttribute("data-theme", override);
 				this.mode = override;
 			} else {
 				this.mode = mediaQuery.matches ? "dark" : "light";
 			}
 
 			mediaQuery.addEventListener("change", (event) => {
-				if (!doc.hasAttribute("theme")) {
+				if (!doc.hasAttribute("data-theme")) {
 					this.mode = event.matches ? "dark" : "light";
 				}
 			});
@@ -50,7 +50,7 @@ class ThemeState {
 		this.mode = mode;
 
 		const doc = document.documentElement;
-		doc.setAttribute("theme", mode);
+		doc.setAttribute("data-theme", mode);
 
 		try {
 			localStorage.setItem(storageKey, mode);

@@ -7,7 +7,7 @@
 			try {
 				const theme = localStorage.getItem("theme");
 				if (theme === "light" || theme === "dark") {
-					document.documentElement.setAttribute("theme", theme);
+					document.documentElement.setAttribute("data-theme", theme);
 				}
 			} catch {
 				// Storage can be unavailable without preventing the system theme fallback.
