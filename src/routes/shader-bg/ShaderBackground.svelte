@@ -50,14 +50,23 @@
 		return shader;
 	};
 
-	// Parse a computed rgb()/rgba() color string to normalized [0-1] RGB values.
-	// getComputedStyle().backgroundColor always returns rgb() or rgba() format.
+	// Resolve a computed CSS color to normalized [0-1] sRGB values by painting
+	// it through a 2D canvas. getComputedStyle() can return any color space the
+	// stylesheet uses (e.g. oklch()), but getImageData always reads back sRGB.
+	let colorScratch: CanvasRenderingContext2D | null = null;
 	const parseColor = (color: string): [number, number, number] => {
-		const match = color.match(/(\d+)/g);
-		if (match && match.length >= 3) {
-			return [parseInt(match[0]) / 255, parseInt(match[1]) / 255, parseInt(match[2]) / 255];
+		if (!colorScratch) {
+			const scratchCanvas = document.createElement("canvas");
+			scratchCanvas.width = 1;
+			scratchCanvas.height = 1;
+			colorScratch = scratchCanvas.getContext("2d", { willReadFrequently: true });
+			if (!colorScratch) return [0, 0, 0];
 		}
-		return [0, 0, 0];
+		colorScratch.fillStyle = "#000";
+		colorScratch.fillStyle = color;
+		colorScratch.fillRect(0, 0, 1, 1);
+		const [r, g, b] = colorScratch.getImageData(0, 0, 1, 1).data;
+		return [r / 255, g / 255, b / 255];
 	};
 
 	const adjustLightness = (
