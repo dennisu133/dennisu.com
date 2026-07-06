@@ -41,6 +41,7 @@
 		{
 			name: "PrivateStream",
 			description: "A private low-latency livestream viewer for friend groups.",
+			url: "https://kino.dennisu.com/demo",
 			repo: "https://github.com/dennisu133/PrivateStream",
 			date: new Date(2025, 9, 1, 12), // Month is 0-indexed: 9 = October, noon to avoid timezone shifts
 			stack: getStackIcons("typescript", "svelte", "tailwind")
