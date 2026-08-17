@@ -6,11 +6,7 @@ const config = {
 	preprocess: vitePreprocess(),
 	kit: {
 		adapter: adapter({
-			pages: "build",
-			assets: "build",
-			fallback: undefined,
-			precompress: true, // Generate .gz and .br files for smaller transfers
-			strict: true
+			precompress: true // Generate .gz and .br files for smaller transfers
 		})
 	}
 };

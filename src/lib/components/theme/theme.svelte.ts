@@ -19,24 +19,9 @@ class ThemeState {
 		if (browser) {
 			const doc = document.documentElement;
 			const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-			let override = doc.getAttribute("data-theme");
+			const override = doc.getAttribute("data-theme");
 
-			// The blocking script normally supplies this before CSS loads. Reading
-			// storage here as well keeps the component robust if it is used alone.
-			if (!isTheme(override)) {
-				try {
-					override = localStorage.getItem(storageKey);
-				} catch {
-					override = null;
-				}
-			}
-
-			if (isTheme(override)) {
-				doc.setAttribute("data-theme", override);
-				this.mode = override;
-			} else {
-				this.mode = mediaQuery.matches ? "dark" : "light";
-			}
+			this.mode = isTheme(override) ? override : mediaQuery.matches ? "dark" : "light";
 
 			mediaQuery.addEventListener("change", (event) => {
 				if (!doc.hasAttribute("data-theme")) {
