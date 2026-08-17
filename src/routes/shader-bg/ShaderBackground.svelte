@@ -4,22 +4,15 @@
 	import vertexShader from "./shaders/clouds.vert.glsl?raw";
 	import fragmentShader from "./shaders/clouds.frag.glsl?raw";
 
-	let {
-		speed = 0.03,
-		scale = 1.1,
-		density = 0.2
-	}: {
-		speed?: number;
-		scale?: number;
-		density?: number;
-	} = $props();
-
 	let canvas: HTMLCanvasElement | null = null;
 	let teardown: (() => void) | undefined;
 	let glContext: { updateColors: (mode: "light" | "dark") => void } | undefined = $state();
 	let isInitializing = $state(false);
 	let isVisible = $state(false);
 
+	const SPEED = 0.03;
+	const SCALE = 1.1;
+	const DENSITY = 0.2;
 	const RESOLUTION_SCALES: Record<0 | 1 | 2, number> = { 0: 0.5, 1: 0.7, 2: 0.85 };
 	const MAX_DT = 0.1;
 	const DT_SMOOTHING = 0.12;
@@ -178,9 +171,9 @@
 			u_starsStrength: gl.getUniformLocation(program, "u_starsStrength")
 		};
 
-		gl.uniform1f(uniforms.u_scale, scale);
-		gl.uniform1f(uniforms.u_speed, speed);
-		gl.uniform1f(uniforms.u_density, density);
+		gl.uniform1f(uniforms.u_scale, SCALE);
+		gl.uniform1f(uniforms.u_speed, SPEED);
+		gl.uniform1f(uniforms.u_density, DENSITY);
 		const qualityLevel = detectQualityLevel();
 		gl.uniform1i(uniforms.u_quality, qualityLevel);
 
