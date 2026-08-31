@@ -29,7 +29,7 @@
 
 <button
 	type="button"
-	class="script-theme-toggle group relative inline-flex items-center justify-center rounded-lg border border-border p-2 text-muted-foreground transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+	class="script-theme-toggle relative inline-flex items-center justify-center rounded-lg border border-border p-2 text-muted-foreground transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
 	aria-label="Switch to {nextTheme} mode"
 	onclick={toggleTheme}
 >
@@ -44,7 +44,7 @@
 />
 <label
 	for="no-script-theme-toggle"
-	class="no-script-theme-toggle group relative items-center justify-center rounded-lg border border-border p-2 text-muted-foreground transition-colors hover:text-foreground"
+	class="no-script-theme-toggle relative items-center justify-center rounded-lg border border-border p-2 text-muted-foreground transition-colors hover:text-foreground"
 >
 	{@render toggleContents()}
 </label>
@@ -58,6 +58,17 @@
 	.script-theme-toggle,
 	.no-script-theme-toggle {
 		background-color: light-dark(rgb(15 23 42 / 0.12), transparent);
+	}
+
+	.tooltip {
+		top: 100%;
+		right: 0;
+		margin-top: 0.5rem;
+	}
+
+	.script-theme-toggle:hover .tooltip,
+	.no-script-theme-toggle:hover .tooltip {
+		opacity: 1;
 	}
 
 	@media (scripting: none) {
