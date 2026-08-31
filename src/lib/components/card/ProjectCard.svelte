@@ -6,7 +6,7 @@
 	let {
 		name,
 		description,
-		url: _url,
+		url,
 		repo,
 		date,
 		disclaimer,
@@ -21,7 +21,7 @@
 		stack: StackIcon[];
 	} = $props();
 
-	const url = $derived(_url ?? repo);
+	const projectUrl = $derived(url ?? repo);
 	let activeStackIcon = $state<string | null>(null);
 
 	function getStackTooltipId(iconName: string) {
@@ -45,10 +45,10 @@
 	onscroll={() => (activeStackIcon = null)}
 />
 
-<li class="card group flex h-full flex-col gap-3">
+<li class="card group flex flex-col gap-3">
 	<a
-		href={url}
-		class="card-primary-link absolute inset-0 z-10 hidden pointer-fine:block"
+		href={projectUrl}
+		class="absolute inset-0 z-10 hidden focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground pointer-fine:block"
 		aria-label="Open {name}"
 	>
 	</a>
@@ -60,9 +60,10 @@
 			>
 				{name}
 			</h3>
+			<!-- TODO: remove me and competitiveworlde -->
 			{#if disclaimer}
 				<p
-					class="project-disclaimer pointer-events-none absolute top-[75%] left-[72%] z-20 w-max -rotate-3 font-mono text-[0.65rem] leading-none font-bold"
+					class="pointer-events-none absolute top-3/4 left-[70%] z-20 w-max -rotate-3 font-mono text-xs leading-none font-bold text-[light-dark(oklch(41.033%_0.1502_10.272),oklch(71.919%_0.169_13.428))] [@media(min-width:80rem)_and_(max-height:48rem)]:left-[42%]"
 				>
 					{disclaimer}
 				</p>
@@ -70,7 +71,7 @@
 		</div>
 		<time
 			datetime={date.toISOString()}
-			class="shrink-0 self-start font-mono text-[0.6rem] leading-none tracking-wide text-muted-foreground opacity-80"
+			class="shrink-0 self-start font-mono text-xs leading-none tracking-wide text-muted-foreground opacity-80"
 		>
 			{date.toLocaleDateString("en-US", { year: "numeric", month: "short" })}
 		</time>
@@ -79,25 +80,25 @@
 	<p class="text-sm leading-relaxed text-muted-foreground">{description}</p>
 
 	<div class="mt-auto flex items-center justify-between gap-3 border-t border-border/50 pt-2.5">
-		<div class="flex items-center gap-2">
-			{#each stack as icon}
+		<div class="flex items-center">
+			{#each stack as icon (icon.name)}
 				{@const tooltipId = getStackTooltipId(icon.name)}
-				<span class="stack-icon-trigger relative z-20 block">
+				<span class="group/stack-icon relative z-20 grid size-6 place-items-center">
 					<img
 						src={icon.src}
 						alt=""
-						class="stack-icon h-[1.1rem] w-[1.1rem] transition-[filter,opacity] duration-150"
+						class="stack-icon size-4 opacity-90 transition-opacity duration-150 group-hover/stack-icon:opacity-100"
 					/>
 					<span
 						id={tooltipId}
 						role="tooltip"
 						style:opacity={activeStackIcon === icon.name ? 1 : null}
-						class="tooltip stack-tooltip"
+						class="tooltip bottom-full left-0 mb-1.5 group-hover/stack-icon:opacity-100"
 					>
 						{icon.name}
 					</span>
 					<a
-						href={url}
+						href={projectUrl}
 						aria-hidden="true"
 						tabindex="-1"
 						class="absolute inset-0 hidden pointer-fine:block"
@@ -117,64 +118,34 @@
 
 		<div class="relative z-20 flex items-center gap-2">
 			<a
-				href={url}
-				class="pointer-events-auto hidden items-center text-[clamp(0.75rem,2.4vw,0.85rem)] leading-none tracking-[0.06em] text-accent uppercase transition-colors duration-150 hover:text-accent-hover pointer-coarse:inline-flex"
+				href={projectUrl}
+				class="hidden min-h-6 items-center text-xs leading-none tracking-wider text-accent uppercase transition-colors duration-150 hover:text-accent-hover pointer-coarse:inline-flex"
 				target="_blank"
 				rel="noreferrer"
 			>
 				Open
 			</a>
 
-			<span class="mx-0.5 hidden h-[0.85em] w-px self-center bg-border/70 pointer-coarse:block"
-			></span>
+			<span class="mx-0.5 hidden h-3.5 w-px bg-border/70 pointer-coarse:block"></span>
 
 			<a
 				href={repo}
 				target="_blank"
 				rel="noreferrer"
-				class="pointer-events-auto -m-1 inline-flex rounded-sm p-1 opacity-50 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+				class="-m-1 inline-flex rounded-sm p-1 opacity-50 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
 				aria-label="View {name} on GitHub"
 			>
-				<img src={githubIcon} alt="GitHub" class="show-on-dark h-[1.05rem] w-[1.05rem]" />
-				<img src={githubDarkIcon} alt="GitHub" class="show-on-light h-[1.05rem] w-[1.05rem]" />
+				<img src={githubIcon} alt="" class="show-on-dark size-4" />
+				<img src={githubDarkIcon} alt="" class="show-on-light size-4" />
 			</a>
 		</div>
 	</div>
 </li>
 
 <style>
-	.card-primary-link:focus-visible {
-		outline: 2px solid var(--color-foreground);
-		outline-offset: -3px;
-	}
-
-	.project-disclaimer {
-		color: light-dark(oklch(41.033% 0.1502 10.272), oklch(71.919% 0.169 13.428));
-	}
-
+	/* This becomes unreadable in Tailwind */
 	.stack-icon {
-		opacity: 0.9;
 		filter: drop-shadow(0 0 0.7px light-dark(rgb(15 23 42 / 0.65), transparent))
 			drop-shadow(0 1px 0.5px light-dark(rgb(15 23 42 / 0.65), transparent));
-	}
-
-	.stack-icon-trigger:hover .stack-icon {
-		opacity: 1;
-	}
-
-	.stack-tooltip {
-		bottom: 100%;
-		left: 0;
-		margin-bottom: 0.375rem;
-	}
-
-	.stack-icon-trigger:hover .stack-tooltip {
-		opacity: 1;
-	}
-
-	@media (min-width: 80rem) and (max-height: 48rem) {
-		.project-disclaimer {
-			left: 42%;
-		}
 	}
 </style>
