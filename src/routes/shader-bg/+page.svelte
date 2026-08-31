@@ -4,10 +4,11 @@
 </script>
 
 <svelte:head>
+	<meta name="robots" content="noindex, follow" />
 	<title>Shader Background | Dennisu.com</title>
 	<meta
 		name="description"
-		content="An archived interactive demo of the animated shader background from dennisu.com."
+		content="An archived interactive demo of the animated shader background."
 	/>
 </svelte:head>
 
