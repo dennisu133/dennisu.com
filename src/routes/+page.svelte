@@ -216,6 +216,24 @@
 </div>
 
 <style>
+	.section-heading {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		margin-bottom: clamp(0.5rem, 1dvh, 1rem);
+		padding-block: 0.5rem;
+		color: var(--color-muted-foreground);
+		text-transform: uppercase;
+		letter-spacing: 0.2em;
+	}
+
+	.section-heading::after {
+		height: 1px;
+		content: "";
+		background-color: var(--color-border);
+		flex-grow: 1;
+	}
+
 	.social-icon {
 		filter: drop-shadow(0 0 0.7px light-dark(rgb(15 23 42 / 0.75), transparent))
 			drop-shadow(0 1px 0.5px light-dark(rgb(15 23 42 / 0.75), transparent));
