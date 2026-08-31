@@ -26,13 +26,13 @@
 	</span>
 	<span
 		aria-hidden="true"
-		class="tooltip show-on-light top-full right-0 mt-2 group-hover/theme-toggle:opacity-100"
+		class="tooltip show-on-light right-0 bottom-full mb-1.5 group-hover/theme-toggle:opacity-100"
 	>
 		Switch to dark mode
 	</span>
 	<span
 		aria-hidden="true"
-		class="tooltip show-on-dark top-full right-0 mt-2 group-hover/theme-toggle:opacity-100"
+		class="tooltip show-on-dark right-0 bottom-full mb-1.5 group-hover/theme-toggle:opacity-100"
 	>
 		Switch to light mode
 	</span>
