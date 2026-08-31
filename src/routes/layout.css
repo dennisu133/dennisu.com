@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "$lib/components/theme/theme.css";
+@import "../lib/components/theme/theme.css";
 
 @font-face {
 	font-family: "Space Mono";
