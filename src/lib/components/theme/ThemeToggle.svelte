@@ -29,7 +29,7 @@
 
 <button
 	type="button"
-	class="script-theme-toggle group relative inline-flex items-center justify-center rounded-lg border border-border bg-(--bg-contrast) p-2 text-(--text-muted) transition-colors hover:text-(--text) focus-visible:text-(--text) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--text)"
+	class="script-theme-toggle group relative inline-flex items-center justify-center rounded-lg border border-border p-2 text-muted-foreground transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
 	aria-label="Switch to {nextTheme} mode"
 	onclick={toggleTheme}
 >
@@ -44,7 +44,7 @@
 />
 <label
 	for="no-script-theme-toggle"
-	class="no-script-theme-toggle group relative items-center justify-center rounded-lg border border-border bg-(--bg-contrast) p-2 text-(--text-muted) transition-colors hover:text-(--text)"
+	class="no-script-theme-toggle group relative items-center justify-center rounded-lg border border-border p-2 text-muted-foreground transition-colors hover:text-foreground"
 >
 	{@render toggleContents()}
 </label>
@@ -53,6 +53,11 @@
 	.no-script-theme-input,
 	.no-script-theme-toggle {
 		display: none;
+	}
+
+	.script-theme-toggle,
+	.no-script-theme-toggle {
+		background-color: light-dark(rgb(15 23 42 / 0.12), transparent);
 	}
 
 	@media (scripting: none) {
@@ -69,8 +74,8 @@
 		}
 
 		.no-script-theme-input:focus-visible + .no-script-theme-toggle {
-			color: var(--text);
-			outline: 2px solid var(--text);
+			color: var(--color-foreground);
+			outline: 2px solid var(--color-foreground);
 			outline-offset: 2px;
 		}
 	}

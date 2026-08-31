@@ -56,13 +56,13 @@
 	<div class="flex items-baseline justify-between gap-3">
 		<div class="relative w-fit min-w-0">
 			<h3
-				class="leading-none font-medium transition-colors duration-150 group-hover:text-link-hover"
+				class="leading-none font-medium transition-colors duration-150 group-hover:text-accent-hover"
 			>
 				{name}
 			</h3>
 			{#if disclaimer}
 				<p
-					class="project-disclaimer pointer-events-none absolute top-[75%] left-[72%] z-20 w-max -rotate-3 font-display text-[0.65rem] leading-none font-bold text-project-disclaimer"
+					class="project-disclaimer pointer-events-none absolute top-[75%] left-[72%] z-20 w-max -rotate-3 font-mono text-[0.65rem] leading-none font-bold"
 				>
 					{disclaimer}
 				</p>
@@ -70,13 +70,13 @@
 		</div>
 		<time
 			datetime={date.toISOString()}
-			class="shrink-0 self-start font-display text-[0.6rem] leading-none tracking-wide text-(--text-muted) opacity-80"
+			class="shrink-0 self-start font-mono text-[0.6rem] leading-none tracking-wide text-muted-foreground opacity-80"
 		>
 			{date.toLocaleDateString("en-US", { year: "numeric", month: "short" })}
 		</time>
 	</div>
 
-	<p class="text-sm leading-relaxed text-(--text-muted)">{description}</p>
+	<p class="text-sm leading-relaxed text-muted-foreground">{description}</p>
 
 	<div class="mt-auto flex items-center justify-between gap-3 border-t border-border/50 pt-2.5">
 		<div class="flex items-center gap-2">
@@ -92,7 +92,7 @@
 						id={tooltipId}
 						role="tooltip"
 						style:opacity={activeStackIcon === icon.name ? 1 : null}
-						class="pointer-events-none absolute bottom-full left-0 mb-1.5 min-w-max rounded-sm border border-border bg-(--bg-tooltip) px-2 py-1 text-left text-xs text-(--text) opacity-0 shadow-sm transition-opacity duration-150 select-none group-hover/stack:opacity-100"
+						class="pointer-events-none absolute bottom-full left-0 mb-1.5 min-w-max rounded-sm border border-border bg-tooltip px-2 py-1 text-left text-xs text-foreground opacity-0 shadow-sm transition-opacity duration-150 select-none group-hover/stack:opacity-100"
 					>
 						{icon.name}
 					</span>
@@ -104,7 +104,7 @@
 					></a>
 					<button
 						type="button"
-						class="absolute inset-0 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--text) pointer-fine:hidden"
+						class="absolute inset-0 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground pointer-fine:hidden"
 						aria-label={icon.name}
 						aria-controls={tooltipId}
 						aria-expanded={activeStackIcon === icon.name}
@@ -118,7 +118,7 @@
 		<div class="relative z-20 flex items-center gap-2">
 			<a
 				href={url}
-				class="pointer-events-auto hidden items-center text-[clamp(0.75rem,2.4vw,0.85rem)] leading-none tracking-[0.06em] text-link uppercase transition-colors duration-150 hover:text-link-hover pointer-coarse:inline-flex"
+				class="pointer-events-auto hidden items-center text-[clamp(0.75rem,2.4vw,0.85rem)] leading-none tracking-[0.06em] text-accent uppercase transition-colors duration-150 hover:text-accent-hover pointer-coarse:inline-flex"
 				target="_blank"
 				rel="noreferrer"
 			>
@@ -132,7 +132,7 @@
 				href={repo}
 				target="_blank"
 				rel="noreferrer"
-				class="pointer-events-auto -m-1 inline-flex rounded-sm p-1 opacity-50 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--text)"
+				class="pointer-events-auto -m-1 inline-flex rounded-sm p-1 opacity-50 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
 				aria-label="View {name} on GitHub"
 			>
 				<img src={githubIcon} alt="GitHub" class="show-on-dark h-[1.05rem] w-[1.05rem]" />
@@ -144,18 +144,46 @@
 
 <style>
 	.card-primary-link:focus-visible {
-		outline: 2px solid var(--text);
+		outline: 2px solid var(--color-foreground);
 		outline-offset: -3px;
 	}
 
+	.project-disclaimer {
+		color: light-dark(oklch(41.033% 0.1502 10.272), oklch(71.919% 0.169 13.428));
+	}
+
 	.stack-icon {
+		--stack-icon-opacity: 0.85;
+
 		opacity: var(--stack-icon-opacity);
-		filter: drop-shadow(0 0 0.7px var(--stack-icon-shadow))
-			drop-shadow(0 1px 0.5px var(--stack-icon-shadow));
+		filter: drop-shadow(0 0 0.7px light-dark(rgb(15 23 42 / 0.65), transparent))
+			drop-shadow(0 1px 0.5px light-dark(rgb(15 23 42 / 0.65), transparent));
 	}
 
 	.stack-icon-trigger:hover .stack-icon {
-		opacity: var(--stack-icon-hover-opacity);
+		opacity: 1;
+	}
+
+	:global(:root[data-theme="light"]) .stack-icon {
+		--stack-icon-opacity: 0.9;
+	}
+
+	@media (prefers-color-scheme: light) {
+		:global(:root:not([data-theme])) .stack-icon {
+			--stack-icon-opacity: 0.9;
+		}
+	}
+
+	@media (scripting: none) and (prefers-color-scheme: light) {
+		:global(:root:not([data-theme]):has(#no-script-theme-toggle:checked)) .stack-icon {
+			--stack-icon-opacity: 0.85;
+		}
+	}
+
+	@media (scripting: none) and (prefers-color-scheme: dark) {
+		:global(:root:not([data-theme]):has(#no-script-theme-toggle:checked)) .stack-icon {
+			--stack-icon-opacity: 0.9;
+		}
 	}
 
 	@media (min-width: 80rem) and (max-height: 48rem) {

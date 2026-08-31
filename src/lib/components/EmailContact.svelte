@@ -43,7 +43,7 @@
 				class={[
 					"reveal-character relative inline-block",
 					"transition-[translate,rotate,filter] duration-500 ease-out will-change-[translate,rotate,filter]",
-					"after:absolute after:left-0 after:text-xs after:text-(--text-muted) after:transition-opacity after:duration-500 after:ease-out after:content-(--scramble)",
+					"after:absolute after:left-0 after:text-xs after:text-muted-foreground after:transition-opacity after:duration-500 after:ease-out after:content-(--scramble)",
 					revealed
 						? "w-auto translate-y-0 rotate-0 text-current blur-none after:opacity-0"
 						: "w-[0.5em] translate-y-(--offset-y) rotate-(--rotate) text-transparent blur-[1px] after:opacity-80"
@@ -70,20 +70,20 @@
 
 	<div class="min-w-0">
 		<h3
-			class="text-sm font-medium transition-colors duration-150 group-hover/email:text-link-hover"
+			class="text-sm font-medium transition-colors duration-150 group-hover/email:text-accent-hover"
 		>
 			Get in touch
 		</h3>
-		<div class="relative max-w-full text-sm text-(--text-muted)">
+		<div class="relative max-w-full text-sm text-muted-foreground">
 			{@render emailAddress()}
 			<button
 				type="button"
-				class="absolute inset-0 cursor-pointer rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--text) pointer-fine:hidden"
+				class="absolute inset-0 cursor-pointer rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground pointer-fine:hidden"
 				aria-label={handle ?? "Email address hidden until interaction"}
 				onclick={reveal}
 			></button>
 		</div>
-		<noscript class="text-xs text-(--text-muted) opacity-80">
+		<noscript class="text-xs text-muted-foreground opacity-80">
 			<br /> Revealing email requires JavaScript.
 		</noscript>
 	</div>
@@ -91,7 +91,7 @@
 	<FancyLink
 		text="Email"
 		url={computedHref}
-		class="pointer-events-auto z-20 ml-auto items-center py-1 text-[clamp(0.75rem,4vw,1rem)] leading-none tracking-[0.06em] text-link uppercase group-hover:text-link-hover hover:text-link-hover pointer-fine:hidden"
+		class="pointer-events-auto z-20 ml-auto items-center py-1 text-[clamp(0.75rem,4vw,1rem)] leading-none tracking-[0.06em] text-accent uppercase group-hover:text-accent-hover hover:text-accent-hover pointer-fine:hidden"
 		onclick={handleLinkClick}
 	/>
 </div>

@@ -359,7 +359,7 @@
 		inset: 0;
 		z-index: 0;
 		pointer-events: none;
-		background-color: var(--bg-base);
+		background-color: var(--color-background);
 	}
 
 	canvas {
