@@ -100,7 +100,7 @@
 			<h1>
 				{profile.name}
 			</h1>
-			<p class="text-subtitle! leading-tight font-semibold text-(--text-muted)">
+			<p class="text-subtitle leading-tight font-semibold text-muted-foreground">
 				{profile.subtitle}
 			</p>
 		</div>
@@ -108,12 +108,12 @@
 		<div class="ml-auto flex flex-col items-end self-end">
 			<ThemeToggle />
 
-			<div class="mt-1 text-right text-(--text-muted) sm:mt-2">
+			<div class="mt-1 text-right text-muted-foreground sm:mt-2">
 				<span>Based in </span>
 				<FancyLink
 					text={profile.location.label}
 					url={profile.location.url}
-					class="text-link hover:text-link-hover focus-visible:text-link-hover"
+					class="text-accent hover:text-accent-hover focus-visible:text-accent-hover"
 				/>
 			</div>
 		</div>
@@ -126,7 +126,7 @@
 				class="card grid grid-cols-[minmax(0,1fr)] gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-stretch md:gap-5"
 			>
 				<div class="grid min-w-0 gap-2">
-					<p class="text-(--text)">
+					<p class="text-foreground">
 						Bachelor in Computer Science. My interests are
 						<ImageDispenser images={allStackIconUrls}>programming</ImageDispenser>,
 						<ImagePreview src="/topsters.webp" alt="A Topsters chart of Dennis's favorite albums">
@@ -135,19 +135,19 @@
 						<NekoChase>cats</NekoChase>.
 					</p>
 
-					<p class="text-[clamp(0.75rem,1.5vw,0.9rem)] tracking-wide text-(--text-muted)">
+					<p class="text-[clamp(0.75rem,1.5vw,0.9rem)] tracking-wide text-muted-foreground">
 						{profile.proficiencies}
 					</p>
 
 					<div class="flex items-center gap-2">
-						<span class="h-1.5 w-1.5 shrink-0 rounded-full bg-link" aria-hidden="true"></span>
-						<p class="text-[clamp(0.75rem,1.5vw,0.9rem)] leading-relaxed text-(--text-muted)">
+						<span class="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true"></span>
+						<p class="text-[clamp(0.75rem,1.5vw,0.9rem)] leading-relaxed text-muted-foreground">
 							{profile.availability}
 						</p>
 						<ArrowRight
 							aria-hidden="true"
 							strokeWidth={1.5}
-							class="h-4 w-4 shrink-0 rotate-90 text-link md:ml-auto md:rotate-0"
+							class="h-4 w-4 shrink-0 rotate-90 text-accent md:ml-auto md:rotate-0"
 						/>
 					</div>
 				</div>
@@ -174,7 +174,7 @@
 		<FancyLink
 			text="View Source"
 			url={siteSource}
-			class="font-display tracking-wide text-link hover:text-link-hover"
+			class="font-mono tracking-wide text-accent hover:text-accent-hover"
 		/>
 
 		<nav aria-label="Social links">
@@ -185,7 +185,7 @@
 							href={social.url}
 							target="_blank"
 							rel="noreferrer"
-							class="group/social block rounded-sm p-1 opacity-90 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--text)"
+							class="group/social block rounded-sm p-1 opacity-90 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
 							aria-label="Open {social.platform}"
 							title={social.platform}
 						>
@@ -217,8 +217,8 @@
 
 <style>
 	.social-icon {
-		filter: drop-shadow(0 0 0.7px var(--social-icon-shadow))
-			drop-shadow(0 1px 0.5px var(--social-icon-shadow));
+		filter: drop-shadow(0 0 0.7px light-dark(rgb(15 23 42 / 0.75), transparent))
+			drop-shadow(0 1px 0.5px light-dark(rgb(15 23 42 / 0.75), transparent));
 	}
 
 	@media (min-width: 80rem) and (max-height: 48rem) {
