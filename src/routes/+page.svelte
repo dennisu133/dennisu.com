@@ -222,10 +222,13 @@
 			<div class="mt-1 text-right text-muted-foreground sm:mt-2">
 				<span>Based in </span>
 				<FancyLink
-					text={profile.location.label}
-					url={profile.location.url}
+					href={profile.location.url}
+					target="_blank"
+					rel="noreferrer"
 					class="text-accent hover:text-accent-hover focus-visible:text-accent-hover"
-				/>
+				>
+					{profile.location.label}
+				</FancyLink>
 			</div>
 		</div>
 	</header>
@@ -283,10 +286,13 @@
 
 	<footer class="flex items-center justify-between border-t border-border py-3 text-xs">
 		<FancyLink
-			text="View Source"
-			url={siteSource}
+			href={siteSource}
+			target="_blank"
+			rel="noreferrer"
 			class="font-mono tracking-wide text-accent hover:text-accent-hover"
-		/>
+		>
+			View Source
+		</FancyLink>
 
 		<nav aria-label="Social links">
 			<ul class="flex items-center gap-3">

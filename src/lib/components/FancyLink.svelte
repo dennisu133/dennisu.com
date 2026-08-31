@@ -1,26 +1,13 @@
 <script lang="ts">
-	let {
-		text,
-		url,
-		class: className = "",
-		onclick
-	}: {
-		text: string;
-		url: string;
-		class?: string;
-		onclick?: (event: MouseEvent) => void;
-	} = $props();
+	import type { HTMLAnchorAttributes } from "svelte/elements";
+
+	let { children, class: className, ...rest }: HTMLAnchorAttributes = $props();
 </script>
 
-<a
-	href={url}
-	target="_blank"
-	rel="noreferrer"
-	class="group/link relative inline-flex {className}"
-	{onclick}
->
-	{text}
+<a {...rest} class={["group/link relative inline-flex", className]}>
+	{@render children?.()}
 	<span
+		aria-hidden="true"
 		class="absolute bottom-0 left-0 h-px w-0 bg-accent-hover transition-[width] duration-300 ease-out group-hover/link:w-full"
 	></span>
 </a>
