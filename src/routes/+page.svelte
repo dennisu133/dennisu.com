@@ -194,7 +194,7 @@
 
 	<!-- twitter title, description and site fall back to Open Graph -->
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:image" content="{siteUrl}/Twitter.webp" />
+	<meta name="twitter:image" content="{siteUrl}/twitter.webp" />
 	<meta
 		name="twitter:image:alt"
 		content="Black cat named Rust with reddish-brown undertones in her fur"
