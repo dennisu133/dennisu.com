@@ -31,12 +31,12 @@
 
 	const projects = [
 		{
-			name: "RiichiCalc",
-			description: "A Riichi Mahjong scoring companion for real-life play.",
-			url: "https://riichi.dennisu.com/",
-			repo: "https://github.com/dennisu133/RiichiCalc",
+			name: "Jikaze",
+			description: "Android Riichi Mahjong score calculator for in-person play.",
+			url: "https://jikaze.app/",
+			repo: "https://github.com/dennisu133/Jikaze",
 			date: new Date(2026, 2, 1, 12), // 2 = March, noon to avoid timezone shifts
-			stack: getStackIcons("android", "kotlin")
+			stack: getStackIcons("android", "jetpackcompose", "kotlin")
 		},
 		{
 			name: "PrivateStream",
