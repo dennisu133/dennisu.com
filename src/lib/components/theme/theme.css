@@ -108,12 +108,10 @@
 
 :root.theme-transition-active::view-transition-old(theme-toggle-icon) {
 	animation: theme-icon-out 160ms ease-in both;
-	transform-origin: center;
 }
 
 :root.theme-transition-active::view-transition-new(theme-toggle-icon) {
 	animation: theme-icon-in 360ms cubic-bezier(0.16, 1, 0.3, 1) both;
-	transform-origin: center;
 }
 
 @keyframes theme-twilight-reveal {

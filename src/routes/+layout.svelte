@@ -1,5 +1,5 @@
 <script lang="ts">
-  import "./layout.css";
+	import "./layout.css";
 	import { onMount } from "svelte";
 
 	import fontGeist from "$lib/assets/fonts/GeistSans-Variable.woff2";

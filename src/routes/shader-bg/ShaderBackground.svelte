@@ -1,13 +1,11 @@
 <script lang="ts">
-	import { onMount, onDestroy } from "svelte";
-	import { themeState } from "$lib/components/theme/theme.svelte";
+	import { onMount } from "svelte";
 	import vertexShader from "./shaders/clouds.vert.glsl?raw";
 	import fragmentShader from "./shaders/clouds.frag.glsl?raw";
 
 	let canvas: HTMLCanvasElement | null = null;
 	let teardown: (() => void) | undefined;
-	let glContext: { updateColors: (mode: "light" | "dark") => void } | undefined = $state();
-	let isInitializing = $state(false);
+	let isInitializing = false;
 	let isVisible = $state(false);
 
 	const SPEED = 0.03;
@@ -182,9 +180,12 @@
 
 		let isDestroyed = false;
 		const resolutionScale = RESOLUTION_SCALES[qualityLevel];
+		const systemTheme = window.matchMedia("(prefers-color-scheme: dark)");
 
-		const applyColors = (mode: "light" | "dark") => {
+		const applyColors = () => {
 			if (isDestroyed || !canvas) return;
+			const override = document.documentElement.dataset.theme;
+			const isDark = override === "dark" || (override !== "light" && systemTheme.matches);
 
 			// Read the resolved background-color from the .clouds-layer container.
 			// This gives us the fully resolved RGB value (the browser resolves
@@ -195,21 +196,16 @@
 
 			gl.uniform3f(uniforms.u_skyColor2, r, g, b);
 
-			const [tr, tg, tb] = adjustLightness(r, g, b, mode === "dark" ? 0.02 : -0.2);
+			const [tr, tg, tb] = adjustLightness(r, g, b, isDark ? 0.02 : -0.2);
 			gl.uniform3f(uniforms.u_skyColor1, tr, tg, tb);
 
-			if (mode === "dark") {
+			if (isDark) {
 				gl.uniform3f(uniforms.u_cloudColor, 0.4, 0.4, 0.5);
 				gl.uniform1f(uniforms.u_starsStrength, 1.0);
 			} else {
 				gl.uniform3f(uniforms.u_cloudColor, 1.1, 1.1, 0.9);
 				gl.uniform1f(uniforms.u_starsStrength, 0.0);
 			}
-		};
-
-		const doUpdateColors = (mode: "light" | "dark") => {
-			// Defer one frame to ensure CSS variables have been updated by the browser
-			requestAnimationFrame(() => applyColors(mode));
 		};
 
 		const resize = () => {
@@ -232,11 +228,14 @@
 
 		resize();
 
-		// Apply initial colors synchronously (CSS vars are already set at this point)
-		applyColors(themeState.mode);
+		applyColors();
 
-		// Expose for reactive effects
-		glContext = { updateColors: doUpdateColors };
+		const themeObserver = new MutationObserver(applyColors);
+		themeObserver.observe(document.documentElement, {
+			attributes: true,
+			attributeFilter: ["data-theme"]
+		});
+		systemTheme.addEventListener("change", applyColors);
 
 		let raf = 0;
 		let time = 0;
@@ -322,6 +321,8 @@
 		teardown = () => {
 			isDestroyed = true;
 			pause();
+			themeObserver.disconnect();
+			systemTheme.removeEventListener("change", applyColors);
 			document.removeEventListener("visibilitychange", onVisibility);
 			io.disconnect();
 			window.removeEventListener("resize", onResize);
@@ -329,23 +330,14 @@
 			gl.deleteShader(vs);
 			gl.deleteShader(fs);
 			gl.deleteVertexArray(vao);
-			glContext = undefined;
 		};
 
 		isInitializing = false;
 	};
 
 	onMount(() => {
-		initialize();
-	});
-
-	onDestroy(() => {
-		teardown?.();
-	});
-
-	// React to theme changes
-	$effect(() => {
-		glContext?.updateColors(themeState.mode);
+		void initialize();
+		return () => teardown?.();
 	});
 </script>
 

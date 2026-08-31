@@ -1,21 +1,18 @@
 <script lang="ts">
-	import { themeState } from "./theme.svelte";
 	import { Moon, Sun } from "@lucide/svelte";
 
-	const nextTheme = $derived(themeState.mode === "light" ? "dark" : "light");
+	import { toggleTheme } from "./theme";
 
-	// Shared between the scripted button and the no-JS label.
 	const toggleClass =
-		"theme-toggle relative items-center justify-center rounded-lg border border-border p-2 text-muted-foreground transition-colors hover:text-foreground";
+		"group/theme-toggle relative items-center justify-center rounded-lg border border-border bg-[light-dark(rgb(15_23_42/0.12),transparent)] p-2 text-muted-foreground transition-colors hover:text-foreground";
 
-	function toggleTheme(event: MouseEvent) {
+	function handleToggle(event: MouseEvent) {
 		const button = event.currentTarget as HTMLButtonElement;
-		const bounds = button.getBoundingClientRect();
-		const wasTriggeredByKeyboard = event.detail === 0;
+		const { left, top, width, height } = button.getBoundingClientRect();
 
-		themeState.toggle({
-			x: wasTriggeredByKeyboard ? bounds.left + bounds.width / 2 : event.clientX,
-			y: wasTriggeredByKeyboard ? bounds.top + bounds.height / 2 : event.clientY
+		toggleTheme({
+			x: left + width / 2,
+			y: top + height / 2
 		});
 	}
 </script>
@@ -27,15 +24,25 @@
 	<span aria-hidden="true" class="theme-toggle-icon show-on-dark">
 		<Sun size={20} />
 	</span>
-	<span aria-hidden="true" class="tooltip show-on-light">Switch to dark mode</span>
-	<span aria-hidden="true" class="tooltip show-on-dark">Switch to light mode</span>
+	<span
+		aria-hidden="true"
+		class="tooltip show-on-light top-full right-0 mt-2 group-hover/theme-toggle:opacity-100"
+	>
+		Switch to dark mode
+	</span>
+	<span
+		aria-hidden="true"
+		class="tooltip show-on-dark top-full right-0 mt-2 group-hover/theme-toggle:opacity-100"
+	>
+		Switch to light mode
+	</span>
 {/snippet}
 
 <button
 	type="button"
-	class="script-theme-toggle inline-flex focus-visible:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground {toggleClass}"
-	aria-label="Switch to {nextTheme} mode"
-	onclick={toggleTheme}
+	class="script-theme-toggle inline-flex focus-visible:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground noscript:hidden {toggleClass}"
+	aria-label="Toggle color theme"
+	onclick={handleToggle}
 >
 	{@render toggleContents()}
 </button>
@@ -43,50 +50,12 @@
 <input
 	id="no-script-theme-toggle"
 	type="checkbox"
-	class="no-script-theme-input sr-only"
+	class="peer sr-only hidden noscript:block"
 	aria-label="Toggle color theme"
 />
-<label for="no-script-theme-toggle" class="no-script-theme-toggle {toggleClass}">
+<label
+	for="no-script-theme-toggle"
+	class="hidden peer-focus-visible:text-foreground peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-foreground noscript:inline-flex {toggleClass}"
+>
 	{@render toggleContents()}
 </label>
-
-<style>
-	.no-script-theme-input,
-	.no-script-theme-toggle {
-		display: none;
-	}
-
-	.theme-toggle {
-		background-color: light-dark(rgb(15 23 42 / 0.12), transparent);
-	}
-
-	.tooltip {
-		top: 100%;
-		right: 0;
-		margin-top: 0.5rem;
-	}
-
-	.theme-toggle:hover .tooltip {
-		opacity: 1;
-	}
-
-	@media (scripting: none) {
-		.script-theme-toggle {
-			display: none;
-		}
-
-		.no-script-theme-input {
-			display: block;
-		}
-
-		.no-script-theme-toggle {
-			display: inline-flex;
-		}
-
-		.no-script-theme-input:focus-visible + .no-script-theme-toggle {
-			color: var(--color-foreground);
-			outline: 2px solid var(--color-foreground);
-			outline-offset: 2px;
-		}
-	}
-</style>
