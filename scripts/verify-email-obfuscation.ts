@@ -1,10 +1,8 @@
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
-import { decodeEmail } from "../src/lib/emailObfuscation";
 
 const buildDirectory = path.resolve("build");
-const email = decodeEmail();
-const encodedEmail = Buffer.from(email);
+const emailPattern = /[\w.+-]+@(?:[\w-]+\.)+[\w-]+/;
 const leaks: string[] = [];
 
 async function verifyDirectory(directory: string) {
@@ -16,19 +14,9 @@ async function verifyDirectory(directory: string) {
 			continue;
 		}
 
-		const contents = await readFile(entryPath);
-
-		if (contents.includes(encodedEmail)) {
+		const contents = await readFile(entryPath, "utf8");
+		if (emailPattern.test(contents)) {
 			leaks.push(path.relative(buildDirectory, entryPath));
-			continue;
-		}
-
-		if (entry.name.endsWith(".html")) {
-			const textContent = contents.toString("utf8").replace(/<[^>]+>/g, "");
-
-			if (textContent.includes(email)) {
-				leaks.push(`${path.relative(buildDirectory, entryPath)} (HTML text content)`);
-			}
 		}
 	}
 }
