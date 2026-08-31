@@ -4,6 +4,10 @@
 
 	const nextTheme = $derived(themeState.mode === "light" ? "dark" : "light");
 
+	// Shared between the scripted button and the no-JS label.
+	const toggleClass =
+		"theme-toggle relative items-center justify-center rounded-lg border border-border p-2 text-muted-foreground transition-colors hover:text-foreground";
+
 	function toggleTheme(event: MouseEvent) {
 		const button = event.currentTarget as HTMLButtonElement;
 		const bounds = button.getBoundingClientRect();
@@ -29,7 +33,7 @@
 
 <button
 	type="button"
-	class="script-theme-toggle relative inline-flex items-center justify-center rounded-lg border border-border p-2 text-muted-foreground transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+	class="script-theme-toggle inline-flex focus-visible:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground {toggleClass}"
 	aria-label="Switch to {nextTheme} mode"
 	onclick={toggleTheme}
 >
@@ -42,10 +46,7 @@
 	class="no-script-theme-input sr-only"
 	aria-label="Toggle color theme"
 />
-<label
-	for="no-script-theme-toggle"
-	class="no-script-theme-toggle relative items-center justify-center rounded-lg border border-border p-2 text-muted-foreground transition-colors hover:text-foreground"
->
+<label for="no-script-theme-toggle" class="no-script-theme-toggle {toggleClass}">
 	{@render toggleContents()}
 </label>
 
@@ -55,8 +56,7 @@
 		display: none;
 	}
 
-	.script-theme-toggle,
-	.no-script-theme-toggle {
+	.theme-toggle {
 		background-color: light-dark(rgb(15 23 42 / 0.12), transparent);
 	}
 
@@ -66,8 +66,7 @@
 		margin-top: 0.5rem;
 	}
 
-	.script-theme-toggle:hover .tooltip,
-	.no-script-theme-toggle:hover .tooltip {
+	.theme-toggle:hover .tooltip {
 		opacity: 1;
 	}
 

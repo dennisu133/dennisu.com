@@ -153,9 +153,7 @@
 	}
 
 	.stack-icon {
-		--stack-icon-opacity: 0.85;
-
-		opacity: var(--stack-icon-opacity);
+		opacity: 0.9;
 		filter: drop-shadow(0 0 0.7px light-dark(rgb(15 23 42 / 0.65), transparent))
 			drop-shadow(0 1px 0.5px light-dark(rgb(15 23 42 / 0.65), transparent));
 	}
@@ -172,28 +170,6 @@
 
 	.stack-icon-trigger:hover .stack-tooltip {
 		opacity: 1;
-	}
-
-	:global(:root[data-theme="light"]) .stack-icon {
-		--stack-icon-opacity: 0.9;
-	}
-
-	@media (prefers-color-scheme: light) {
-		:global(:root:not([data-theme])) .stack-icon {
-			--stack-icon-opacity: 0.9;
-		}
-	}
-
-	@media (scripting: none) and (prefers-color-scheme: light) {
-		:global(:root:not([data-theme]):has(#no-script-theme-toggle:checked)) .stack-icon {
-			--stack-icon-opacity: 0.85;
-		}
-	}
-
-	@media (scripting: none) and (prefers-color-scheme: dark) {
-		:global(:root:not([data-theme]):has(#no-script-theme-toggle:checked)) .stack-icon {
-			--stack-icon-opacity: 0.9;
-		}
 	}
 
 	@media (min-width: 80rem) and (max-height: 48rem) {

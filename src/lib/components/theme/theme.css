@@ -1,0 +1,146 @@
+:root {
+	color-scheme: light dark;
+	--show-light: block;
+	--show-dark: none;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--show-light: none;
+		--show-dark: block;
+	}
+}
+
+:root[data-theme="light"] {
+	color-scheme: light;
+	--show-light: block;
+	--show-dark: none;
+}
+
+:root[data-theme="dark"] {
+	color-scheme: dark;
+	--show-light: none;
+	--show-dark: block;
+}
+
+/*
+ * Without scripting the inline head script never runs, so data-theme is never
+ * present and the checkbox is the only control: it means "the opposite of the
+ * system preference".
+ */
+@media (scripting: none) and (prefers-color-scheme: light) {
+	:root:has(#no-script-theme-toggle:checked) {
+		color-scheme: dark;
+		--show-light: none;
+		--show-dark: block;
+	}
+}
+
+@media (scripting: none) and (prefers-color-scheme: dark) {
+	:root:has(#no-script-theme-toggle:checked) {
+		color-scheme: light;
+		--show-light: block;
+		--show-dark: none;
+	}
+}
+
+.show-on-light {
+	display: var(--show-light);
+}
+
+.show-on-dark {
+	display: var(--show-dark);
+}
+
+/*
+ * THEME TRANSITION
+ *
+ * The view transition that plays when the toggle flips color-scheme. It owns
+ * the color change, so component-level color transitions are suppressed to
+ * stop them being captured halfway between themes.
+ */
+:root.theme-transition-capture *,
+:root.theme-transition-capture *::before,
+:root.theme-transition-capture *::after {
+	transition: none !important;
+}
+
+.script-theme-toggle .theme-toggle-icon {
+	view-transition-name: theme-toggle-icon;
+}
+
+@property --theme-reveal {
+	syntax: "<percentage>";
+	inherits: false;
+	initial-value: 12%;
+}
+
+:root.theme-transition-active::view-transition-old(root) {
+	z-index: 1;
+	animation: none;
+}
+
+:root.theme-transition-active::view-transition-new(root) {
+	--theme-reveal: var(--theme-transition-start, 12%);
+	z-index: 2;
+	animation: theme-twilight-reveal 760ms cubic-bezier(0.4, 0, 0.2, 1) both;
+	mask-image:
+		linear-gradient(
+			225deg,
+			black 0%,
+			black calc(var(--theme-reveal) - 2.2%),
+			rgb(0 0 0 / 92%) calc(var(--theme-reveal) - 1.7%),
+			rgb(0 0 0 / 68%) calc(var(--theme-reveal) - 1.05%),
+			rgb(0 0 0 / 32%) calc(var(--theme-reveal) - 0.4%),
+			transparent calc(var(--theme-reveal) + 0.35%)
+		),
+		radial-gradient(circle, rgb(0 0 0 / 98%) 0 0.55px, black 0.9px);
+	mask-repeat: no-repeat, repeat;
+	mask-size:
+		100% 100%,
+		4px 4px;
+	mask-composite: intersect;
+}
+
+:root.theme-transition-active::view-transition-group(theme-toggle-icon) {
+	z-index: 3;
+}
+
+:root.theme-transition-active::view-transition-old(theme-toggle-icon) {
+	animation: theme-icon-out 160ms ease-in both;
+	transform-origin: center;
+}
+
+:root.theme-transition-active::view-transition-new(theme-toggle-icon) {
+	animation: theme-icon-in 360ms cubic-bezier(0.16, 1, 0.3, 1) both;
+	transform-origin: center;
+}
+
+@keyframes theme-twilight-reveal {
+	to {
+		--theme-reveal: 106%;
+	}
+}
+
+@keyframes theme-icon-out {
+	to {
+		opacity: 0;
+		transform: rotate(-70deg) scale(0.55);
+	}
+}
+
+@keyframes theme-icon-in {
+	from {
+		opacity: 0;
+		transform: rotate(70deg) scale(0.55);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	:root.theme-transition-active::view-transition-old(root),
+	:root.theme-transition-active::view-transition-new(root),
+	:root.theme-transition-active::view-transition-old(theme-toggle-icon),
+	:root.theme-transition-active::view-transition-new(theme-toggle-icon) {
+		animation: none;
+	}
+}

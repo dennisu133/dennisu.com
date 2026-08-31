@@ -1,5 +1,5 @@
 <script lang="ts">
-	import "../app.css";
+  import "./layout.css";
 	import { onMount } from "svelte";
 
 	import fontGeist from "$lib/assets/fonts/GeistSans-Variable.woff2";
@@ -97,7 +97,6 @@
 </script>
 
 <svelte:head>
-	<!-- Preload fonts to avoid FOUC on first load -->
 	<link rel="preload" href={fontGeist} as="font" type="font/woff2" crossorigin="anonymous" />
 	<link rel="preload" href={fontInstrument} as="font" type="font/woff2" crossorigin="anonymous" />
 	<link rel="preload" href={fontSpaceMono} as="font" type="font/woff2" crossorigin="anonymous" />
