@@ -8,7 +8,10 @@
 	import FancyLink from "$lib/components/FancyLink.svelte";
 	import ImagePreview from "$lib/components/ImagePreview.svelte";
 	import NekoChase from "$lib/components/NekoChase.svelte";
+	import { siteUrl } from "$lib/constants";
+	import { generateFrames } from "$lib/generateFrames";
 	import { allStackIconUrls, getStackIcons } from "$lib/stackIcons";
+	import { onMount } from "svelte";
 
 	import ImageDispenser from "$lib/components/ImageDispenser.svelte";
 
@@ -89,8 +92,116 @@
 		}
 	];
 
+	const frames = generateFrames();
+	const altTitle = "👀";
+	let currentFrame = $state(0);
+	let isVisible = $state(true);
+	let showStatic = $state(true);
+
+	// Deliberately omits the email address because it would expose it in plaintext.
+	const profilePageSchema = JSON.stringify({
+		"@context": "https://schema.org",
+		"@type": "ProfilePage",
+		"@id": `${siteUrl}/`,
+		url: `${siteUrl}/`,
+		mainEntity: {
+			"@type": "Person",
+			"@id": `${siteUrl}/#person`,
+			name: profile.name,
+			url: `${siteUrl}/`,
+			jobTitle: profile.subtitle,
+			address: {
+				"@type": "PostalAddress",
+				addressLocality: "Cottbus",
+				addressCountry: "DE"
+			},
+			sameAs: socials.map(({ url }) => url),
+			knowsAbout: ["Python", "TypeScript", "Java", "Go", "C"]
+		}
+	}).replace(/</g, "\\u003c");
+
 	const siteSource = "https://github.com/dennisu133/dennisu.com";
+
+	onMount(() => {
+		isVisible = !document.hidden;
+
+		let timeout: ReturnType<typeof setTimeout>;
+		const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+		const startAnimation = () => {
+			showStatic = true;
+			clearTimeout(timeout);
+			if (motionQuery.matches) return;
+			timeout = setTimeout(() => {
+				if (!document.hidden) {
+					showStatic = false;
+				}
+			}, 1000);
+		};
+
+		startAnimation();
+		motionQuery.addEventListener("change", startAnimation);
+
+		const handleVisibilityChange = () => {
+			isVisible = !document.hidden;
+			if (isVisible) {
+				startAnimation();
+			}
+		};
+		document.addEventListener("visibilitychange", handleVisibilityChange);
+
+		// Animate title when visible
+		const interval = setInterval(() => {
+			if (isVisible && !showStatic) {
+				currentFrame = (currentFrame + 1) % frames.length;
+			}
+		}, 400);
+
+		return () => {
+			motionQuery.removeEventListener("change", startAnimation);
+			document.removeEventListener("visibilitychange", handleVisibilityChange);
+			clearInterval(interval);
+			clearTimeout(timeout);
+		};
+	});
 </script>
+
+<svelte:head>
+	<!-- Keep the favicon override mounted so browsers observe both state changes. -->
+	<title>{isVisible ? (showStatic ? "Dennisu.com 🐱" : frames[currentFrame]) : altTitle}</title>
+	<link
+		rel="icon"
+		type="image/svg+xml"
+		href={isVisible ? "/favicon.svg?v=20260627" : "/alticon.svg?v=20260831"}
+	/>
+	<link
+		rel="icon"
+		type="image/png"
+		href={isVisible ? "/favicon-96x96.png?v=20260627" : "/alticon-96x96.png?v=20260831"}
+		sizes="96x96"
+	/>
+	<link rel="icon" href={isVisible ? "/favicon.ico?v=20260627" : "/alticon.ico?v=20260831"} />
+
+	<meta
+		name="description"
+		content="Personal website of Dennis Karnowitsch, full-stack developer in Cottbus, Germany."
+	/>
+
+	<meta property="og:title" content="Dennisu.com 🐱" />
+	<meta property="og:description" content="Please hire me." />
+	<meta property="og:image" content="{siteUrl}/dancing.gif" />
+	<meta property="og:image:alt" content="Dancing anime girl" />
+
+	<!-- twitter title, description and site fall back to Open Graph -->
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:image" content="{siteUrl}/Twitter.webp" />
+	<meta
+		name="twitter:image:alt"
+		content="Black cat named Rust with reddish-brown undertones in her fur"
+	/>
+
+	{@html `<script type="application/ld+json">${profilePageSchema}</script>`}
+</svelte:head>
 
 <Background />
 
