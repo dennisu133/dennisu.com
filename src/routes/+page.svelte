@@ -203,9 +203,9 @@
 	{@html `<script type="application/ld+json">${profilePageSchema}</script>`}
 </svelte:head>
 
-<Background />
+<div class="isolate mx-auto flex min-h-screen max-w-6xl flex-col px-6 sm:px-10">
+	<Background />
 
-<div class="relative z-10 mx-auto flex min-h-screen max-w-6xl flex-col px-6 sm:px-10">
 	<header class="mt-6 flex min-h-40 flex-wrap gap-4 sm:min-h-36">
 		<div class="transition-colors duration-150 ease-linear">
 			<h1>
