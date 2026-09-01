@@ -1,12 +1,10 @@
 <script lang="ts">
 	import { onMount, tick as nextTick, type Snippet } from "svelte";
-	import nekoSheet from "$lib/assets/neko_java.png";
+	import nekoSheet from "$lib/assets/neko_java.png?no-inline";
+	import javaPreview from "$lib/assets/preview/java-preview.avif";
+	import ImagePreview from "$lib/components/ImagePreview.svelte";
 
-	interface Props {
-		children: Snippet;
-	}
-
-	type Phase = "idle" | "chasing" | "caught" | "returning" | "resting";
+	type Phase = "idle" | "chasing" | "caught" | "returning";
 
 	const SPRITE_SIZE = 64;
 	const FRAME_SIZE = 32;
@@ -19,9 +17,8 @@
 	type Direction = (typeof SPRITE_DIRECTIONS)[number];
 	const ANGLE_DIRECTIONS = ["E", "SE", "S", "SW", "W", "NW", "N", "NE"] as const;
 
-	let { children }: Props = $props();
+	let { children }: { children: Snippet } = $props();
 
-	let trigger: HTMLButtonElement;
 	let catElement = $state<HTMLSpanElement>();
 	let phase = $state<Phase>("idle");
 	let direction = $state<Direction>("W");
@@ -29,6 +26,7 @@
 	let catX = $state(0);
 	let catY = $state(0);
 	let announcement = $state("");
+	let reducedMotion = $state(false);
 
 	let pointerX = 0;
 	let pointerY = 0;
@@ -38,8 +36,6 @@
 	let caughtAt = 0;
 	let previousTimestamp = 0;
 	let animationFrame = 0;
-	let reducedMotion = false;
-	let reducedMotionTimer: ReturnType<typeof setTimeout>;
 
 	const isActive = $derived(phase !== "idle");
 	const currentFrame = $derived.by(() => {
@@ -53,22 +49,6 @@
 			`background-position:-${currentFrame[0] * (FRAME_SIZE + FRAME_GUTTER) * SPRITE_SCALE}px -${currentFrame[1] * (FRAME_SIZE + FRAME_GUTTER) * SPRITE_SCALE}px`
 		].join(";")
 	);
-
-	onMount(() => {
-		const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-
-		function updateMotionPreference() {
-			reducedMotion = motionQuery.matches;
-		}
-
-		updateMotionPreference();
-		motionQuery.addEventListener("change", updateMotionPreference);
-
-		return () => {
-			motionQuery.removeEventListener("change", updateMotionPreference);
-			stopChase();
-		};
-	});
 
 	function clamp(value: number, minimum: number, maximum: number) {
 		return Math.min(Math.max(value, minimum), maximum);
@@ -143,32 +123,17 @@
 		animationFrame = requestAnimationFrame(tick);
 	}
 
-	function showReducedMotionCat(targetX: number, targetY: number) {
-		const offsetX = targetX < window.innerWidth / 2 ? 42 : -42;
-		catX = clamp(targetX + offsetX, SPRITE_SIZE / 2, window.innerWidth - SPRITE_SIZE / 2);
-		catY = clamp(targetY, SPRITE_SIZE / 2, window.innerHeight - SPRITE_SIZE / 2);
-		direction = offsetX > 0 ? "W" : "E";
-		frameIndex = 0;
-		phase = "resting";
-		void showCat();
-		announcement = "Java appeared beside the pointer.";
-		reducedMotionTimer = setTimeout(() => stopChase("Java went back off screen."), 1200);
-	}
-
 	function startChase(event: MouseEvent) {
 		if (isActive) return;
+		if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
+		const trigger = event.currentTarget as HTMLButtonElement;
 		const triggerRect = trigger.getBoundingClientRect();
 		const targetX = event.detail === 0 ? triggerRect.left + triggerRect.width / 2 : event.clientX;
 		const targetY = event.detail === 0 ? triggerRect.top + triggerRect.height / 2 : event.clientY;
 
 		pointerX = targetX;
 		pointerY = targetY;
-
-		if (reducedMotion) {
-			showReducedMotionCat(targetX, targetY);
-			return;
-		}
 
 		const entersFromLeft = targetX < window.innerWidth / 2;
 		const verticalOffset = targetY < window.innerHeight / 2 ? 120 : -120;
@@ -189,7 +154,6 @@
 
 	function stopChase(message = "") {
 		if (animationFrame) cancelAnimationFrame(animationFrame);
-		clearTimeout(reducedMotionTimer);
 		document.documentElement.classList.remove("java-caught-pointer");
 		animationFrame = 0;
 		previousTimestamp = 0;
@@ -197,47 +161,53 @@
 		phase = "idle";
 		announcement = message;
 	}
+
+	onMount(() => {
+		const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+		function updateMotionPreference() {
+			reducedMotion = motionQuery.matches;
+			if (reducedMotion) stopChase();
+		}
+
+		updateMotionPreference();
+		motionQuery.addEventListener("change", updateMotionPreference);
+
+		return () => {
+			motionQuery.removeEventListener("change", updateMotionPreference);
+			stopChase();
+		};
+	});
 </script>
 
 <svelte:window onpointermove={trackPointer} onblur={() => stopChase()} />
 
 <!-- Kept flush against the button: intervening whitespace would render as a
      stray space between the trigger word and adjacent punctuation. -->
-<button
-	bind:this={trigger}
-	type="button"
-	class="interactive-word"
-	aria-label="cats — summon Java"
-	aria-busy={isActive}
-	onmouseenter={startChase}
-	onclick={startChase}
->
-	{@render children()}
-</button>{#if isActive}
-	<span
-		bind:this={catElement}
-		popover="manual"
-		class="neko fixed inset-auto top-0 left-0 m-0 h-16 w-16 border-0 bg-transparent p-0"
-		class:resting={phase === "resting"}
-		style={catStyle}
-		aria-hidden="true"
-	></span>
-{/if}<span class="sr-only" aria-live="polite">{announcement}</span>
+{#if reducedMotion}<ImagePreview
+		src="/java.avif"
+		previewSrc={javaPreview}
+		alt="Java, a black cat sitting in a doorway">{@render children()}</ImagePreview
+	>{:else}<button
+		type="button"
+		class="interactive-word"
+		aria-label="cats — summon Java"
+		aria-busy={isActive}
+		onmouseenter={startChase}
+		onclick={startChase}
+	>
+		{@render children()}
+	</button>{#if isActive}
+		<span
+			bind:this={catElement}
+			popover="manual"
+			class="pointer-events-none fixed inset-auto top-0 left-0 m-0 h-16 w-16 border-0 bg-transparent bg-size-[526px_130px] bg-no-repeat p-0 will-change-transform select-none [image-rendering:pixelated]"
+			style={catStyle}
+			aria-hidden="true"
+		></span>
+	{/if}{/if}<span class="sr-only" aria-live="polite">{announcement}</span>
 
 <style>
-	.neko {
-		pointer-events: none;
-		background-repeat: no-repeat;
-		background-size: 526px 130px;
-		image-rendering: pixelated;
-		user-select: none;
-		will-change: transform;
-	}
-
-	.neko.resting {
-		will-change: auto;
-	}
-
 	:global(html.java-caught-pointer),
 	:global(html.java-caught-pointer *) {
 		cursor: none !important;
