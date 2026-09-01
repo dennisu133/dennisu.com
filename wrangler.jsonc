@@ -2,9 +2,8 @@
 	"name": "home",
 	"compatibility_date": "2026-09-01",
 
-	// TODO: Uncomment once the custom domain is live
-	// "routes": [{ "pattern": "dennisu.com", "custom_domain": true }],
-	// "workers_dev": false,
+	"routes": [{ "pattern": "dennisu.com", "custom_domain": true }],
+	"workers_dev": false,
 
 	"assets": {
 		"directory": "./build",
