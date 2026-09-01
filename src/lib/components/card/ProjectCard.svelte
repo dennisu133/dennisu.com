@@ -48,7 +48,7 @@
 <li class="card group flex flex-col gap-3">
 	<a
 		href={projectUrl}
-		class="absolute inset-0 z-10 hidden focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground pointer-fine:block"
+		class="absolute inset-0 z-10 hidden pointer-fine:block"
 		aria-label="Open {name}"
 	>
 	</a>
@@ -105,7 +105,7 @@
 					></a>
 					<button
 						type="button"
-						class="absolute inset-0 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground pointer-fine:hidden"
+						class="absolute inset-0 rounded-sm pointer-fine:hidden"
 						aria-label={icon.name}
 						aria-controls={tooltipId}
 						aria-expanded={activeStackIcon === icon.name}
@@ -132,7 +132,7 @@
 				href={repo}
 				target="_blank"
 				rel="noreferrer"
-				class="-m-1 inline-flex rounded-sm p-1 opacity-50 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+				class="-m-1 inline-flex rounded-sm p-1 opacity-50 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100"
 				aria-label="View {name} on GitHub"
 			>
 				<img src={githubIcon} alt="" class="show-on-dark size-4" />

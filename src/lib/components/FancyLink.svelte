@@ -8,6 +8,6 @@
 	{@render children?.()}
 	<span
 		aria-hidden="true"
-		class="absolute bottom-0 left-0 h-px w-0 bg-accent-hover transition-[width] duration-300 ease-out group-hover/link:w-full"
+		class="absolute bottom-0 left-0 h-px w-0 bg-accent-hover transition-[width] duration-300 ease-out group-hover/link:w-full group-focus-visible/link:w-full motion-reduce:transition-none"
 	></span>
 </a>

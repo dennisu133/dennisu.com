@@ -53,6 +53,11 @@
 		min-height: 100vh;
 	}
 
+	:focus-visible {
+		outline: 2px solid var(--color-foreground);
+		outline-offset: 3px;
+	}
+
 	p {
 		font-size: var(--text-p);
 	}
