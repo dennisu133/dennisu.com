@@ -11,7 +11,7 @@ export default defineConfig({
 			preprocess: vitePreprocess(),
 			inlineStyleThreshold: 40000,
 			adapter: adapter({
-				precompress: true // Generate .gz and .br files for smaller transfers
+				// precompress: true | ignored by Cloudflare
 			})
 		})
 	],
@@ -19,6 +19,6 @@ export default defineConfig({
 
 	build: {
 		target: "esnext", // Smaller output for modern browsers
-		modulePreload: { polyfill: false } // Skip polyfill for module preload
+		modulePreload: { polyfill: false }
 	}
 });
