@@ -4,48 +4,39 @@
 	import fragmentShader from "./shaders/clouds.frag.glsl?raw";
 
 	let canvas: HTMLCanvasElement | null = null;
-	let teardown: (() => void) | undefined;
-	let isInitializing = false;
 	let isVisible = $state(false);
 
 	const SPEED = 0.03;
 	const SCALE = 1.1;
 	const DENSITY = 0.2;
-	const RESOLUTION_SCALES: Record<0 | 1 | 2, number> = { 0: 0.5, 1: 0.7, 2: 0.85 };
-	const MAX_DT = 0.1;
-	const DT_SMOOTHING = 0.12;
-	const MAX_CANVAS_W = 1920;
-	const MAX_CANVAS_H = 1080;
+	const RESOLUTION_SCALE = 0.85;
+	const MAX_CANVAS_WIDTH = 1920;
+	const MAX_CANVAS_HEIGHT = 1080;
+	const FRAME_INTERVAL = 1000 / 30;
+	const MAX_DELTA = 0.1;
+	const MAX_CLOUD_TIME = 1024;
+	const FULL_TURN = Math.PI * 2;
 
-	const detectQualityLevel = (): 0 | 1 | 2 => {
-		const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-			navigator.userAgent
-		);
-		const isLowPower = navigator.hardwareConcurrency <= 4;
-		const isSmallScreen = window.innerWidth < 768;
-		if (isMobile || (isLowPower && isSmallScreen)) return 0;
-		if (isLowPower || isSmallScreen) return 1;
-		return 2;
-	};
-
-	const compileShader = (gl: WebGL2RenderingContext, type: number, source: string) => {
+	function compileShader(gl: WebGL2RenderingContext, type: number, source: string) {
 		const shader = gl.createShader(type);
 		if (!shader) return null;
+
 		gl.shaderSource(shader, source);
 		gl.compileShader(shader);
+
 		if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
 			console.error("Shader compile error:", gl.getShaderInfoLog(shader));
 			gl.deleteShader(shader);
 			return null;
 		}
-		return shader;
-	};
 
-	// Resolve a computed CSS color to normalized [0-1] sRGB values by painting
-	// it through a 2D canvas. getComputedStyle() can return any color space the
-	// stylesheet uses (e.g. oklch()), but getImageData always reads back sRGB.
+		return shader;
+	}
+
+	// Computed styles can use color spaces that JavaScript cannot parse directly.
+	// A 2D canvas resolves them to sRGB for the shader uniforms.
 	let colorScratch: CanvasRenderingContext2D | null = null;
-	const parseColor = (color: string): [number, number, number] => {
+	function parseColor(color: string): [number, number, number] {
 		if (!colorScratch) {
 			const scratchCanvas = document.createElement("canvas");
 			scratchCanvas.width = 1;
@@ -53,24 +44,25 @@
 			colorScratch = scratchCanvas.getContext("2d", { willReadFrequently: true });
 			if (!colorScratch) return [0, 0, 0];
 		}
+
 		colorScratch.fillStyle = "#000";
 		colorScratch.fillStyle = color;
 		colorScratch.fillRect(0, 0, 1, 1);
 		const [r, g, b] = colorScratch.getImageData(0, 0, 1, 1).data;
 		return [r / 255, g / 255, b / 255];
-	};
+	}
 
-	const adjustLightness = (
+	function adjustLightness(
 		r: number,
 		g: number,
 		b: number,
 		delta: number
-	): [number, number, number] => {
+	): [number, number, number] {
 		const max = Math.max(r, g, b);
 		const min = Math.min(r, g, b);
-		let h = 0,
-			s = 0,
-			l = (max + min) / 2;
+		let h = 0;
+		let s = 0;
+		let l = (max + min) / 2;
 
 		if (max !== min) {
 			const d = max - min;
@@ -82,8 +74,11 @@
 		}
 
 		l = Math.max(0, Math.min(1, l + delta));
+		if (s === 0) return [l, l, l];
 
-		const hue2rgb = (p: number, q: number, t: number) => {
+		const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+		const p = 2 * l - q;
+		const hue = (t: number) => {
 			if (t < 0) t += 1;
 			if (t > 1) t -= 1;
 			if (t < 1 / 6) return p + (q - p) * 6 * t;
@@ -92,252 +87,247 @@
 			return p;
 		};
 
-		if (s === 0) return [l, l, l];
-		const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-		const p = 2 * l - q;
-		return [hue2rgb(p, q, h + 1 / 3), hue2rgb(p, q, h), hue2rgb(p, q, h - 1 / 3)];
-	};
+		return [hue(h + 1 / 3), hue(h), hue(h - 1 / 3)];
+	}
 
-	const initialize = async () => {
-		if (!canvas || teardown || isInitializing) return;
+	function usesSoftwareRendering(gl: WebGL2RenderingContext) {
+		const debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
+		if (!debugInfo) return false;
 
-		isInitializing = true;
+		const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+		return typeof renderer === "string" && /swiftshader|llvmpipe|software/i.test(renderer);
+	}
 
-		// Defer until browser is idle
-		await new Promise<void>((resolve) => {
-			if ("requestIdleCallback" in window) {
-				window.requestIdleCallback(() => resolve(), { timeout: 200 });
-			} else {
-				setTimeout(resolve, 50);
-			}
-		});
+	onMount(() => {
+		if (!canvas) return;
 
-		if (!canvas || !isInitializing) {
-			isInitializing = false;
-			return;
-		}
+		const target = canvas;
+		const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+		let destroyed = false;
+		let stopRenderer = () => {};
+		let cloudTime = 0;
+		let cloudDirection = 1;
+		let twinklePhase = 0;
 
-		const gl = canvas.getContext("webgl2", {
-			alpha: false,
-			antialias: false,
-			depth: false,
-			stencil: false,
-			powerPreference: "high-performance",
-			preserveDrawingBuffer: false
-		});
+		function startRenderer() {
+			stopRenderer();
+			isVisible = false;
 
-		if (!gl) {
-			console.error("WebGL2 not supported");
-			isInitializing = false;
-			return;
-		}
+			if (destroyed || motionPreference.matches) return;
 
-		const vs = compileShader(gl, gl.VERTEX_SHADER, vertexShader);
-		const fs = compileShader(gl, gl.FRAGMENT_SHADER, fragmentShader);
-		if (!vs || !fs) {
-			isInitializing = false;
-			return;
-		}
+			const context = target.getContext("webgl2", {
+				alpha: false,
+				antialias: false,
+				depth: false,
+				stencil: false,
+				failIfMajorPerformanceCaveat: true,
+				preserveDrawingBuffer: false
+			});
 
-		const program = gl.createProgram();
-		if (!program) {
-			isInitializing = false;
-			return;
-		}
-		gl.attachShader(program, vs);
-		gl.attachShader(program, fs);
-		gl.linkProgram(program);
+			if (!context) return;
+			const gl: WebGL2RenderingContext = context;
+			if (usesSoftwareRendering(gl)) return;
 
-		if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-			console.error("Program link error:", gl.getProgramInfoLog(program));
-			isInitializing = false;
-			return;
-		}
-
-		gl.useProgram(program);
-
-		const uniforms = {
-			u_time: gl.getUniformLocation(program, "u_time"),
-			u_aspect: gl.getUniformLocation(program, "u_aspect"),
-			u_scale: gl.getUniformLocation(program, "u_scale"),
-			u_speed: gl.getUniformLocation(program, "u_speed"),
-			u_density: gl.getUniformLocation(program, "u_density"),
-			u_quality: gl.getUniformLocation(program, "u_quality"),
-			u_skyColor1: gl.getUniformLocation(program, "u_skyColor1"),
-			u_skyColor2: gl.getUniformLocation(program, "u_skyColor2"),
-			u_cloudColor: gl.getUniformLocation(program, "u_cloudColor"),
-			u_starsStrength: gl.getUniformLocation(program, "u_starsStrength")
-		};
-
-		gl.uniform1f(uniforms.u_scale, SCALE);
-		gl.uniform1f(uniforms.u_speed, SPEED);
-		gl.uniform1f(uniforms.u_density, DENSITY);
-		const qualityLevel = detectQualityLevel();
-		gl.uniform1i(uniforms.u_quality, qualityLevel);
-
-		const vao = gl.createVertexArray();
-		gl.bindVertexArray(vao);
-
-		let isDestroyed = false;
-		const resolutionScale = RESOLUTION_SCALES[qualityLevel];
-		const systemTheme = window.matchMedia("(prefers-color-scheme: dark)");
-
-		const applyColors = () => {
-			if (isDestroyed || !canvas) return;
-			const override = document.documentElement.dataset.theme;
-			const isDark = override === "dark" || (override !== "light" && systemTheme.matches);
-
-			// Read the resolved background-color from the .clouds-layer container.
-			// This gives us the fully resolved RGB value (the browser resolves
-			// light-dark() based on color-scheme), unlike getPropertyValue which
-			// returns the raw CSS function.
-			const bgResolved = getComputedStyle(canvas.parentElement!).backgroundColor;
-			const [r, g, b] = parseColor(bgResolved);
-
-			gl.uniform3f(uniforms.u_skyColor2, r, g, b);
-
-			const [tr, tg, tb] = adjustLightness(r, g, b, isDark ? 0.02 : -0.2);
-			gl.uniform3f(uniforms.u_skyColor1, tr, tg, tb);
-
-			if (isDark) {
-				gl.uniform3f(uniforms.u_cloudColor, 0.4, 0.4, 0.5);
-				gl.uniform1f(uniforms.u_starsStrength, 1.0);
-			} else {
-				gl.uniform3f(uniforms.u_cloudColor, 1.1, 1.1, 0.9);
-				gl.uniform1f(uniforms.u_starsStrength, 0.0);
-			}
-		};
-
-		const resize = () => {
-			if (!canvas) return false;
-			const w = window.innerWidth;
-			const h = window.innerHeight;
-			const iw = Math.max(1, Math.min(MAX_CANVAS_W, Math.round(w * resolutionScale)));
-			const ih = Math.max(1, Math.min(MAX_CANVAS_H, Math.round(h * resolutionScale)));
-			const dimensionsChanged = canvas.width !== iw || canvas.height !== ih;
-
-			if (dimensionsChanged) {
-				canvas.width = iw;
-				canvas.height = ih;
-			}
-
-			gl.viewport(0, 0, iw, ih);
-			gl.uniform1f(uniforms.u_aspect, w / h);
-			return dimensionsChanged;
-		};
-
-		resize();
-
-		applyColors();
-
-		const themeObserver = new MutationObserver(applyColors);
-		themeObserver.observe(document.documentElement, {
-			attributes: true,
-			attributeFilter: ["data-theme"]
-		});
-		systemTheme.addEventListener("change", applyColors);
-
-		let raf = 0;
-		let time = 0;
-		let smoothedDt = 1 / 60;
-		let running = true;
-		let inView = true;
-		let prevTimestamp = 0;
-
-		const drawFrame = () => {
-			gl.uniform1f(uniforms.u_time, time);
-			gl.drawArrays(gl.TRIANGLES, 0, 3);
-		};
-
-		const onResize = () => {
-			if (resize()) drawFrame();
-		};
-		window.addEventListener("resize", onResize);
-
-		const tick = (now: number) => {
-			if (!running || !inView) return;
-
-			// On first frame (or after resume), just record timestamp without advancing time
-			if (prevTimestamp === 0) {
-				prevTimestamp = now;
-				drawFrame();
-				raf = requestAnimationFrame(tick);
+			const vertex = compileShader(gl, gl.VERTEX_SHADER, vertexShader);
+			const fragment = compileShader(gl, gl.FRAGMENT_SHADER, fragmentShader);
+			if (!vertex || !fragment) {
+				if (vertex) gl.deleteShader(vertex);
+				if (fragment) gl.deleteShader(fragment);
 				return;
 			}
 
-			let dt = (now - prevTimestamp) / 1000;
-			prevTimestamp = now;
-
-			if (dt > MAX_DT) dt = MAX_DT;
-			if (dt <= 0) dt = 1 / 60;
-
-			smoothedDt = smoothedDt * (1 - DT_SMOOTHING) + dt * DT_SMOOTHING;
-			time += smoothedDt;
-
-			drawFrame();
-			raf = requestAnimationFrame(tick);
-		};
-
-		const pause = () => {
-			if (raf) {
-				cancelAnimationFrame(raf);
-				raf = 0;
+			const program = gl.createProgram();
+			if (!program) {
+				gl.deleteShader(vertex);
+				gl.deleteShader(fragment);
+				return;
 			}
-			prevTimestamp = 0;
-		};
 
-		const resume = () => {
-			if (!raf && running && inView) {
-				prevTimestamp = 0;
-				raf = requestAnimationFrame(tick);
+			gl.attachShader(program, vertex);
+			gl.attachShader(program, fragment);
+			gl.linkProgram(program);
+
+			if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+				console.error("Program link error:", gl.getProgramInfoLog(program));
+				gl.deleteProgram(program);
+				gl.deleteShader(vertex);
+				gl.deleteShader(fragment);
+				return;
 			}
-		};
 
-		const onVisibility = () => {
-			running = !document.hidden;
-			if (document.hidden) pause();
-			else resume();
-		};
-		document.addEventListener("visibilitychange", onVisibility);
+			const vao = gl.createVertexArray();
+			if (!vao) {
+				gl.deleteProgram(program);
+				gl.deleteShader(vertex);
+				gl.deleteShader(fragment);
+				return;
+			}
 
-		const io = new IntersectionObserver(
-			(entries) => {
-				inView = entries[0]?.isIntersecting ?? true;
-				if (!inView) pause();
-				else resume();
-			},
-			{ root: null, threshold: 0 }
-		);
-		io.observe(canvas!);
+			gl.useProgram(program);
+			gl.bindVertexArray(vao);
 
-		// Draw the first frame, then fade in
-		raf = requestAnimationFrame((now) => {
-			prevTimestamp = now;
-			drawFrame();
+			const uniforms = {
+				time: gl.getUniformLocation(program, "u_time"),
+				twinklePhase: gl.getUniformLocation(program, "u_twinklePhase"),
+				aspect: gl.getUniformLocation(program, "u_aspect"),
+				scale: gl.getUniformLocation(program, "u_scale"),
+				density: gl.getUniformLocation(program, "u_density"),
+				skyColor1: gl.getUniformLocation(program, "u_skyColor1"),
+				skyColor2: gl.getUniformLocation(program, "u_skyColor2"),
+				cloudColor: gl.getUniformLocation(program, "u_cloudColor"),
+				starsStrength: gl.getUniformLocation(program, "u_starsStrength")
+			};
+
+			gl.uniform1f(uniforms.scale, SCALE);
+			gl.uniform1f(uniforms.density, DENSITY);
+
+			let animationFrame = 0;
+			let previousTimestamp = performance.now();
+
+			function drawFrame() {
+				if (gl.isContextLost()) return;
+				gl.uniform1f(uniforms.time, cloudTime);
+				gl.uniform1f(uniforms.twinklePhase, twinklePhase);
+				gl.drawArrays(gl.TRIANGLES, 0, 3);
+			}
+
+			function resize() {
+				const width = Math.max(1, window.innerWidth);
+				const height = Math.max(1, window.innerHeight);
+				const renderWidth = Math.min(MAX_CANVAS_WIDTH, Math.round(width * RESOLUTION_SCALE));
+				const renderHeight = Math.min(MAX_CANVAS_HEIGHT, Math.round(height * RESOLUTION_SCALE));
+
+				if (target.width !== renderWidth || target.height !== renderHeight) {
+					target.width = renderWidth;
+					target.height = renderHeight;
+				}
+
+				gl.viewport(0, 0, renderWidth, renderHeight);
+				gl.uniform1f(uniforms.aspect, width / height);
+				drawFrame();
+			}
+
+			const systemTheme = window.matchMedia("(prefers-color-scheme: dark)");
+
+			function applyColors() {
+				const override = document.documentElement.dataset.theme;
+				const isDark = override === "dark" || (override !== "light" && systemTheme.matches);
+				const [r, g, b] = parseColor(getComputedStyle(target.parentElement!).backgroundColor);
+				const [tr, tg, tb] = adjustLightness(r, g, b, isDark ? 0.02 : -0.2);
+
+				gl.uniform3f(uniforms.skyColor2, r, g, b);
+				gl.uniform3f(uniforms.skyColor1, tr, tg, tb);
+				if (isDark) gl.uniform3f(uniforms.cloudColor, 0.4, 0.4, 0.5);
+				else gl.uniform3f(uniforms.cloudColor, 1.1, 1.1, 0.9);
+				gl.uniform1f(uniforms.starsStrength, isDark ? 1 : 0);
+				drawFrame();
+			}
+
+			function tick(now: number) {
+				animationFrame = 0;
+				if (document.hidden) return;
+
+				const elapsed = now - previousTimestamp;
+				if (elapsed < FRAME_INTERVAL) {
+					animationFrame = requestAnimationFrame(tick);
+					return;
+				}
+
+				const delta = Math.min(elapsed / 1000, MAX_DELTA);
+				previousTimestamp = now;
+				cloudTime += delta * SPEED * cloudDirection;
+
+				// Ping-pong after roughly nine hours to keep the float precise without a visual jump.
+				if (cloudTime >= MAX_CLOUD_TIME || cloudTime <= 0) {
+					cloudTime = Math.max(0, Math.min(MAX_CLOUD_TIME, cloudTime));
+					cloudDirection *= -1;
+				}
+
+				twinklePhase = (twinklePhase + delta * 2) % FULL_TURN;
+				drawFrame();
+				animationFrame = requestAnimationFrame(tick);
+			}
+
+			function startAnimation() {
+				if (animationFrame || document.hidden) return;
+				previousTimestamp = performance.now();
+				animationFrame = requestAnimationFrame(tick);
+			}
+
+			function stopAnimation() {
+				cancelAnimationFrame(animationFrame);
+				animationFrame = 0;
+			}
+
+			function handleVisibilityChange() {
+				if (document.hidden) stopAnimation();
+				else startAnimation();
+			}
+
+			const themeObserver = new MutationObserver(applyColors);
+			themeObserver.observe(document.documentElement, {
+				attributes: true,
+				attributeFilter: ["data-theme"]
+			});
+			systemTheme.addEventListener("change", applyColors);
+			document.addEventListener("visibilitychange", handleVisibilityChange);
+			window.addEventListener("resize", resize);
+
+			resize();
+			applyColors();
 			isVisible = true;
-			raf = requestAnimationFrame(tick);
-		});
+			startAnimation();
 
-		teardown = () => {
-			isDestroyed = true;
-			pause();
-			themeObserver.disconnect();
-			systemTheme.removeEventListener("change", applyColors);
-			document.removeEventListener("visibilitychange", onVisibility);
-			io.disconnect();
-			window.removeEventListener("resize", onResize);
-			gl.deleteProgram(program);
-			gl.deleteShader(vs);
-			gl.deleteShader(fs);
-			gl.deleteVertexArray(vao);
+			let stopped = false;
+			stopRenderer = () => {
+				if (stopped) return;
+				stopped = true;
+				stopAnimation();
+				themeObserver.disconnect();
+				systemTheme.removeEventListener("change", applyColors);
+				document.removeEventListener("visibilitychange", handleVisibilityChange);
+				window.removeEventListener("resize", resize);
+
+				if (!gl.isContextLost()) {
+					gl.deleteVertexArray(vao);
+					gl.deleteProgram(program);
+					gl.deleteShader(vertex);
+					gl.deleteShader(fragment);
+				}
+			};
+		}
+
+		function handleContextLost(event: Event) {
+			event.preventDefault();
+			stopRenderer();
+			isVisible = false;
+		}
+
+		function handleContextRestored() {
+			startRenderer();
+		}
+
+		function handleMotionPreference() {
+			if (motionPreference.matches) {
+				stopRenderer();
+				isVisible = false;
+			} else {
+				startRenderer();
+			}
+		}
+
+		target.addEventListener("webglcontextlost", handleContextLost);
+		target.addEventListener("webglcontextrestored", handleContextRestored);
+		motionPreference.addEventListener("change", handleMotionPreference);
+		startRenderer();
+
+		return () => {
+			destroyed = true;
+			stopRenderer();
+			target.removeEventListener("webglcontextlost", handleContextLost);
+			target.removeEventListener("webglcontextrestored", handleContextRestored);
+			motionPreference.removeEventListener("change", handleMotionPreference);
 		};
-
-		isInitializing = false;
-	};
-
-	onMount(() => {
-		void initialize();
-		return () => teardown?.();
 	});
 </script>
 
@@ -360,12 +350,17 @@
 		inset: 0;
 		width: 100%;
 		height: 100%;
-		will-change: opacity;
 		opacity: 0;
 		transition: opacity 300ms ease-out;
 	}
 
 	canvas.visible {
 		opacity: 1;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		canvas {
+			display: none;
+		}
 	}
 </style>
