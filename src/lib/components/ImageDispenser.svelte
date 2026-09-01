@@ -224,11 +224,7 @@
 	}
 </script>
 
-<button
-	type="button"
-	class="interactive-word"
-	aria-label="programming — dispense technology icons"
-	{@attach dispenseImages}
->
+<button type="button" class="interactive-word" {@attach dispenseImages}>
 	{@render children()}
+	<span class="sr-only">dispense technology icons</span>
 </button>
