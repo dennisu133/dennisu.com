@@ -1,27 +1,14 @@
-import { readdir, readFile } from "node:fs/promises";
-import path from "node:path";
+export {};
 
-const buildDirectory = path.resolve("build");
+const buildDirectory = "build";
+const textFiles = new Bun.Glob("**/*.{css,html,js,json,map,svg,txt,webmanifest,xml}");
 const emailPattern = /[\w.+-]+@(?:[\w-]+\.)+[\w-]+/;
 const leaks: string[] = [];
 
-async function verifyDirectory(directory: string) {
-	for (const entry of await readdir(directory, { withFileTypes: true })) {
-		const entryPath = path.join(directory, entry.name);
-
-		if (entry.isDirectory()) {
-			await verifyDirectory(entryPath);
-			continue;
-		}
-
-		const contents = await readFile(entryPath, "utf8");
-		if (emailPattern.test(contents)) {
-			leaks.push(path.relative(buildDirectory, entryPath));
-		}
-	}
+for await (const file of textFiles.scan(buildDirectory)) {
+	const contents = await Bun.file(`${buildDirectory}/${file}`).text();
+	if (emailPattern.test(contents)) leaks.push(file);
 }
-
-await verifyDirectory(buildDirectory);
 
 if (leaks.length > 0) {
 	throw new Error(`Plaintext email leaked into the production build:\n${leaks.join("\n")}`);
