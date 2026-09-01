@@ -80,14 +80,14 @@
 	<p class="text-sm leading-relaxed text-muted-foreground">{description}</p>
 
 	<div class="mt-auto flex items-center justify-between gap-3 border-t border-border/50 pt-2.5">
-		<div class="flex items-center">
+		<div class="flex items-center gap-2">
 			{#each stack as icon (icon.name)}
 				{@const tooltipId = getStackTooltipId(icon.name)}
-				<span class="group/stack-icon relative z-20 grid size-6 place-items-center">
+				<span class="group/stack-icon relative z-20">
 					<img
 						src={icon.src}
 						alt=""
-						class="stack-icon size-4 opacity-90 transition-opacity duration-150 group-hover/stack-icon:opacity-100"
+						class="stack-icon size-5 opacity-90 transition-opacity duration-150 group-hover/stack-icon:opacity-100"
 					/>
 					<span
 						id={tooltipId}
