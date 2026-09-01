@@ -9,6 +9,7 @@ export default defineConfig({
 		tailwindcss(),
 		sveltekit({
 			preprocess: vitePreprocess(),
+			inlineStyleThreshold: 40000,
 			adapter: adapter({
 				precompress: true // Generate .gz and .br files for smaller transfers
 			})
