@@ -209,7 +209,7 @@
 			<h1>
 				{profile.name}
 			</h1>
-			<p class="text-subtitle leading-tight font-semibold text-muted-foreground">
+			<p class="text-h3 leading-tight font-semibold text-muted-foreground">
 				{profile.subtitle}
 			</p>
 		</div>

@@ -2,9 +2,9 @@
 	import "./layout.css";
 	import { page } from "$app/state";
 
-	import fontGeist from "$lib/assets/fonts/GeistSans-Variable.woff2";
-	import fontInstrument from "$lib/assets/fonts/InstrumentSans-Variable.woff2";
-	import fontSpaceMono from "$lib/assets/fonts/SpaceMono-Regular.woff2";
+	import fontDMSerifDisplay from "$lib/assets/fonts/dm-serif-display-400.woff2";
+	import fontGeist from "$lib/assets/fonts/geist-400-700.woff2";
+	import fontCommitMono from "$lib/assets/fonts/commit-mono-400.woff2";
 	import { siteUrl } from "$lib/constants";
 
 	let { children } = $props();
@@ -14,9 +14,10 @@
 
 <svelte:head>
 	<!-- fonts -->
+	<!-- prettier-ignore -->
+	<link rel="preload" href={fontDMSerifDisplay} as="font" type="font/woff2" crossorigin="anonymous" />
 	<link rel="preload" href={fontGeist} as="font" type="font/woff2" crossorigin="anonymous" />
-	<link rel="preload" href={fontInstrument} as="font" type="font/woff2" crossorigin="anonymous" />
-	<link rel="preload" href={fontSpaceMono} as="font" type="font/woff2" crossorigin="anonymous" />
+	<link rel="preload" href={fontCommitMono} as="font" type="font/woff2" crossorigin="anonymous" />
 
 	<!-- default favicons -->
 	<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20260627" />
