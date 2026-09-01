@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { ArrowLeft } from "@lucide/svelte";
-
 	import { resolve } from "$app/paths";
 	import Background from "$lib/components/Background.svelte";
 </script>
@@ -12,9 +11,9 @@
 
 <Background />
 
-<main class="flex min-h-svh flex-col items-center justify-center gap-10 p-6 select-none">
+<main class="flex min-h-svh flex-col items-center justify-center gap-10 select-none">
 	<h1
-		class="glitch relative text-[clamp(6rem,22vw,11rem)] leading-none tracking-wider before:pointer-events-none before:absolute before:inset-0 after:pointer-events-none after:absolute after:inset-0 forced-colors:before:hidden forced-colors:after:hidden"
+		class="glitch relative text-[clamp(6rem,22vw,11rem)] leading-none tracking-wider before:absolute before:inset-0 after:absolute after:inset-0 forced-colors:before:hidden forced-colors:after:hidden"
 		data-text="404"
 	>
 		404
@@ -23,7 +22,7 @@
 
 	<a
 		href={resolve("/")}
-		class="home-btn inline-flex items-center gap-2 border border-border px-6 py-3 font-mono text-p text-foreground backdrop-blur-md transition duration-200 ease-out hover:-translate-y-0.5 hover:border-accent focus-visible:-translate-y-0.5 focus-visible:border-accent active:translate-y-0 motion-reduce:translate-y-0! motion-reduce:transition-none"
+		class="home-btn inline-flex items-center gap-2 border border-border px-6 py-3 font-mono text-foreground transition duration-200 ease-out hover:-translate-y-0.5 hover:border-accent focus-visible:-translate-y-0.5 focus-visible:border-accent active:translate-y-0 motion-reduce:translate-y-0! motion-reduce:transition-none"
 	>
 		<ArrowLeft size={18} aria-hidden="true" />
 		<span class="label">take me home</span>
