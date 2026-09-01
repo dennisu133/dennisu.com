@@ -117,7 +117,7 @@
 		target="_blank"
 		rel="noopener"
 		popover="manual"
-		class="fixed m-0 block overflow-hidden rounded-lg border border-border bg-black p-0 shadow-2xl"
+		class="fixed m-0 block overflow-visible rounded-lg border border-border bg-black p-0 shadow-2xl"
 		style={previewStyle}
 		aria-label={`Open ${alt} full size in a new tab`}
 		onmouseenter={cancelScheduledHide}
@@ -126,7 +126,7 @@
 		onblur={scheduleHideIfHoverSupported}
 	>
 		<img
-			class="block h-full w-full object-contain"
+			class="block h-full w-full rounded-lg object-contain"
 			src={previewSrc ?? asset(src)}
 			{alt}
 			draggable="false"

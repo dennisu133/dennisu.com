@@ -1,0 +1,59 @@
+@layer base {
+	@media (forced-colors: none) {
+		:where(a, button):focus-visible {
+			position: relative;
+			outline: none;
+		}
+
+		:where(a, button):focus-visible::before,
+		:where(a, button):focus-visible::after {
+			position: absolute;
+			inset: -3px;
+			content: "";
+			pointer-events: none;
+			background-image:
+				linear-gradient(var(--color-foreground) 0 0), linear-gradient(var(--color-foreground) 0 0);
+			background-repeat: no-repeat;
+			background-size:
+				100% 2px,
+				2px 100%;
+			animation-name: draw-focus-ring;
+			animation-duration: 300ms;
+			animation-timing-function: ease-out;
+			animation-fill-mode: both;
+		}
+
+		:where(a, button):focus-visible::before {
+			background-position:
+				bottom left,
+				bottom right;
+		}
+
+		:where(a, button):focus-visible::after {
+			background-position:
+				top right,
+				top left;
+		}
+	}
+
+	@media (forced-colors: none) and (prefers-reduced-motion: reduce) {
+		:where(a, button):focus-visible::before,
+		:where(a, button):focus-visible::after {
+			animation: none;
+		}
+	}
+}
+
+@keyframes draw-focus-ring {
+	0% {
+		background-size:
+			0 2px,
+			2px 0;
+	}
+
+	50% {
+		background-size:
+			100% 2px,
+			2px 0;
+	}
+}
