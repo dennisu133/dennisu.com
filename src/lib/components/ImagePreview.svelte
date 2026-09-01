@@ -1,38 +1,27 @@
 <script lang="ts">
-	import { onMount, tick, type Snippet } from "svelte";
+	import { onDestroy, tick, type Snippet } from "svelte";
+	import { MediaQuery } from "svelte/reactivity";
+	import { asset } from "$app/paths";
+	import type { Asset } from "$app/types";
 
 	interface Props {
 		children: Snippet;
-		src: string;
+		src: Asset; // Full-size image at a stable URL from static/.
+		previewSrc?: string; // Optional imported asset used only inside the preview.
 		alt: string;
 	}
 
-	let { children, src, alt }: Props = $props();
+	let { children, src, previewSrc, alt }: Props = $props();
 	const previewId = $props.id();
 
 	let trigger: HTMLButtonElement;
 	let preview = $state<HTMLAnchorElement>();
 	let isOpen = $state(false);
-	let supportsHover = $state(false);
 	let previewStyle = $state("");
 	let imageAspectRatio = $state(3 / 2);
 	let closeTimer: ReturnType<typeof setTimeout>;
 
-	onMount(() => {
-		const hoverQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
-
-		function updateHoverSupport() {
-			supportsHover = hoverQuery.matches;
-		}
-
-		updateHoverSupport();
-		hoverQuery.addEventListener("change", updateHoverSupport);
-
-		return () => {
-			clearTimeout(closeTimer);
-			hoverQuery.removeEventListener("change", updateHoverSupport);
-		};
-	});
+	const supportsHover = new MediaQuery("(hover: hover) and (pointer: fine)");
 
 	function positionPreview() {
 		if (!isOpen) return;
@@ -56,7 +45,7 @@
 	}
 
 	async function showPreview() {
-		clearTimeout(closeTimer);
+		cancelScheduledHide();
 		if (isOpen) return;
 		isOpen = true;
 		await tick();
@@ -65,14 +54,22 @@
 	}
 
 	function hidePreview() {
-		clearTimeout(closeTimer);
+		cancelScheduledHide();
 		preview?.hidePopover();
 		isOpen = false;
 	}
 
-	function scheduleHide() {
+	function cancelScheduledHide() {
 		clearTimeout(closeTimer);
+	}
+
+	function scheduleHide() {
+		cancelScheduledHide();
 		closeTimer = setTimeout(hidePreview, 120);
+	}
+
+	function scheduleHideIfHoverSupported() {
+		if (supportsHover.current) scheduleHide();
 	}
 
 	function handleWindowClick(event: MouseEvent) {
@@ -86,6 +83,8 @@
 		imageAspectRatio = image.naturalWidth / image.naturalHeight;
 		positionPreview();
 	}
+
+	onDestroy(cancelScheduledHide);
 </script>
 
 <svelte:window
@@ -101,11 +100,11 @@
 	class="interactive-word"
 	aria-expanded={isOpen}
 	aria-controls={previewId}
-	onmouseenter={() => void showPreview()}
-	onmouseleave={() => supportsHover && scheduleHide()}
-	onfocus={() => void showPreview()}
-	onblur={() => supportsHover && scheduleHide()}
-	onclick={() => void showPreview()}
+	onmouseenter={showPreview}
+	onmouseleave={scheduleHideIfHoverSupported}
+	onfocus={showPreview}
+	onblur={scheduleHideIfHoverSupported}
+	onclick={showPreview}
 >
 	{@render children()}
 </button>
@@ -114,21 +113,21 @@
 	<a
 		bind:this={preview}
 		id={previewId}
-		href={src}
+		href={asset(src)}
 		target="_blank"
 		rel="noopener"
 		popover="manual"
 		class="fixed m-0 block overflow-hidden rounded-lg border border-border bg-black p-0 shadow-2xl outline-none focus-visible:ring-2 focus-visible:ring-accent"
 		style={previewStyle}
 		aria-label={`Open ${alt} full size in a new tab`}
-		onmouseenter={() => clearTimeout(closeTimer)}
-		onmouseleave={() => supportsHover && scheduleHide()}
-		onfocus={() => clearTimeout(closeTimer)}
-		onblur={() => supportsHover && scheduleHide()}
+		onmouseenter={cancelScheduledHide}
+		onmouseleave={scheduleHideIfHoverSupported}
+		onfocus={cancelScheduledHide}
+		onblur={scheduleHideIfHoverSupported}
 	>
 		<img
 			class="block h-full w-full object-contain"
-			{src}
+			src={previewSrc ?? asset(src)}
 			{alt}
 			draggable="false"
 			onload={handleImageLoad}

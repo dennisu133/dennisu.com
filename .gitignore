@@ -24,6 +24,3 @@ vite.config.ts.timestamp-*
 
 # Cursor
 .cursor
-
-# Image assets
-src/lib/assets/images/**

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ArrowRight } from "@lucide/svelte";
+	import { ArrowRight, SortDesc } from "@lucide/svelte";
 
 	import Background from "$lib/components/Background.svelte";
 	import ProjectCard from "$lib/components/card/ProjectCard.svelte";
@@ -189,12 +189,13 @@
 
 	<meta property="og:title" content="Dennisu.com 🐱" />
 	<meta property="og:description" content="Please hire me." />
-	<meta property="og:image" content="{siteUrl}/dancing.gif" />
+	<meta property="og:image" content="{siteUrl}/og-image.gif" />
 	<meta property="og:image:alt" content="Dancing anime girl" />
 
 	<!-- twitter title, description and site fall back to Open Graph -->
+	<meta name="twitter:description" content="Check out my cat!" />
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:image" content="{siteUrl}/twitter.webp" />
+	<meta name="twitter:image" content="{siteUrl}/twitter-card.jpg" />
 	<meta
 		name="twitter:image:alt"
 		content="Black cat named Rust with reddish-brown undertones in her fur"
@@ -243,7 +244,7 @@
 					<p class="text-foreground">
 						Bachelor in Computer Science. My interests are
 						<ImageDispenser images={allStackIconUrls}>programming</ImageDispenser>,
-						<ImagePreview src="/topsters.webp" alt="A Topsters chart of Dennis's favorite albums">
+						<ImagePreview src="/topsters.avif" alt="A Topsters chart of Dennis's favorite albums">
 							music
 						</ImagePreview> and
 						<NekoChase>cats</NekoChase>.
