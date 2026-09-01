@@ -48,7 +48,7 @@
 	<AtSign aria-hidden="true" class="size-7 shrink-0 p-1" />
 
 	<div class="min-w-0">
-		<h3 class="text-sm font-medium">
+		<h3 class="text-base font-medium">
 			<a
 				{href}
 				class="inline-flex min-h-6 w-56 items-center transition-colors duration-150 select-none group-hover/email:text-accent-hover"
