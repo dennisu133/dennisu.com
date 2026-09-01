@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ArrowRight, SortDesc } from "@lucide/svelte";
+	import { ArrowRight } from "@lucide/svelte";
 
 	import Background from "$lib/components/Background.svelte";
 	import ProjectCard from "$lib/components/card/ProjectCard.svelte";
@@ -60,7 +60,7 @@
 		{
 			name: "CompetitiveWordle",
 			description: "Wordle clone with a focus on competitive gameplay.",
-			disclaimer: "Early university project",
+			disclaimer: "abandoned university project",
 			url: "https://wordle.dennisu.com",
 			repo: "https://github.com/dennisu133/CompetitiveWordle",
 			date: new Date(2025, 4, 1, 12), // 4 = May, noon to avoid timezone shifts
@@ -236,12 +236,15 @@
 
 	<main class="flex flex-1 flex-col">
 		<section class="mb-6 lg:mb-2" aria-labelledby="about-heading">
-			<h2 id="about-heading" class="section-heading">About</h2>
-			<div
-				class="card grid grid-cols-[minmax(0,1fr)] gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-stretch md:gap-5"
+			<h2
+				id="about-heading"
+				class="mb-[clamp(0.5rem,1dvh,1rem)] flex items-center gap-4 py-2 tracking-[0.2em] text-muted-foreground uppercase after:h-px after:grow after:bg-border"
 			>
+				About
+			</h2>
+			<div class="card grid grid-cols-1 gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:gap-5">
 				<div class="grid min-w-0 gap-2">
-					<p class="text-foreground">
+					<p>
 						Bachelor in Computer Science. My interests are
 						<ImageDispenser images={allStackIconUrls}>programming</ImageDispenser>,
 						<ImagePreview src="/topsters.avif" alt="A Topsters chart of Dennis's favorite albums">
@@ -276,8 +279,15 @@
 		</section>
 
 		<section class="mb-6 lg:mb-0" aria-labelledby="projects-heading">
-			<h2 id="projects-heading" class="section-heading">Projects</h2>
-			<ul class="projects-grid grid grid-cols-1 gap-2 lg:grid-cols-2">
+			<h2
+				id="projects-heading"
+				class="mb-[clamp(0.5rem,1dvh,1rem)] flex items-center gap-4 py-2 tracking-[0.2em] text-muted-foreground uppercase after:h-px after:grow after:bg-border"
+			>
+				Projects
+			</h2>
+			<ul
+				class="grid grid-cols-1 gap-2 lg:grid-cols-2 [@media(min-width:80rem)_and_(max-height:48rem)]:grid-cols-4"
+			>
 				{#each projects as project}
 					<ProjectCard {...project} />
 				{/each}
@@ -303,28 +313,33 @@
 							href={social.url}
 							target="_blank"
 							rel="noreferrer"
-							class="group/social block rounded-sm p-1 opacity-90 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+							class="group/social relative block rounded-sm p-1 opacity-90 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
 							aria-label="Open {social.platform}"
-							title={social.platform}
 						>
 							{#if social.iconDark}
 								<img
 									src={social.icon}
 									alt=""
-									class="social-icon show-on-dark h-[1.1rem] w-[1.1rem] transition-transform duration-150 group-hover/social:-translate-y-0.5"
+									class="show-on-dark social-icon-shadow size-4 transition-transform duration-150 group-hover/social:-translate-y-0.5"
 								/>
 								<img
 									src={social.iconDark}
 									alt=""
-									class="social-icon show-on-light h-[1.1rem] w-[1.1rem] transition-transform duration-150 group-hover/social:-translate-y-0.5"
+									class="show-on-light social-icon-shadow size-4 transition-transform duration-150 group-hover/social:-translate-y-0.5"
 								/>
 							{:else}
 								<img
 									src={social.icon}
 									alt=""
-									class="social-icon h-[1.1rem] w-[1.1rem] transition-transform duration-150 group-hover/social:-translate-y-0.5"
+									class="social-icon-shadow size-4 transition-transform duration-150 group-hover/social:-translate-y-0.5"
 								/>
 							{/if}
+							<span
+								aria-hidden="true"
+								class="tooltip right-0 bottom-full mb-1.5 group-hover/social:opacity-100 group-focus-visible/social:opacity-100"
+							>
+								{social.platform}
+							</span>
 						</a>
 					</li>
 				{/each}
@@ -334,32 +349,8 @@
 </div>
 
 <style>
-	.section-heading {
-		display: flex;
-		align-items: center;
-		gap: 1rem;
-		margin-bottom: clamp(0.5rem, 1dvh, 1rem);
-		padding-block: 0.5rem;
-		color: var(--color-muted-foreground);
-		text-transform: uppercase;
-		letter-spacing: 0.2em;
-	}
-
-	.section-heading::after {
-		height: 1px;
-		content: "";
-		background-color: var(--color-border);
-		flex-grow: 1;
-	}
-
-	.social-icon {
+	.social-icon-shadow {
 		filter: drop-shadow(0 0 0.7px light-dark(rgb(15 23 42 / 0.75), transparent))
 			drop-shadow(0 1px 0.5px light-dark(rgb(15 23 42 / 0.75), transparent));
-	}
-
-	@media (min-width: 80rem) and (max-height: 48rem) {
-		.projects-grid {
-			grid-template-columns: repeat(4, minmax(0, 1fr));
-		}
 	}
 </style>
