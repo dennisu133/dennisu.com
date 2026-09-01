@@ -117,7 +117,7 @@
 		target="_blank"
 		rel="noopener"
 		popover="manual"
-		class="fixed m-0 block overflow-hidden rounded-lg border border-border bg-black p-0 shadow-2xl outline-none focus-visible:ring-2 focus-visible:ring-accent"
+		class="fixed m-0 block overflow-hidden rounded-lg border border-border bg-black p-0 shadow-2xl"
 		style={previewStyle}
 		aria-label={`Open ${alt} full size in a new tab`}
 		onmouseenter={cancelScheduledHide}

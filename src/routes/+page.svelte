@@ -313,7 +313,7 @@
 							href={social.url}
 							target="_blank"
 							rel="noreferrer"
-							class="group/social relative block rounded-sm p-1 opacity-90 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+							class="group/social relative block rounded-sm p-1 opacity-90 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100"
 							aria-label="Open {social.platform}"
 						>
 							{#if social.iconDark}

@@ -89,7 +89,7 @@
 			{#if !email}
 				<button
 					type="button"
-					class="absolute inset-0 cursor-pointer rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground pointer-fine:hidden"
+					class="absolute inset-0 cursor-pointer rounded-sm pointer-fine:hidden"
 					aria-label="Email address hidden until interaction"
 					onclick={reveal}
 				></button>

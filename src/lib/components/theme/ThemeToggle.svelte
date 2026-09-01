@@ -40,7 +40,7 @@
 
 <button
 	type="button"
-	class="script-theme-toggle inline-flex focus-visible:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground noscript:hidden {toggleClass}"
+	class="script-theme-toggle inline-flex focus-visible:text-foreground noscript:hidden {toggleClass}"
 	aria-label="Toggle color theme"
 	onclick={handleToggle}
 >
@@ -55,7 +55,7 @@
 />
 <label
 	for="no-script-theme-toggle"
-	class="hidden peer-focus-visible:text-foreground peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-foreground noscript:inline-flex {toggleClass}"
+	class="hidden peer-focus-visible:text-foreground peer-focus-visible:outline-2 peer-focus-visible:outline-offset-[3px] peer-focus-visible:outline-accent-hover noscript:inline-flex {toggleClass}"
 >
 	{@render toggleContents()}
 </label>
