@@ -107,6 +107,7 @@
 	onclick={showPreview}
 >
 	{@render children()}
+	<span class="sr-only">preview {alt}</span>
 </button>
 
 {#if isOpen}
@@ -119,20 +120,21 @@
 		popover="manual"
 		class="fixed m-0 block overflow-visible rounded-lg border border-border bg-black p-0 shadow-2xl"
 		style={previewStyle}
-		aria-label={`Open ${alt} full size in a new tab`}
 		onmouseenter={cancelScheduledHide}
 		onmouseleave={scheduleHideIfHoverSupported}
 		onfocus={cancelScheduledHide}
 		onblur={scheduleHideIfHoverSupported}
 	>
+		<span class="sr-only">Open full size: {alt}. Opens in a new tab.</span>
 		<img
 			class="block h-full w-full rounded-lg object-contain"
 			src={previewSrc ?? asset(src)}
-			{alt}
+			alt=""
 			draggable="false"
 			onload={handleImageLoad}
 		/>
 		<span
+			aria-hidden="true"
 			class="pointer-events-none absolute right-2 bottom-2 rounded bg-black/80 px-2 py-1 text-xs font-medium text-white"
 		>
 			Open full size ↗

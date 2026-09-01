@@ -191,12 +191,12 @@
 	>{:else}<button
 		type="button"
 		class="interactive-word"
-		aria-label="cats — summon Java"
 		aria-busy={isActive}
 		onmouseenter={startChase}
 		onclick={startChase}
 	>
 		{@render children()}
+		<span class="sr-only">summon Java</span>
 	</button>{#if isActive}
 		<span
 			bind:this={catElement}

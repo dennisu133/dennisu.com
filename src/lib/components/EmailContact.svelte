@@ -62,14 +62,15 @@
 		<div class="relative min-h-6 text-sm text-muted-foreground">
 			<a
 				{href}
-				aria-label="Email address"
 				class="inline-flex min-h-6 max-w-full flex-wrap items-center"
 				onmouseenter={reveal}
 				onfocus={reveal}
 				onclick={handleLinkClick}
 			>
+				<span class="sr-only">{email || "Reveal email address"}</span>
 				{#each characters as character (character.index)}
 					<span
+						aria-hidden="true"
 						data-scramble={character.scramble}
 						class={[
 							"relative transition-[translate,rotate,filter] delay-(--delay) duration-500 ease-out motion-reduce:delay-0! motion-reduce:duration-0!",
@@ -90,7 +91,7 @@
 				<button
 					type="button"
 					class="absolute inset-0 cursor-pointer rounded-sm pointer-fine:hidden"
-					aria-label="Email address hidden until interaction"
+					aria-label="Reveal email address"
 					onclick={reveal}
 				></button>
 			{/if}
