@@ -2,16 +2,17 @@
 
 Source code for my personal website. Developed using [Sveltekit](https://svelte.dev/) and [Bun](https://bun.com/docs).
 
-## Install
+## bun
 
-Install dependencies with `bun install`.
+1. `bun install`.
+2. `bun run dev`.
+3. `bun run build`.
+4. `bun run preview`.
 
-## Developing
+## Cloudflare notes
 
-You can start a development server with `bun run dev`.
+Specific config and files for hosting on Cloudflare:
 
-## Building
-
-To create a production version run `bun run build`.
-
-Preview the build with `bun run preview`.
+- [wrangler.jsonc](./wrangler.jsonc) configures the Workers deployment.
+- [static/_headers](./static/_headers) enables long-term caching for hashed assets.
+- `precompress` is disabled in [vite.config.ts](./vite.config.ts) because Cloudflare handles compression. Re-enable it if the new server uses the generated `.gz` and `.br` files.
