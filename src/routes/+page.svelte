@@ -142,8 +142,18 @@
 		startAnimation();
 		motionQuery.addEventListener("change", startAnimation);
 
+		// Swap the layout's favicon links in place instead of emitting a second set in the HTML.
+		const icons = [...document.querySelectorAll<HTMLLinkElement>('link[rel="icon"]')];
+		const defaultIcons = icons.map((link) => link.getAttribute("href") ?? "");
+		const altIcons = defaultIcons.map((href) => href.replace("/favicon", "/alticon"));
+		const setIcons = (hidden: boolean) =>
+			icons.forEach((link, i) => (link.href = hidden ? altIcons[i] : defaultIcons[i]));
+
+		setIcons(document.hidden);
+
 		const handleVisibilityChange = () => {
 			isVisible = !document.hidden;
+			setIcons(document.hidden);
 			if (isVisible) {
 				startAnimation();
 			}
@@ -167,20 +177,7 @@
 </script>
 
 <svelte:head>
-	<!-- Keep the favicon override mounted so browsers observe both state changes. -->
 	<title>{isVisible ? (showStatic ? "Dennisu.com 🐱" : frames[currentFrame]) : altTitle}</title>
-	<link
-		rel="icon"
-		type="image/svg+xml"
-		href={isVisible ? "/favicon.svg?v=20260627" : "/alticon.svg?v=20260831"}
-	/>
-	<link
-		rel="icon"
-		type="image/png"
-		href={isVisible ? "/favicon-96x96.png?v=20260627" : "/alticon-96x96.png?v=20260831"}
-		sizes="96x96"
-	/>
-	<link rel="icon" href={isVisible ? "/favicon.ico?v=20260627" : "/alticon.ico?v=20260831"} />
 
 	<meta
 		name="description"
