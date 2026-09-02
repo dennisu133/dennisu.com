@@ -16,10 +16,8 @@
 	import ImageDispenser from "$lib/components/ImageDispenser.svelte";
 
 	import discordIcon from "$lib/assets/icons/social/discord.svg";
-	import githubIcon from "$lib/assets/icons/social/github.svg";
 	import steamIcon from "$lib/assets/icons/social/steam.svg";
 	import spotifyIcon from "$lib/assets/icons/social/spotify.svg";
-	import githubDarkIcon from "$lib/assets/icons/social/github-dark.svg";
 
 	const profile = {
 		name: "Dennis Karnowitsch",
@@ -72,8 +70,7 @@
 		{
 			platform: "GitHub",
 			url: "https://github.com/dennisu133",
-			icon: githubIcon,
-			iconDark: githubDarkIcon
+			icon: null
 		},
 		{
 			platform: "Discord",
@@ -313,23 +310,17 @@
 							class="group/social relative block rounded-sm p-1 opacity-90 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100"
 							aria-label="Open {social.platform}"
 						>
-							{#if social.iconDark}
-								<img
-									src={social.icon}
-									alt=""
-									class="show-on-dark social-icon-shadow size-4 transition-transform duration-150 group-hover/social:-translate-y-0.5"
-								/>
-								<img
-									src={social.iconDark}
-									alt=""
-									class="show-on-light social-icon-shadow size-4 transition-transform duration-150 group-hover/social:-translate-y-0.5"
-								/>
-							{:else}
+							{#if social.icon}
 								<img
 									src={social.icon}
 									alt=""
 									class="social-icon-shadow size-4 transition-transform duration-150 group-hover/social:-translate-y-0.5"
 								/>
+							{:else}
+								<span
+									aria-hidden="true"
+									class="github-icon social-icon-shadow size-4 transition-transform duration-150 group-hover/social:-translate-y-0.5"
+								></span>
 							{/if}
 							<span
 								aria-hidden="true"
