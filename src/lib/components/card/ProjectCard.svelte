@@ -1,6 +1,4 @@
 <script lang="ts">
-	import githubIcon from "$lib/assets/icons/social/github.svg";
-	import githubDarkIcon from "$lib/assets/icons/social/github-dark.svg";
 	import type { StackIcon } from "$lib/stackIcons";
 
 	let {
@@ -132,11 +130,16 @@
 				href={repo}
 				target="_blank"
 				rel="noreferrer"
-				class="-m-1 inline-flex rounded-sm p-1 opacity-50 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100"
-				aria-label="View {name} on GitHub"
+				class="group/source relative -m-1 inline-flex rounded-sm p-1 opacity-50 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100"
+				aria-label="View source code for {name}"
 			>
-				<img src={githubIcon} alt="" class="show-on-dark size-4" />
-				<img src={githubDarkIcon} alt="" class="show-on-light size-4" />
+				<span aria-hidden="true" class="github-icon size-4"></span>
+				<span
+					aria-hidden="true"
+					class="tooltip right-0 bottom-full mb-1.5 group-hover/source:opacity-100 group-focus-visible/source:opacity-100"
+				>
+					Source Code
+				</span>
 			</a>
 		</div>
 	</div>
