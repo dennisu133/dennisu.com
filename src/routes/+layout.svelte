@@ -5,7 +5,7 @@
 	import fontDMSerifDisplay from "$lib/assets/fonts/dm-serif-display-400.woff2";
 	import fontGeist from "$lib/assets/fonts/geist-400-700.woff2";
 	import fontCommitMono from "$lib/assets/fonts/commit-mono-400.woff2";
-	import { siteUrl } from "$lib/constants";
+	import { PUBLIC_SITE_ORIGIN } from "$env/static/public";
 
 	let { children } = $props();
 
@@ -27,15 +27,14 @@
 	<!-- platform icons -->
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=20260831" />
 	<link rel="manifest" href="/site.webmanifest?v=20260627" />
-	<meta name="apple-mobile-web-app-title" content="dennisu.com" />
+	<meta name="apple-mobile-web-app-title" content="Dennis K" />
 
 	<!-- global meta stuff -->
-	<link rel="canonical" href={siteUrl + path} />
-	<meta name="keywords" content="Dennis Karnowitsch, Dennisu, dennisu, dennisu133, dennisu.com" />
+	<link rel="canonical" href={PUBLIC_SITE_ORIGIN + path} />
 	<meta name="author" content="Dennis Karnowitsch" />
 	<meta name="theme-color" content="#66b2ff" />
 	<meta property="og:type" content="website" />
-	<meta property="og:url" content={siteUrl + path} />
+	<meta property="og:url" content={PUBLIC_SITE_ORIGIN + path} />
 </svelte:head>
 
 {@render children?.()}
