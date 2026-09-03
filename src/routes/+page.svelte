@@ -8,7 +8,7 @@
 	import FancyLink from "$lib/components/FancyLink.svelte";
 	import ImagePreview from "$lib/components/ImagePreview.svelte";
 	import NekoChase from "$lib/components/NekoChase.svelte";
-	import { siteUrl } from "$lib/constants";
+	import { PUBLIC_SITE_ORIGIN } from "$env/static/public";
 	import { generateFrames } from "$lib/generateFrames";
 	import { allStackIconUrls, getStackIcons } from "$lib/stackIcons";
 	import { onMount } from "svelte";
@@ -99,13 +99,13 @@
 	const profilePageSchema = JSON.stringify({
 		"@context": "https://schema.org",
 		"@type": "ProfilePage",
-		"@id": `${siteUrl}/`,
-		url: `${siteUrl}/`,
+		"@id": `${PUBLIC_SITE_ORIGIN}/`,
+		url: `${PUBLIC_SITE_ORIGIN}/`,
 		mainEntity: {
 			"@type": "Person",
-			"@id": `${siteUrl}/#person`,
+			"@id": `${PUBLIC_SITE_ORIGIN}/#person`,
 			name: profile.name,
-			url: `${siteUrl}/`,
+			url: `${PUBLIC_SITE_ORIGIN}/`,
 			jobTitle: profile.subtitle,
 			address: {
 				"@type": "PostalAddress",
@@ -174,22 +174,36 @@
 </script>
 
 <svelte:head>
-	<title>{isVisible ? (showStatic ? "Dennisu.com 🐱" : frames[currentFrame]) : altTitle}</title>
+	<title
+		>{isVisible ? (showStatic ? "Dennis Karnowitsch 🐱" : frames[currentFrame]) : altTitle}</title
+	>
 
 	<meta
 		name="description"
 		content="Personal website of Dennis Karnowitsch, full-stack developer in Cottbus, Germany."
 	/>
 
-	<meta property="og:title" content="Dennisu.com 🐱" />
+	<meta property="og:title" content="Dennis Karnowitsch | Full-Stack Developer 🐱" />
 	<meta property="og:description" content="Please hire me." />
-	<meta property="og:image" content="{siteUrl}/og-image.gif" />
-	<meta property="og:image:alt" content="Dancing anime girl" />
 
-	<!-- twitter title, description and site fall back to Open Graph -->
+	<!-- OG image gif -->
+	<meta property="og:image" content="{PUBLIC_SITE_ORIGIN}/og-image.gif" />
+	<meta property="og:image:alt" content="Dancing anime girl" />
+	<meta property="og:image:width" content="701" />
+	<meta property="og:image:height" content="367" />
+	<meta property="og:image:type" content="image/gif" />
+
+	<!-- OG image static -->
+	<meta property="og:image" content="{PUBLIC_SITE_ORIGIN}/og-static.jpg" />
+	<meta property="og:image:alt" content="Cozy cat with knitted hat on" />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+	<meta property="og:image:type" content="image/jpg" />
+
+	<!-- Twitter - title and site fall back to OG -->
 	<meta name="twitter:description" content="Check out my cat!" />
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:image" content="{siteUrl}/twitter-card.jpg" />
+	<meta name="twitter:image" content="{PUBLIC_SITE_ORIGIN}/twitter-card.jpg" />
 	<meta
 		name="twitter:image:alt"
 		content="Black cat named Rust with reddish-brown undertones in her fur"

@@ -5,7 +5,7 @@
 </script>
 
 <svelte:head>
-	<title>404 - Dennisu.com</title>
+	<title>404 | Dennis Karnowitsch</title>
 	<meta name="robots" content="noindex" />
 </svelte:head>
 
@@ -13,7 +13,7 @@
 
 <main class="flex min-h-svh flex-col items-center justify-center gap-10 select-none">
 	<h1
-		class="glitch relative text-[clamp(6rem,22vw,11rem)] leading-none tracking-wider before:absolute before:inset-0 after:absolute after:inset-0 forced-colors:before:hidden forced-colors:after:hidden"
+		class="glitch relative font-mono text-[clamp(6rem,22vw,11rem)] leading-none tracking-wider before:absolute before:inset-0 after:absolute after:inset-0 forced-colors:before:hidden forced-colors:after:hidden"
 		data-text="404"
 	>
 		404
