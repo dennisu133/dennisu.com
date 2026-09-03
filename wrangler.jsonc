@@ -1,5 +1,5 @@
 {
-	"name": "home",
+	"name": "dennisu-com",
 	"compatibility_date": "2026-09-01",
 
 	"routes": [{ "pattern": "dennisu.com", "custom_domain": true }],
