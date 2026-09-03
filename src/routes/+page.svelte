@@ -186,15 +186,8 @@
 	<meta property="og:title" content="Dennis Karnowitsch | Full-Stack Developer 🐱" />
 	<meta property="og:description" content="Please hire me." />
 
-	<!-- OG image gif -->
-	<meta property="og:image" content="{PUBLIC_SITE_ORIGIN}/og-image.gif" />
-	<meta property="og:image:alt" content="Dancing anime girl" />
-	<meta property="og:image:width" content="701" />
-	<meta property="og:image:height" content="367" />
-	<meta property="og:image:type" content="image/gif" />
-
-	<!-- OG image static -->
-	<meta property="og:image" content="{PUBLIC_SITE_ORIGIN}/og-static.jpg" />
+	<!-- OG image -->
+	<meta property="og:image" content="{PUBLIC_SITE_ORIGIN}/og-image.jpg" />
 	<meta property="og:image:alt" content="Cozy cat with knitted hat on" />
 	<meta property="og:image:width" content="1200" />
 	<meta property="og:image:height" content="630" />
