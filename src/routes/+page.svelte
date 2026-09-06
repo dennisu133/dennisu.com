@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { ArrowRight } from "@lucide/svelte";
 
-	import Background from "$lib/components/Background.svelte";
 	import ProjectCard from "$lib/components/card/ProjectCard.svelte";
 	import EmailContact from "$lib/components/EmailContact.svelte";
 	import ThemeToggle from "$lib/components/theme/ThemeToggle.svelte";
@@ -206,8 +205,6 @@
 </svelte:head>
 
 <div class="isolate mx-auto flex min-h-screen max-w-6xl flex-col px-6 sm:px-10">
-	<Background />
-
 	<header class="mt-6 flex min-h-40 flex-wrap gap-4 sm:min-h-36">
 		<div class="transition-colors duration-150 ease-linear">
 			<h1>
