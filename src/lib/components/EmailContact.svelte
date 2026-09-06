@@ -51,7 +51,7 @@
 		<h3 class="text-base font-medium">
 			<a
 				{href}
-				class="inline-flex min-h-6 w-56 items-center transition-colors duration-150 select-none group-hover/email:text-accent-hover"
+				class="inline-flex min-h-6 w-56 items-center select-none group-hover/email:text-accent-hover motion-safe:transition-colors motion-safe:duration-150"
 				onmouseenter={reveal}
 				onfocus={reveal}
 				onclick={handleLinkClick}
@@ -73,8 +73,8 @@
 						aria-hidden="true"
 						data-scramble={character.scramble}
 						class={[
-							"relative transition-[translate,rotate,filter] delay-(--delay) duration-500 ease-out motion-reduce:delay-0! motion-reduce:duration-0!",
-							"after:absolute after:left-0 after:text-xs after:text-muted-foreground after:transition-opacity after:delay-(--delay) after:duration-500 after:ease-out after:content-[attr(data-scramble)] after:motion-reduce:delay-0! after:motion-reduce:duration-0!",
+							"relative motion-safe:transition-[translate,rotate,filter] motion-safe:delay-(--delay) motion-safe:duration-500 motion-safe:ease-out",
+							"after:absolute after:left-0 after:text-xs after:text-muted-foreground after:content-[attr(data-scramble)] after:motion-safe:transition-opacity after:motion-safe:delay-(--delay) after:motion-safe:duration-500 after:motion-safe:ease-out",
 							email
 								? "after:opacity-0"
 								: "w-[0.5em] translate-y-(--offset-y) rotate-(--rotate) text-transparent blur-[1px] after:opacity-80"

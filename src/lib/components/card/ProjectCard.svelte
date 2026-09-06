@@ -52,7 +52,7 @@
 	<div class="flex items-baseline justify-between gap-3">
 		<div class="relative w-fit min-w-0">
 			<h3
-				class="leading-none font-medium transition-colors duration-150 group-hover:text-accent-hover"
+				class="leading-none font-medium group-hover:text-accent-hover motion-safe:transition-colors motion-safe:duration-150"
 			>
 				{name}
 			</h3>
@@ -75,7 +75,7 @@
 					<img
 						src={icon.src}
 						alt=""
-						class="stack-icon size-5 opacity-90 transition-opacity duration-150 group-hover/stack-icon:opacity-100"
+						class="icon-shadow size-5 opacity-90 group-hover/stack-icon:opacity-100 motion-safe:transition-opacity motion-safe:duration-150"
 					/>
 					<span
 						id={tooltipId}
@@ -107,7 +107,7 @@
 		<div class="relative z-20 flex items-center gap-2">
 			<a
 				href={projectUrl}
-				class="hidden min-h-6 items-center text-xs leading-none tracking-wider text-accent uppercase transition-colors duration-150 hover:text-accent-hover pointer-coarse:inline-flex"
+				class="hidden min-h-6 items-center text-xs leading-none tracking-wider text-accent uppercase hover:text-accent-hover motion-safe:transition-colors motion-safe:duration-150 pointer-coarse:inline-flex"
 				target="_blank"
 				rel="noreferrer"
 			>
@@ -120,7 +120,7 @@
 				href={repo}
 				target="_blank"
 				rel="noreferrer"
-				class="group/source relative -m-1 inline-flex rounded-sm p-1 opacity-50 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100"
+				class="group/source relative -m-1 inline-flex rounded-sm p-1 opacity-50 hover:opacity-100 focus-visible:opacity-100 motion-safe:transition-opacity motion-safe:duration-150"
 				aria-label="View source code for {name}"
 			>
 				<span aria-hidden="true" class="github-icon size-4"></span>
@@ -134,11 +134,3 @@
 		</div>
 	</div>
 </li>
-
-<style>
-	/* This becomes unreadable in Tailwind */
-	.stack-icon {
-		filter: drop-shadow(0 0 0.7px light-dark(rgb(15 23 42 / 0.65), transparent))
-			drop-shadow(0 1px 0.5px light-dark(rgb(15 23 42 / 0.65), transparent));
-	}
-</style>

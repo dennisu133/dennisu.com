@@ -19,7 +19,7 @@
 
 	<a
 		href={resolve("/")}
-		class="home-btn inline-flex items-center gap-2 border border-border px-6 py-3 font-mono text-foreground transition duration-200 ease-out hover:-translate-y-0.5 hover:border-accent focus-visible:-translate-y-0.5 focus-visible:border-accent active:translate-y-0 motion-reduce:translate-y-0! motion-reduce:transition-none"
+		class="home-btn inline-flex items-center gap-2 border border-border px-6 py-3 font-mono text-foreground hover:border-accent focus-visible:border-accent motion-safe:transition motion-safe:duration-200 motion-safe:ease-out motion-safe:hover:-translate-y-0.5 motion-safe:focus-visible:-translate-y-0.5 motion-safe:active:translate-y-0"
 	>
 		<ArrowLeft size={18} aria-hidden="true" />
 		<span class="label">take me home</span>
