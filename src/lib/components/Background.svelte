@@ -5,7 +5,6 @@
 	<div class="glow glow-accent light-atmosphere"></div>
 	<div class="light-beam light-atmosphere"></div>
 	<div class="vignette"></div>
-	<div class="dither"></div>
 </div>
 
 <style>
@@ -40,8 +39,7 @@
 	.horizon,
 	.glow,
 	.light-beam,
-	.vignette,
-	.dither {
+	.vignette {
 		position: absolute;
 	}
 
@@ -100,15 +98,6 @@
 		background:
 			linear-gradient(to bottom, transparent 55%, var(--vignette) 140%),
 			radial-gradient(ellipse at center, transparent 55%, var(--vignette) 145%);
-	}
-
-	.dither {
-		display: var(--show-dark);
-		inset: 0;
-		background-image: url("$lib/assets/dither.png");
-		background-size: 64px 64px;
-		mix-blend-mode: soft-light;
-		opacity: 0.045;
 	}
 
 	@keyframes drift-primary {
