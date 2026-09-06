@@ -16,7 +16,7 @@
 
 <main class="relative z-10 min-h-svh">
 	<h1 class="sr-only">Cloud shader background demo</h1>
-	<div class="fixed top-4 right-4">
+	<div class="fixed top-12 right-12">
 		<ThemeToggle />
 	</div>
 </main>
