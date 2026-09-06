@@ -41,7 +41,7 @@
 	onscroll={() => (activeStackIcon = null)}
 />
 
-<li class="card interactive-surface group flex flex-col gap-3">
+<li class="card interactive-surface group flex flex-col gap-3 forced-colors:border-[LinkText]">
 	<a
 		href={projectUrl}
 		class="accent-focus absolute inset-0 z-10 hidden pointer-fine:block"
