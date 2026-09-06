@@ -1,10 +1,5 @@
 type Theme = "light" | "dark";
 
-type ThemeTransitionOrigin = {
-	x: number;
-	y: number;
-};
-
 let activeTransition: ViewTransition | null = null;
 
 function getTheme(root: HTMLElement): Theme {
@@ -32,7 +27,7 @@ function applyImmediately(root: HTMLElement, theme: Theme) {
 	requestAnimationFrame(() => root.classList.remove("theme-transition-capture"));
 }
 
-export function toggleTheme(origin: ThemeTransitionOrigin) {
+export function toggleTheme() {
 	const root = document.documentElement;
 	const nextTheme = getTheme(root) === "light" ? "dark" : "light";
 	const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -42,10 +37,6 @@ export function toggleTheme(origin: ThemeTransitionOrigin) {
 		return;
 	}
 
-	const transitionStart =
-		((window.innerWidth - origin.x + origin.y) / (window.innerWidth + window.innerHeight)) * 100;
-
-	root.style.setProperty("--theme-transition-start", `${transitionStart}%`);
 	root.classList.add("theme-transition-active", "theme-transition-capture");
 
 	const transition = document.startViewTransition(() => applyTheme(root, nextTheme));
@@ -62,7 +53,6 @@ export function toggleTheme(origin: ThemeTransitionOrigin) {
 		if (activeTransition === transition) {
 			activeTransition = null;
 			root.classList.remove("theme-transition-active", "theme-transition-capture");
-			root.style.removeProperty("--theme-transition-start");
 		}
 	};
 	void transition.finished.then(finishTransition, finishTransition);
