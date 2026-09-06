@@ -4,7 +4,7 @@
 	let { children, class: className, ...rest }: HTMLAnchorAttributes = $props();
 </script>
 
-<a {...rest} class={["group/link relative inline-flex", className]}>
+<a {...rest} class={["accent-focus group/link relative inline-flex", className]}>
 	{@render children?.()}
 	<span
 		aria-hidden="true"
