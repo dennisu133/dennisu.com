@@ -53,15 +53,6 @@
 			repo: "https://github.com/dennisu133/LetterMaker",
 			date: new Date(2025, 7, 1, 12), // 7 = August, noon to avoid timezone shifts
 			stack: getStackIcons("typescript", "go", "react", "tailwind")
-		},
-		{
-			name: "CompetitiveWordle",
-			description: "Wordle clone with a focus on competitive gameplay.",
-			disclaimer: "abandoned university project",
-			url: "https://wordle.dennisu.com",
-			repo: "https://github.com/dennisu133/CompetitiveWordle",
-			date: new Date(2025, 4, 1, 12), // 4 = May, noon to avoid timezone shifts
-			stack: getStackIcons("typescript", "svelte")
 		}
 	];
 
@@ -293,49 +284,62 @@
 		</section>
 	</main>
 
-	<footer class="flex items-center justify-between border-t border-border py-3 text-xs">
-		<FancyLink
-			href={siteSource}
-			target="_blank"
-			rel="noreferrer"
-			class="font-mono tracking-wide text-accent hover:text-accent-hover"
-		>
-			View Source
-		</FancyLink>
+	<footer class="border-t border-border py-3 text-xs">
+		<nav class="flex items-center justify-between">
+			<div class="flex items-center gap-3">
+				<FancyLink
+					href={siteSource}
+					target="_blank"
+					rel="noreferrer"
+					class="font-mono tracking-wide text-accent hover:text-accent-hover"
+				>
+					Source
+				</FancyLink>
 
-		<nav aria-label="Social links">
-			<ul class="flex items-center gap-3">
-				{#each socials as social}
-					<li>
-						<a
-							href={social.url}
-							target="_blank"
-							rel="noreferrer"
-							class="group/social relative block rounded-sm p-1 opacity-90 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100"
-							aria-label="Open {social.platform}"
-						>
-							{#if social.icon}
-								<img
-									src={social.icon}
-									alt=""
-									class="social-icon-shadow size-4 transition-transform duration-150 group-hover/social:-translate-y-0.5"
-								/>
-							{:else}
+				<span class="h-3 w-px bg-border/70" aria-hidden="true"></span>
+
+				<FancyLink
+					href="/pentle"
+					class="font-mono tracking-wide text-accent hover:text-accent-hover"
+				>
+					Pentle
+				</FancyLink>
+			</div>
+
+			<div aria-label="Social links">
+				<ul class="flex items-center gap-3">
+					{#each socials as social}
+						<li>
+							<a
+								href={social.url}
+								target="_blank"
+								rel="noreferrer"
+								class="group/social relative block rounded-sm p-1 opacity-90 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100"
+								aria-label="Open {social.platform}"
+							>
+								{#if social.icon}
+									<img
+										src={social.icon}
+										alt=""
+										class="social-icon-shadow size-4 transition-transform duration-150 group-hover/social:-translate-y-0.5"
+									/>
+								{:else}
+									<span
+										aria-hidden="true"
+										class="github-icon social-icon-shadow size-4 transition-transform duration-150 group-hover/social:-translate-y-0.5"
+									></span>
+								{/if}
 								<span
 									aria-hidden="true"
-									class="github-icon social-icon-shadow size-4 transition-transform duration-150 group-hover/social:-translate-y-0.5"
-								></span>
-							{/if}
-							<span
-								aria-hidden="true"
-								class="tooltip right-0 bottom-full mb-1.5 group-hover/social:opacity-100 group-focus-visible/social:opacity-100"
-							>
-								{social.platform}
-							</span>
-						</a>
-					</li>
-				{/each}
-			</ul>
+									class="tooltip right-0 bottom-full mb-1.5 group-hover/social:opacity-100 group-focus-visible/social:opacity-100"
+								>
+									{social.platform}
+								</span>
+							</a>
+						</li>
+					{/each}
+				</ul>
+			</div>
 		</nav>
 	</footer>
 </div>

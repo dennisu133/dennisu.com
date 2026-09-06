@@ -1,0 +1,101 @@
+<script lang="ts">
+	import { CornerDownLeft, Delete } from "@lucide/svelte";
+
+	import { translate } from "./i18n";
+	import type { FeedbackStatus, Language } from "./pentle";
+
+	let { rows, feedback, gameLanguage, displayLanguage, onKey } = $props<{
+		rows: readonly string[];
+		feedback: readonly (readonly FeedbackStatus[])[];
+		gameLanguage: Language;
+		displayLanguage: Language;
+		onKey: (key: string) => void;
+	}>();
+
+	const keyboardRows = $derived(
+		gameLanguage === "de"
+			? ["QWERTZUIOPÜ", "ASDFGHJKLÖÄ", "YXCVBNMß"]
+			: ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"]
+	);
+
+	const letterStates = $derived.by(() => {
+		const states: Record<string, FeedbackStatus> = {};
+		for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+			for (let letterIndex = 0; letterIndex < rows[rowIndex].length; letterIndex++) {
+				const letter = rows[rowIndex][letterIndex];
+				const status = feedback[rowIndex]?.[letterIndex];
+				if (
+					status === "correct" ||
+					(status === "present" && states[letter] !== "correct") ||
+					(status === "absent" && !states[letter])
+				) {
+					states[letter] = status;
+				}
+			}
+		}
+		return states;
+	});
+
+	function stateFor(letter: string): FeedbackStatus | undefined {
+		return letterStates[letter.toLocaleLowerCase(gameLanguage)];
+	}
+
+	function labelFor(letter: string): string {
+		const state = stateFor(letter);
+		return state ? `${letter}, ${translate(displayLanguage, state)}` : letter;
+	}
+
+	function skipKeyboard(event: MouseEvent) {
+		event.preventDefault();
+		document.querySelector<HTMLButtonElement>("#pentle-settings")?.focus();
+	}
+</script>
+
+<a
+	class="fixed top-0 left-1/2 z-20 -translate-x-1/2 -translate-y-full border border-(--pentle-border) bg-(--pentle-dialog) px-3 py-2 text-(--pentle-text) focus-visible:translate-y-4 motion-safe:transition-transform motion-safe:duration-150 motion-safe:ease-out pointer-coarse:hidden"
+	href="#pentle-settings"
+	onclick={skipKeyboard}
+>
+	{translate(displayLanguage, "skipKeyboard")}
+</a>
+
+<div
+	class="grid w-full max-w-xl gap-2 select-none pointer-coarse:hidden"
+	role="group"
+	aria-label={translate(displayLanguage, "keyboard")}
+>
+	{#each keyboardRows as row, rowIndex (row)}
+		<div class="flex justify-center gap-1">
+			{#each [...row] as letter (letter)}
+				<button
+					type="button"
+					class="inline-flex min-h-11 max-w-11 min-w-0 flex-1 cursor-pointer items-center justify-center rounded-xs border border-(--pentle-border) bg-(--pentle-glass) bg-(image:--pentle-control-gradient) px-1 py-2 text-center font-mono text-(--pentle-text) shadow-(--pentle-inset-shadow) backdrop-blur-md hover:border-(--pentle-active) hover:bg-(--pentle-glass-hover) data-feedback:bg-none data-feedback:text-(--pentle-result-text) data-[feedback=absent]:border-(--pentle-absent-border) data-[feedback=absent]:bg-(--pentle-absent) data-[feedback=correct]:border-(--pentle-correct-border) data-[feedback=correct]:bg-(--pentle-correct) data-[feedback=present]:border-(--pentle-present-border) data-[feedback=present]:bg-(--pentle-present) motion-safe:transition-[background-color,border-color,translate] motion-safe:duration-150 motion-safe:ease-out motion-safe:active:translate-y-px"
+					aria-label={labelFor(letter)}
+					data-feedback={stateFor(letter)}
+					onclick={() => onKey(letter)}
+				>
+					{letter}
+				</button>
+			{/each}
+			{#if rowIndex === keyboardRows.length - 2}
+				<button
+					type="button"
+					class="inline-flex min-h-11 max-w-11 min-w-0 flex-1 cursor-pointer items-center justify-center rounded-xs border border-(--pentle-border) bg-(--pentle-glass) bg-(image:--pentle-control-gradient) px-1 py-2 text-center font-mono text-(--pentle-text) shadow-(--pentle-inset-shadow) backdrop-blur-md hover:border-(--pentle-active) hover:bg-(--pentle-glass-hover) motion-safe:transition-[background-color,border-color,translate] motion-safe:duration-150 motion-safe:ease-out motion-safe:active:translate-y-px"
+					aria-label={translate(displayLanguage, "backspace")}
+					onclick={() => onKey("Backspace")}
+				>
+					<Delete size={18} aria-hidden="true" />
+				</button>
+			{:else if rowIndex === keyboardRows.length - 1}
+				<button
+					type="button"
+					class="inline-flex min-h-11 max-w-11 min-w-0 flex-1 cursor-pointer items-center justify-center rounded-xs border border-(--pentle-border) bg-(--pentle-glass) bg-(image:--pentle-control-gradient) px-1 py-2 text-center font-mono text-(--pentle-text) shadow-(--pentle-inset-shadow) backdrop-blur-md hover:border-(--pentle-active) hover:bg-(--pentle-glass-hover) motion-safe:transition-[background-color,border-color,translate] motion-safe:duration-150 motion-safe:ease-out motion-safe:active:translate-y-px"
+					aria-label={translate(displayLanguage, "submit")}
+					onclick={() => onKey("Enter")}
+				>
+					<CornerDownLeft size={18} aria-hidden="true" />
+				</button>
+			{/if}
+		</div>
+	{/each}
+</div>
