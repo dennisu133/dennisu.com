@@ -117,6 +117,12 @@
 		mask: url("../lib/assets/icons/social/github.svg") center / contain no-repeat;
 	}
 
+	@media (forced-colors: active) {
+		.github-icon {
+			background-color: LinkText;
+		}
+	}
+
 	.icon-shadow {
 		filter: drop-shadow(0 0 0.7px light-dark(oklch(20.8% 0.042 265.755 / 75%), transparent))
 			drop-shadow(0 1px 0.5px light-dark(oklch(20.8% 0.042 265.755 / 75%), transparent));
