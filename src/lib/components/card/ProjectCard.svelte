@@ -7,7 +7,6 @@
 		url,
 		repo,
 		date,
-		disclaimer,
 		stack
 	}: {
 		name: string;
@@ -15,7 +14,6 @@
 		url?: string;
 		repo: string;
 		date: Date;
-		disclaimer?: string;
 		stack: StackIcon[];
 	} = $props();
 
@@ -43,10 +41,10 @@
 	onscroll={() => (activeStackIcon = null)}
 />
 
-<li class="card group flex flex-col gap-3">
+<li class="card interactive-surface group flex flex-col gap-3">
 	<a
 		href={projectUrl}
-		class="absolute inset-0 z-10 hidden pointer-fine:block"
+		class="accent-focus absolute inset-0 z-10 hidden pointer-fine:block"
 		aria-label="Open {name}"
 	>
 	</a>
@@ -58,14 +56,6 @@
 			>
 				{name}
 			</h3>
-			<!-- TODO: remove me and competitiveworlde -->
-			{#if disclaimer}
-				<p
-					class="pointer-events-none absolute top-3/4 left-[70%] z-20 w-max -rotate-3 font-mono text-xs leading-none font-bold text-[light-dark(oklch(41.033%_0.1502_10.272),oklch(71.919%_0.169_13.428))] [@media(min-width:80rem)_and_(max-height:48rem)]:left-[42%]"
-				>
-					{disclaimer}
-				</p>
-			{/if}
 		</div>
 		<time
 			datetime={date.toISOString()}
