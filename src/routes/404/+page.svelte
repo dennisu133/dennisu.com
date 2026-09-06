@@ -1,15 +1,12 @@
 <script lang="ts">
 	import { ArrowLeft } from "@lucide/svelte";
 	import { resolve } from "$app/paths";
-	import Background from "$lib/components/Background.svelte";
 </script>
 
 <svelte:head>
 	<title>404 | Dennis Karnowitsch</title>
 	<meta name="robots" content="noindex" />
 </svelte:head>
-
-<Background />
 
 <main class="flex min-h-svh flex-col items-center justify-center gap-10 select-none">
 	<h1

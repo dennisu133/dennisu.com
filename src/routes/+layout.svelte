@@ -7,6 +7,8 @@
 	import fontCommitMono from "$lib/assets/fonts/commit-mono-400.woff2";
 	import { PUBLIC_SITE_ORIGIN } from "$env/static/public";
 
+	import Background from "$lib/components/Background.svelte";
+
 	let { children } = $props();
 
 	const path = $derived(page.url.pathname);
@@ -37,4 +39,5 @@
 	<meta property="og:url" content={PUBLIC_SITE_ORIGIN + path} />
 </svelte:head>
 
+<Background />
 {@render children?.()}
