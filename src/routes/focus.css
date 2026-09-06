@@ -1,4 +1,8 @@
 @layer base {
+	.accent-focus {
+		--focus-ring-color: var(--interaction-accent, var(--color-accent));
+	}
+
 	@media (forced-colors: none) {
 		:where(a, button):focus-visible {
 			position: relative;
@@ -12,7 +16,8 @@
 			content: "";
 			pointer-events: none;
 			background-image:
-				linear-gradient(var(--color-foreground) 0 0), linear-gradient(var(--color-foreground) 0 0);
+				linear-gradient(var(--focus-ring-color, var(--color-foreground)) 0 0),
+				linear-gradient(var(--focus-ring-color, var(--color-foreground)) 0 0);
 			background-repeat: no-repeat;
 			background-size:
 				100% 2px,
