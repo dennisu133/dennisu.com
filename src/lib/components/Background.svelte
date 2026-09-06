@@ -12,8 +12,8 @@
 		inset: 0;
 		pointer-events: none;
 		background:
-			radial-gradient(ellipse 65% 45% at 25% 48%, var(--cloud), transparent 75%),
-			radial-gradient(ellipse 55% 40% at 85% 62%, var(--cloud), transparent 75%),
+			radial-gradient(ellipse 50% 80% at 25% 75%, var(--cloud), transparent 75%),
+			radial-gradient(ellipse 70% 70% at 60% 25%, var(--cloud), transparent 75%),
 			linear-gradient(155deg, var(--sky-top), var(--sky-bottom));
 	}
 

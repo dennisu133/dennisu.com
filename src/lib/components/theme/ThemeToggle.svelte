@@ -14,7 +14,7 @@
 	} = $props();
 
 	const toggleClass =
-		"theme-toggle group/theme-toggle relative cursor-pointer items-center justify-center p-2 transition-colors";
+		"theme-toggle group/theme-toggle relative cursor-pointer items-center justify-center p-2 motion-safe:transition-colors";
 </script>
 
 {#snippet toggleContents()}

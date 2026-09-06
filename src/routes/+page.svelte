@@ -197,7 +197,7 @@
 
 <div class="isolate mx-auto flex min-h-screen max-w-6xl flex-col px-6 sm:px-10">
 	<header class="mt-6 flex min-h-40 flex-wrap gap-4 sm:min-h-36">
-		<div class="transition-colors duration-150 ease-linear">
+		<div class="motion-safe:transition-colors motion-safe:duration-150 motion-safe:ease-linear">
 			<h1>
 				{profile.name}
 			</h1>
@@ -314,19 +314,19 @@
 								href={social.url}
 								target="_blank"
 								rel="noreferrer"
-								class="group/social relative block rounded-sm p-1 opacity-90 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100"
+								class="group/social relative block rounded-sm p-1 opacity-90 hover:opacity-100 focus-visible:opacity-100 motion-safe:transition-opacity motion-safe:duration-150"
 								aria-label="Open {social.platform}"
 							>
 								{#if social.icon}
 									<img
 										src={social.icon}
 										alt=""
-										class="social-icon-shadow size-4 transition-transform duration-150 group-hover/social:-translate-y-0.5"
+										class="icon-shadow size-4 motion-safe:transition-transform motion-safe:duration-150 motion-safe:group-hover/social:-translate-y-0.5"
 									/>
 								{:else}
 									<span
 										aria-hidden="true"
-										class="github-icon social-icon-shadow size-4 transition-transform duration-150 group-hover/social:-translate-y-0.5"
+										class="github-icon icon-shadow size-4 motion-safe:transition-transform motion-safe:duration-150 motion-safe:group-hover/social:-translate-y-0.5"
 									></span>
 								{/if}
 								<span
@@ -343,10 +343,3 @@
 		</nav>
 	</footer>
 </div>
-
-<style>
-	.social-icon-shadow {
-		filter: drop-shadow(0 0 0.7px light-dark(rgb(15 23 42 / 0.75), transparent))
-			drop-shadow(0 1px 0.5px light-dark(rgb(15 23 42 / 0.75), transparent));
-	}
-</style>
