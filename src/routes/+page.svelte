@@ -1,4 +1,6 @@
 <script lang="ts">
+	import githubIcon from "$lib/assets/icons/social/github.svg";
+	import githubDarkIcon from "$lib/assets/icons/social/github-dark.svg";
 	import { ArrowRight } from "@lucide/svelte";
 
 	import ProjectCard from "$lib/components/card/ProjectCard.svelte";
@@ -246,15 +248,16 @@
 						{profile.proficiencies}
 					</p>
 
-					<div class="flex items-center gap-2">
-						<span class="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true"></span>
+					<div class="flex items-center gap-2 text-accent forced-colors:text-[CanvasText]">
+						<span class="size-1.5 shrink-0 rounded-full border-3 border-current" aria-hidden="true"
+						></span>
 						<p class="text-[clamp(0.75rem,1.5vw,0.9rem)] leading-relaxed text-muted-foreground">
 							{profile.availability}
 						</p>
 						<ArrowRight
 							aria-hidden="true"
 							strokeWidth={1.5}
-							class="h-4 w-4 shrink-0 rotate-90 text-accent md:ml-auto md:rotate-0"
+							class="h-4 w-4 shrink-0 rotate-90 md:ml-auto md:rotate-0"
 						/>
 					</div>
 				</div>
@@ -314,7 +317,7 @@
 								href={social.url}
 								target="_blank"
 								rel="noreferrer"
-								class="group/social relative block rounded-sm p-1 opacity-90 hover:opacity-100 focus-visible:opacity-100 motion-safe:transition-opacity motion-safe:duration-150"
+								class="group/social relative block rounded-sm p-1 opacity-90 hover:opacity-100 focus-visible:opacity-100 motion-safe:transition-opacity motion-safe:duration-150 forced-colors:opacity-100"
 								aria-label="Open {social.platform}"
 							>
 								{#if social.icon}
@@ -324,10 +327,16 @@
 										class="icon-shadow size-4 motion-safe:transition-transform motion-safe:duration-150 motion-safe:group-hover/social:-translate-y-0.5"
 									/>
 								{:else}
-									<span
-										aria-hidden="true"
-										class="github-icon icon-shadow size-4 motion-safe:transition-transform motion-safe:duration-150 motion-safe:group-hover/social:-translate-y-0.5"
-									></span>
+									<img
+										src={githubIcon}
+										alt=""
+										class="show-on-dark icon-shadow size-4 opacity-70 group-hover/social:opacity-100 group-focus-visible/social:opacity-100 motion-safe:transition-[transform,opacity] motion-safe:duration-150 motion-safe:group-hover/social:-translate-y-0.5 forced-colors:opacity-100"
+									/>
+									<img
+										src={githubDarkIcon}
+										alt=""
+										class="show-on-light icon-shadow size-4 motion-safe:transition-transform motion-safe:duration-150 motion-safe:group-hover/social:-translate-y-0.5"
+									/>
 								{/if}
 								<span
 									aria-hidden="true"
