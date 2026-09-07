@@ -233,7 +233,9 @@
 			>
 				About
 			</h2>
-			<div class="card grid grid-cols-1 gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:gap-5">
+			<div
+				class="glass relative grid grid-cols-1 gap-3 p-4 md:grid-cols-[minmax(0,1fr)_auto] md:gap-5"
+			>
 				<div class="grid min-w-0 gap-2">
 					<p>
 						Bachelor in Computer Science. My interests are
@@ -249,7 +251,9 @@
 					</p>
 
 					<div class="flex items-center gap-2 text-accent forced-colors:text-[CanvasText]">
-						<span class="size-1.5 shrink-0 rounded-full border-3 border-current" aria-hidden="true"
+						<span
+							class="size-1.5 shrink-0 rounded-full border-3 border-current bg-current"
+							aria-hidden="true"
 						></span>
 						<p class="text-[clamp(0.75rem,1.5vw,0.9rem)] leading-relaxed text-muted-foreground">
 							{profile.availability}

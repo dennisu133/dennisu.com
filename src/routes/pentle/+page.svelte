@@ -148,7 +148,7 @@
 				aria-label={text("chooseGameLanguage")}
 			>
 				<p
-					class="card w-full rounded-xs text-sm leading-relaxed whitespace-pre-line text-muted-foreground"
+					class="glass relative w-full rounded-xs p-3 text-sm leading-relaxed whitespace-pre-line text-muted-foreground"
 				>
 					{text("dictionaryDisclaimer")}
 				</p>
