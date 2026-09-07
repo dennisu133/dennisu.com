@@ -14,7 +14,7 @@
 	} = $props();
 
 	const toggleClass =
-		"theme-toggle group/theme-toggle relative cursor-pointer items-center justify-center p-2 motion-safe:transition-colors";
+		"glass theme-toggle group/theme-toggle relative cursor-pointer items-center justify-center rounded-xs p-2 text-muted-foreground hover:border-accent hover:text-foreground motion-safe:transition-colors";
 </script>
 
 {#snippet toggleContents()}
@@ -59,27 +59,3 @@
 >
 	{@render toggleContents()}
 </label>
-
-<style>
-	.theme-toggle {
-		color: var(--color-muted-foreground);
-		background-color: light-dark(rgb(239 248 255 / 0.38), rgb(12 12 12 / 0.62));
-		background-image: linear-gradient(
-			135deg,
-			light-dark(rgb(255 255 255 / 0.55), rgb(255 255 255 / 0.08)),
-			transparent 60%
-		);
-		border: 1px solid light-dark(rgb(15 23 42 / 0.46), rgb(255 255 255 / 0.22));
-		border-radius: 0.125rem;
-		box-shadow:
-			inset 0 1px 0 light-dark(rgb(255 255 255 / 0.55), rgb(255 255 255 / 0.08)),
-			0 8px 24px light-dark(rgb(30 64 175 / 0.1), rgb(0 0 0 / 0.32));
-		backdrop-filter: blur(12px);
-	}
-
-	.theme-toggle:hover {
-		color: var(--color-foreground);
-		background-color: light-dark(rgb(239 248 255 / 0.58), rgb(255 255 255 / 0.08));
-		border-color: light-dark(oklch(48.8% 0.243 264.376), oklch(75.351% 0.139 232.661));
-	}
-</style>
