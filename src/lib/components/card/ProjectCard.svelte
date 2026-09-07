@@ -43,9 +43,7 @@
 	onscroll={() => (activeStackIcon = null)}
 />
 
-<li
-	class="glass interactive-surface group relative flex flex-col gap-3 p-4 forced-colors:border-[LinkText]"
->
+<li class="glass interactive-surface group relative flex flex-col gap-3 p-4">
 	<a
 		href={projectUrl}
 		class="accent-focus absolute inset-0 z-10 hidden pointer-fine:block"

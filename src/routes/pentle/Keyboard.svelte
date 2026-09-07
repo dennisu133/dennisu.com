@@ -69,7 +69,7 @@
 			{#each [...row] as letter (letter)}
 				<button
 					type="button"
-					class="glass inline-flex min-h-11 max-w-11 min-w-0 flex-1 cursor-pointer items-center justify-center rounded-xs px-1 py-2 text-center font-mono text-(--pentle-text) hover:border-(--pentle-active) data-feedback:bg-none data-feedback:text-(--pentle-result-text) data-[feedback=absent]:border-(--pentle-absent-border) data-[feedback=absent]:bg-(--pentle-absent) data-[feedback=correct]:border-(--pentle-correct-border) data-[feedback=correct]:bg-(--pentle-correct) data-[feedback=present]:border-(--pentle-present-border) data-[feedback=present]:bg-(--pentle-present) motion-safe:transition-[background-color,border-color,translate] motion-safe:duration-150 motion-safe:ease-out motion-safe:active:translate-y-px"
+					class="glass interactive-surface inline-flex min-h-11 max-w-11 min-w-0 flex-1 items-center justify-center rounded-xs px-1 py-2 text-center font-mono text-(--pentle-text) data-feedback:bg-none data-feedback:text-(--pentle-result-text) data-[feedback=absent]:border-(--pentle-absent-border) data-[feedback=absent]:bg-(--pentle-absent) data-[feedback=correct]:border-(--pentle-correct-border) data-[feedback=correct]:bg-(--pentle-correct) data-[feedback=present]:border-(--pentle-present-border) data-[feedback=present]:bg-(--pentle-present)"
 					aria-label={labelFor(letter)}
 					data-feedback={stateFor(letter)}
 					onclick={() => onKey(letter)}
@@ -80,7 +80,7 @@
 			{#if rowIndex === keyboardRows.length - 2}
 				<button
 					type="button"
-					class="glass inline-flex min-h-11 max-w-11 min-w-0 flex-1 cursor-pointer items-center justify-center rounded-xs px-1 py-2 text-center font-mono text-(--pentle-text) hover:border-(--pentle-active) motion-safe:transition-[background-color,border-color,translate] motion-safe:duration-150 motion-safe:ease-out motion-safe:active:translate-y-px"
+					class="glass interactive-surface inline-flex min-h-11 max-w-11 min-w-0 flex-1 items-center justify-center rounded-xs px-1 py-2 text-center font-mono text-(--pentle-text)"
 					aria-label={translate(displayLanguage, "backspace")}
 					onclick={() => onKey("Backspace")}
 				>
@@ -89,7 +89,7 @@
 			{:else if rowIndex === keyboardRows.length - 1}
 				<button
 					type="button"
-					class="glass inline-flex min-h-11 max-w-11 min-w-0 flex-1 cursor-pointer items-center justify-center rounded-xs px-1 py-2 text-center font-mono text-(--pentle-text) hover:border-(--pentle-active) motion-safe:transition-[background-color,border-color,translate] motion-safe:duration-150 motion-safe:ease-out motion-safe:active:translate-y-px"
+					class="glass interactive-surface inline-flex min-h-11 max-w-11 min-w-0 flex-1 items-center justify-center rounded-xs px-1 py-2 text-center font-mono text-(--pentle-text)"
 					aria-label={translate(displayLanguage, "submit")}
 					onclick={() => onKey("Enter")}
 				>

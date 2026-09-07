@@ -28,7 +28,7 @@
 
 <button
 	type="button"
-	class="group/help glass relative inline-flex cursor-pointer items-center justify-center rounded-xs p-2 text-muted-foreground hover:border-(--pentle-active) hover:text-foreground"
+	class="group/help glass interactive-surface relative inline-flex items-center justify-center rounded-xs p-2 text-muted-foreground hover:text-foreground"
 	aria-label={translate(displayLanguage, "helpButton")}
 	onclick={open}
 >
@@ -46,7 +46,7 @@
 >
 	<button
 		type="button"
-		class="glass absolute top-3 right-3 inline-flex cursor-pointer items-center justify-center rounded-xs p-2 text-muted-foreground hover:border-(--pentle-active) hover:text-foreground"
+		class="glass interactive-surface absolute top-3 right-3 inline-flex items-center justify-center rounded-xs p-2 text-muted-foreground hover:text-foreground"
 		aria-label={translate(displayLanguage, "close")}
 		onclick={() => dialog?.close()}
 	>

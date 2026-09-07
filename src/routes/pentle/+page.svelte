@@ -152,7 +152,7 @@
 					<p class="text-sm leading-relaxed text-muted-foreground">
 						{text("introductionBeforeHelp")}<button
 							type="button"
-							class="glass inline-flex cursor-pointer items-center justify-center rounded-xs p-1 align-middle text-muted-foreground hover:border-(--pentle-active) hover:text-foreground"
+							class="glass interactive-surface inline-flex items-center justify-center rounded-xs p-1 align-middle text-muted-foreground hover:text-foreground"
 							aria-label={text("helpButton")}
 							onclick={() => help?.open()}
 						>
@@ -167,7 +167,7 @@
 				</div>
 				<div class="flex flex-wrap justify-center gap-3">
 					<button
-						class="accent-focus glass flex min-h-48 w-36 cursor-pointer flex-col justify-between rounded-xs px-5 py-4 text-left text-base font-semibold text-(--pentle-text) hover:border-(--pentle-active) hover:text-accent-hover motion-safe:transition-[color,background-color,border-color,translate] motion-safe:duration-150 motion-safe:ease-out motion-safe:hover:-translate-y-px sm:w-40"
+						class="accent-focus glass interactive-surface flex min-h-48 w-36 flex-col justify-between rounded-xs px-5 py-4 text-left text-base font-semibold text-(--pentle-text) hover:text-accent-hover sm:w-40"
 						type="button"
 						onclick={() => game.start("de")}
 					>
@@ -178,7 +178,7 @@
 						</span>
 					</button>
 					<button
-						class="accent-focus glass flex min-h-48 w-36 cursor-pointer flex-col justify-between rounded-xs px-5 py-4 text-left text-base font-semibold text-(--pentle-text) hover:border-(--pentle-active) hover:text-accent-hover motion-safe:transition-[color,background-color,border-color,translate] motion-safe:duration-150 motion-safe:ease-out motion-safe:hover:-translate-y-px sm:w-40"
+						class="accent-focus glass interactive-surface flex min-h-48 w-36 flex-col justify-between rounded-xs px-5 py-4 text-left text-base font-semibold text-(--pentle-text) hover:text-accent-hover sm:w-40"
 						type="button"
 						onclick={() => game.start("en")}
 					>
@@ -213,7 +213,7 @@
 						{text("roundScore", { score: game.roundScore })}
 					</p>
 					<button
-						class="accent-focus glass min-h-11 cursor-pointer rounded-xs px-5 py-3 font-semibold text-(--pentle-text) hover:border-(--pentle-active) hover:text-accent-hover motion-safe:transition-[color,background-color,border-color,translate] motion-safe:duration-150 motion-safe:ease-out motion-safe:hover:-translate-y-px"
+						class="accent-focus glass interactive-surface min-h-11 rounded-xs px-5 py-3 font-semibold text-(--pentle-text) hover:text-accent-hover"
 						type="button"
 						onclick={() => game.startNextRound()}
 						bind:this={resultButton}
@@ -235,7 +235,7 @@
 					<p>{text("finalScore", { score: game.totalScore })}</p>
 					<p>{text("finalStreak", { streak: game.streak })}</p>
 					<button
-						class="accent-focus glass min-h-11 cursor-pointer rounded-xs px-5 py-3 font-semibold text-(--pentle-text) hover:border-(--pentle-active) hover:text-accent-hover motion-safe:transition-[color,background-color,border-color,translate] motion-safe:duration-150 motion-safe:ease-out motion-safe:hover:-translate-y-px"
+						class="accent-focus glass interactive-surface min-h-11 rounded-xs px-5 py-3 font-semibold text-(--pentle-text) hover:text-accent-hover"
 						type="button"
 						onclick={returnToSetup}
 						bind:this={resultButton}
@@ -251,7 +251,7 @@
 		<button
 			id="pentle-settings"
 			type="button"
-			class="group/language glass relative inline-flex cursor-pointer items-center justify-center gap-1 rounded-xs p-2 text-xs text-muted-foreground hover:border-(--pentle-active) hover:text-foreground"
+			class="group/language glass interactive-surface relative inline-flex items-center justify-center gap-1 rounded-xs p-2 text-xs text-muted-foreground hover:text-foreground"
 			aria-label={text("displayLanguage")}
 			onclick={toggleDisplayLanguage}
 		>
@@ -364,7 +364,7 @@
 				backdrop-filter: none;
 			}
 
-			.pentle-page :global(.glass:hover) {
+			.pentle-page :global(.interactive-surface:hover) {
 				background-color: var(--pentle-glass-hover, Canvas);
 			}
 		}

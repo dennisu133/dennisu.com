@@ -75,19 +75,27 @@
 }
 
 @layer components {
+	/* Read-only pane: flat. Interactive surfaces add .interactive-surface to read as raised. */
 	.glass {
-		--glass-highlight: light-dark(oklch(98.5% 0 0 / 60%), oklch(98.5% 0 0 / 25%));
+		--glass-sheen: linear-gradient(
+			135deg,
+			light-dark(oklch(98.5% 0 0 / 20%), oklch(98.5% 0 0 / 5%)),
+			transparent 35%
+		);
 
 		border: 1px solid var(--color-border);
 		background-color: light-dark(oklch(98.5% 0 0 / 15%), oklch(14.5% 0 0 / 15%));
+		background-image: var(--glass-sheen);
+		backdrop-filter: blur(12px);
+	}
+
+	.interactive-surface {
+		--glass-highlight: light-dark(oklch(98.5% 0 0 / 60%), oklch(98.5% 0 0 / 25%));
+
+		cursor: pointer;
 		background-image:
 			linear-gradient(to right, var(--glass-highlight), transparent),
-			linear-gradient(to bottom, var(--glass-highlight), transparent),
-			linear-gradient(
-				135deg,
-				light-dark(oklch(98.5% 0 0 / 20%), oklch(98.5% 0 0 / 5%)),
-				transparent 35%
-			);
+			linear-gradient(to bottom, var(--glass-highlight), transparent), var(--glass-sheen);
 		background-size:
 			100% 1px,
 			1px 100%,
@@ -98,7 +106,43 @@
 			0 0;
 		background-repeat: no-repeat;
 		box-shadow: 0 8px 24px light-dark(oklch(20.8% 0.042 265.755 / 10%), transparent);
-		backdrop-filter: blur(12px);
+		transition:
+			color 150ms ease-out,
+			background-color 150ms ease-out,
+			border-color 150ms ease-out,
+			transform 150ms ease-out;
+	}
+
+	.interactive-surface:hover {
+		border-color: var(--interaction-accent, var(--color-accent));
+		transform: translateY(-1px);
+	}
+
+	.interactive-surface:active {
+		transform: translateY(1px);
+	}
+
+	@media (forced-colors: none) {
+		/* A focused descendant (e.g. a card's overlay link) draws its own ring; keep the border quiet. */
+		.interactive-surface:has(:focus-visible) {
+			border-color: var(--color-border);
+		}
+	}
+
+	@media (forced-colors: active) {
+		:is(a, li).interactive-surface {
+			border-color: LinkText;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.interactive-surface {
+			transition-property: color, background-color, border-color;
+		}
+
+		.interactive-surface:is(:hover, :active) {
+			transform: none;
+		}
 	}
 
 	.tooltip {
@@ -133,34 +177,5 @@
 		text-decoration-line: underline;
 		text-decoration-thickness: 2px;
 		text-underline-offset: 4px;
-	}
-}
-
-.interactive-surface {
-	transition:
-		color 150ms ease-out,
-		background-color 150ms ease-out,
-		border-color 150ms ease-out,
-		transform 150ms ease-out;
-}
-
-:is(a, button, li).interactive-surface:hover {
-	border-color: var(--interaction-accent, var(--color-accent));
-	transform: translateY(-1px);
-}
-
-@media (forced-colors: none) {
-	:is(a, button, li).interactive-surface:focus-within {
-		border-color: var(--interaction-border, var(--color-border));
-	}
-}
-
-@media (prefers-reduced-motion: reduce) {
-	.interactive-surface {
-		transition-property: color, background-color, border-color;
-	}
-
-	:is(a, button, li).interactive-surface:hover {
-		transform: none;
 	}
 }
