@@ -60,6 +60,27 @@
 </a>
 
 <div
+	class="hidden w-full max-w-sm shrink-0 gap-1 select-none pointer-coarse:grid"
+	role="group"
+	aria-label={translate(displayLanguage, "letterHints")}
+>
+	{#each keyboardRows as row (row)}
+		<div class="flex justify-center gap-1">
+			{#each [...row] as letter (letter)}
+				<span
+					class="glass inline-flex h-8 max-w-8 min-w-0 flex-1 items-center justify-center rounded-xs font-mono text-xs text-(--pentle-text) data-feedback:bg-none data-feedback:text-(--pentle-result-text) data-[feedback=absent]:border-(--pentle-absent-border) data-[feedback=absent]:bg-(--pentle-absent) data-[feedback=correct]:border-(--pentle-correct-border) data-[feedback=correct]:bg-(--pentle-correct) data-[feedback=present]:border-(--pentle-present-border) data-[feedback=present]:bg-(--pentle-present)"
+					role="img"
+					aria-label={labelFor(letter)}
+					data-feedback={stateFor(letter)}
+				>
+					{letter}
+				</span>
+			{/each}
+		</div>
+	{/each}
+</div>
+
+<div
 	class="grid w-full max-w-xl gap-2 select-none pointer-coarse:hidden"
 	role="group"
 	aria-label={translate(displayLanguage, "keyboard")}
