@@ -52,6 +52,21 @@
 	display: var(--show-dark);
 }
 
+/* Image variants follow the forced palette, not the site's theme toggle. */
+@media (forced-colors: active) {
+	img:is(.show-on-light, .show-on-dark) {
+		--show-light: block;
+		--show-dark: none;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		img:is(.show-on-light, .show-on-dark) {
+			--show-light: none;
+			--show-dark: block;
+		}
+	}
+}
+
 /*
  * THEME TRANSITION
  *
