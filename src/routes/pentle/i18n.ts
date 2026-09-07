@@ -10,6 +10,8 @@ const translations = {
 		switchToDarkMode: "Zum dunklen Modus wechseln",
 		switchToLightMode: "Zum hellen Modus wechseln",
 		chooseGameLanguage: "Spielsprache wählen",
+		introductionBeforeHelp: "In Pentle errätst du Wörter mit fünf Buchstaben. Über ",
+		introductionAfterHelp: " erfährst du, wie das Spiel funktioniert.",
 		dictionaryDisclaimer:
 			"Die Wortliste ist bewusst kuratiert.\nEinige gültige Wörter werden möglicherweise nicht akzeptiert.",
 		playInGerman: "Auf Deutsch spielen",
@@ -66,6 +68,8 @@ const translations = {
 		switchToDarkMode: "Switch to dark mode",
 		switchToLightMode: "Switch to light mode",
 		chooseGameLanguage: "Choose game language",
+		introductionBeforeHelp: "Pentle is a word guessing game with five-letter words. Use ",
+		introductionAfterHelp: " to learn how to play.",
 		dictionaryDisclaimer:
 			"The dictionary is intentionally curated.\nSome valid words may not be accepted.",
 		playInGerman: "Play in German",

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Languages, MoveLeft } from "@lucide/svelte";
+	import { CircleQuestionMark, Languages, MoveLeft, MoveRight } from "@lucide/svelte";
 	import { resolve } from "$app/paths";
 	import { onDestroy, onMount, tick } from "svelte";
 
@@ -15,6 +15,7 @@
 	let displayLanguage = $state<Language>("en");
 	let languageReady = $state(false);
 	let resultButton = $state<HTMLButtonElement>();
+	let help = $state<HelpDialog>();
 
 	function returnToSetup() {
 		if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
@@ -144,28 +145,48 @@
 	>
 		{#if game.state === "setup"}
 			<section
-				class="flex w-full max-w-md -translate-y-8 flex-col items-center gap-4 text-center [@media(max-height:700px)]:translate-y-0"
+				class="grid w-full max-w-2xl -translate-y-8 gap-6 md:grid-cols-[minmax(0,1fr)_auto] [@media(max-height:700px)]:translate-y-0"
 				aria-label={text("chooseGameLanguage")}
 			>
-				<p
-					class="glass relative w-full rounded-xs p-3 text-sm leading-relaxed whitespace-pre-line text-muted-foreground"
-				>
-					{text("dictionaryDisclaimer")}
-				</p>
+				<div class="glass grid content-center gap-3 rounded-xs p-4 text-center md:text-left">
+					<p class="text-sm leading-relaxed text-muted-foreground">
+						{text("introductionBeforeHelp")}<button
+							type="button"
+							class="glass inline-flex cursor-pointer items-center justify-center rounded-xs p-1 align-middle text-muted-foreground hover:border-(--pentle-active) hover:text-foreground"
+							aria-label={text("helpButton")}
+							onclick={() => help?.open()}
+						>
+							<CircleQuestionMark size={16} aria-hidden="true" />
+						</button>{text("introductionAfterHelp")}
+					</p>
+					<p
+						class="border-t border-border pt-3 text-xs leading-relaxed whitespace-pre-line text-muted-foreground"
+					>
+						{text("dictionaryDisclaimer")}
+					</p>
+				</div>
 				<div class="flex flex-wrap justify-center gap-3">
 					<button
-						class="accent-focus min-h-48 w-36 cursor-pointer rounded-xs border border-(--pentle-border) bg-(--pentle-glass) bg-(image:--pentle-control-gradient) px-5 py-3 text-base font-semibold text-(--pentle-text) shadow-(--pentle-control-shadow) backdrop-blur-md hover:border-(--pentle-active) hover:bg-(--pentle-glass-hover) hover:text-accent-hover motion-safe:transition-[color,background-color,border-color,translate] motion-safe:duration-150 motion-safe:ease-out motion-safe:hover:-translate-y-px sm:w-40"
+						class="accent-focus glass flex min-h-48 w-36 cursor-pointer flex-col justify-between rounded-xs px-5 py-4 text-left text-base font-semibold text-(--pentle-text) hover:border-(--pentle-active) hover:text-accent-hover motion-safe:transition-[color,background-color,border-color,translate] motion-safe:duration-150 motion-safe:ease-out motion-safe:hover:-translate-y-px sm:w-40"
 						type="button"
 						onclick={() => game.start("de")}
 					>
-						{text("playInGerman")}
+						<span class="font-display text-5xl text-muted-foreground" aria-hidden="true">DE</span>
+						<span class="flex items-end justify-between gap-2">
+							{text("playInGerman")}
+							<MoveRight class="shrink-0" size={16} aria-hidden="true" />
+						</span>
 					</button>
 					<button
-						class="accent-focus min-h-48 w-36 cursor-pointer rounded-xs border border-(--pentle-border) bg-(--pentle-glass) bg-(image:--pentle-control-gradient) px-5 py-3 text-base font-semibold text-(--pentle-text) shadow-(--pentle-control-shadow) backdrop-blur-md hover:border-(--pentle-active) hover:bg-(--pentle-glass-hover) hover:text-accent-hover motion-safe:transition-[color,background-color,border-color,translate] motion-safe:duration-150 motion-safe:ease-out motion-safe:hover:-translate-y-px sm:w-40"
+						class="accent-focus glass flex min-h-48 w-36 cursor-pointer flex-col justify-between rounded-xs px-5 py-4 text-left text-base font-semibold text-(--pentle-text) hover:border-(--pentle-active) hover:text-accent-hover motion-safe:transition-[color,background-color,border-color,translate] motion-safe:duration-150 motion-safe:ease-out motion-safe:hover:-translate-y-px sm:w-40"
 						type="button"
 						onclick={() => game.start("en")}
 					>
-						{text("playInEnglish")}
+						<span class="font-display text-5xl text-muted-foreground" aria-hidden="true">EN</span>
+						<span class="flex items-end justify-between gap-2">
+							{text("playInEnglish")}
+							<MoveRight class="shrink-0" size={16} aria-hidden="true" />
+						</span>
 					</button>
 				</div>
 			</section>
@@ -192,7 +213,7 @@
 						{text("roundScore", { score: game.roundScore })}
 					</p>
 					<button
-						class="accent-focus min-h-11 cursor-pointer rounded-xs border border-(--pentle-border) bg-(--pentle-glass) bg-(image:--pentle-control-gradient) px-5 py-3 font-semibold text-(--pentle-text) shadow-(--pentle-control-shadow) backdrop-blur-md hover:border-(--pentle-active) hover:bg-(--pentle-glass-hover) hover:text-accent-hover motion-safe:transition-[color,background-color,border-color,translate] motion-safe:duration-150 motion-safe:ease-out motion-safe:hover:-translate-y-px"
+						class="accent-focus glass min-h-11 cursor-pointer rounded-xs px-5 py-3 font-semibold text-(--pentle-text) hover:border-(--pentle-active) hover:text-accent-hover motion-safe:transition-[color,background-color,border-color,translate] motion-safe:duration-150 motion-safe:ease-out motion-safe:hover:-translate-y-px"
 						type="button"
 						onclick={() => game.startNextRound()}
 						bind:this={resultButton}
@@ -214,7 +235,7 @@
 					<p>{text("finalScore", { score: game.totalScore })}</p>
 					<p>{text("finalStreak", { streak: game.streak })}</p>
 					<button
-						class="accent-focus min-h-11 cursor-pointer rounded-xs border border-(--pentle-border) bg-(--pentle-glass) bg-(image:--pentle-control-gradient) px-5 py-3 font-semibold text-(--pentle-text) shadow-(--pentle-control-shadow) backdrop-blur-md hover:border-(--pentle-active) hover:bg-(--pentle-glass-hover) hover:text-accent-hover motion-safe:transition-[color,background-color,border-color,translate] motion-safe:duration-150 motion-safe:ease-out motion-safe:hover:-translate-y-px"
+						class="accent-focus glass min-h-11 cursor-pointer rounded-xs px-5 py-3 font-semibold text-(--pentle-text) hover:border-(--pentle-active) hover:text-accent-hover motion-safe:transition-[color,background-color,border-color,translate] motion-safe:duration-150 motion-safe:ease-out motion-safe:hover:-translate-y-px"
 						type="button"
 						onclick={returnToSetup}
 						bind:this={resultButton}
@@ -230,7 +251,7 @@
 		<button
 			id="pentle-settings"
 			type="button"
-			class="group/language relative inline-flex cursor-pointer items-center justify-center gap-1 rounded-xs border border-(--pentle-border) bg-(--pentle-glass) bg-(image:--pentle-control-gradient) p-2 text-xs text-muted-foreground shadow-(--pentle-control-shadow) backdrop-blur-md hover:border-(--pentle-active) hover:bg-(--pentle-glass-hover) hover:text-foreground"
+			class="group/language glass relative inline-flex cursor-pointer items-center justify-center gap-1 rounded-xs p-2 text-xs text-muted-foreground hover:border-(--pentle-active) hover:text-foreground"
 			aria-label={text("displayLanguage")}
 			onclick={toggleDisplayLanguage}
 		>
@@ -245,7 +266,7 @@
 			switchToDarkLabel={text("switchToDarkMode")}
 			switchToLightLabel={text("switchToLightMode")}
 		/>
-		<HelpDialog {displayLanguage} />
+		<HelpDialog bind:this={help} {displayLanguage} />
 	</div>
 </div>
 
@@ -253,16 +274,12 @@
 	.pentle-page {
 		--pentle-text: var(--color-foreground);
 		--pentle-result-text: oklch(14.5% 0 0);
-		--pentle-glass: light-dark(rgb(239 248 255 / 0.38), rgb(12 12 12 / 0.62));
-		--pentle-glass-hover: light-dark(rgb(239 248 255 / 0.58), rgb(255 255 255 / 0.08));
-		--pentle-glass-highlight: light-dark(rgb(255 255 255 / 0.55), rgb(255 255 255 / 0.08));
 		--pentle-tile: light-dark(rgb(239 248 255 / 0.52), rgb(18 21 27 / 0.72));
 		--pentle-empty-tile: light-dark(rgb(239 248 255 / 0.1), rgb(255 255 255 / 0.015));
 		--pentle-border: light-dark(rgb(15 23 42 / 0.46), rgb(255 255 255 / 0.22));
 		--pentle-empty-border: light-dark(rgb(15 23 42 / 0.52), rgb(255 255 255 / 0.26));
 		--pentle-active: light-dark(oklch(48.8% 0.243 264.376), oklch(75.351% 0.139 232.661));
 		--pentle-error: light-dark(oklch(39% 0.16 25), oklch(74% 0.18 25));
-		--pentle-shadow: var(--shadow-lg);
 		--pentle-correct: oklch(72.3% 0.219 149.579);
 		--pentle-correct-border: oklch(52.7% 0.154 150.069);
 		--pentle-present: oklch(79.5% 0.184 86.047);
@@ -272,16 +289,6 @@
 		--interaction-accent: var(--pentle-active);
 
 		--pentle-dialog: light-dark(rgb(239 248 255 / 0.94), rgb(12 12 12 / 0.94));
-		--pentle-control-gradient: linear-gradient(
-			135deg,
-			var(--pentle-glass-highlight),
-			transparent 60%
-		);
-		--pentle-tile-gradient: linear-gradient(135deg, var(--pentle-glass-highlight), transparent 58%);
-		/* A one-pixel highlight defines the shared glass edge. */
-		--pentle-inset-shadow: inset 0 1px 0 var(--pentle-glass-highlight);
-		--pentle-control-shadow: var(--pentle-inset-shadow), var(--pentle-shadow);
-		--pentle-tile-shadow: var(--pentle-inset-shadow), var(--shadow-md);
 	}
 
 	:global(html[data-pentle-language="de"]) .pentle-page:not(.language-ready) {
@@ -347,26 +354,19 @@
 	}
 
 	@media (prefers-contrast: more), (prefers-contrast: less), (forced-colors: active) {
-		.pentle-page {
-			--pentle-glass-highlight: transparent;
-			--pentle-control-gradient: none;
-			--pentle-tile-gradient: none;
-			--pentle-inset-shadow: 0 0 #0000;
-			--pentle-shadow: 0 0 #0000;
-			--pentle-tile-shadow: 0 0 #0000;
-		}
+		/* Keep preference overrides below utilities so game feedback and active borders win. */
+		@layer components {
+			.pentle-page :global(.glass) {
+				background-color: var(--pentle-glass, Canvas);
+				background-image: none;
+				border-color: var(--pentle-border);
+				box-shadow: none;
+				backdrop-filter: none;
+			}
 
-		/* The shared theme toggle owns its CSS; adapt it only within this route. */
-		.pentle-page :global(.theme-toggle) {
-			background-color: var(--pentle-glass);
-			background-image: none;
-			border-color: var(--pentle-border);
-			box-shadow: none;
-		}
-
-		.pentle-page :global(.theme-toggle:hover) {
-			background-color: var(--pentle-glass-hover);
-			border-color: var(--pentle-active);
+			.pentle-page :global(.glass:hover) {
+				background-color: var(--pentle-glass-hover, Canvas);
+			}
 		}
 	}
 
