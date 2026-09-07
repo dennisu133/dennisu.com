@@ -94,6 +94,10 @@
 			100% 1px,
 			1px 100%,
 			100% 100%;
+		background-position:
+			0 0,
+			0 1px,
+			0 0;
 		background-repeat: no-repeat;
 		box-shadow: 0 8px 24px light-dark(oklch(20.8% 0.042 265.755 / 10%), transparent);
 		backdrop-filter: blur(12px);
