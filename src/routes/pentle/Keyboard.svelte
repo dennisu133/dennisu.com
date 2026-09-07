@@ -12,6 +12,9 @@
 		onKey: (key: string) => void;
 	}>();
 
+	const keyClass =
+		"glass interactive-surface inline-flex min-h-11 max-w-11 min-w-0 flex-1 items-center justify-center rounded-xs px-1 py-2 text-center font-mono text-(--pentle-text)";
+
 	const keyboardRows = $derived(
 		gameLanguage === "de"
 			? ["QWERTZUIOPÜ", "ASDFGHJKLÖÄ", "YXCVBNMß"]
@@ -68,12 +71,23 @@
 		<div class="flex justify-center gap-1">
 			{#each [...row] as letter (letter)}
 				<span
-					class="glass inline-flex h-8 max-w-8 min-w-0 flex-1 items-center justify-center rounded-xs font-mono text-xs text-(--pentle-text) data-feedback:bg-none data-feedback:text-(--pentle-result-text) data-[feedback=absent]:border-(--pentle-absent-border) data-[feedback=absent]:bg-(--pentle-absent) data-[feedback=correct]:border-(--pentle-correct-border) data-[feedback=correct]:bg-(--pentle-correct) data-[feedback=present]:border-(--pentle-present-border) data-[feedback=present]:bg-(--pentle-present)"
+					class="glass inline-flex h-8 max-w-8 min-w-0 flex-1 items-center justify-center rounded-xs font-mono text-xs text-(--pentle-text)"
 					role="img"
 					aria-label={labelFor(letter)}
 					data-feedback={stateFor(letter)}
 				>
 					{letter}
+					{#if stateFor(letter)}
+						<span
+							aria-hidden="true"
+							class="pointer-events-none absolute right-0.5 bottom-0.5 font-sans text-xs leading-none font-bold"
+							>{stateFor(letter) === "correct"
+								? "✓"
+								: stateFor(letter) === "present"
+									? "↔"
+									: "×"}</span
+						>
+					{/if}
 				</span>
 			{/each}
 		</div>
@@ -81,6 +95,7 @@
 </div>
 
 <div
+	id="pentle-keyboard"
 	class="grid w-full max-w-xl gap-2 select-none pointer-coarse:hidden"
 	role="group"
 	aria-label={translate(displayLanguage, "keyboard")}
@@ -90,18 +105,29 @@
 			{#each [...row] as letter (letter)}
 				<button
 					type="button"
-					class="glass interactive-surface inline-flex min-h-11 max-w-11 min-w-0 flex-1 items-center justify-center rounded-xs px-1 py-2 text-center font-mono text-(--pentle-text) data-feedback:bg-none data-feedback:text-(--pentle-result-text) data-[feedback=absent]:border-(--pentle-absent-border) data-[feedback=absent]:bg-(--pentle-absent) data-[feedback=correct]:border-(--pentle-correct-border) data-[feedback=correct]:bg-(--pentle-correct) data-[feedback=present]:border-(--pentle-present-border) data-[feedback=present]:bg-(--pentle-present)"
+					class={keyClass}
 					aria-label={labelFor(letter)}
 					data-feedback={stateFor(letter)}
 					onclick={() => onKey(letter)}
 				>
 					{letter}
+					{#if stateFor(letter)}
+						<span
+							aria-hidden="true"
+							class="pointer-events-none absolute right-0.5 bottom-0.5 font-sans text-xs leading-none font-bold"
+							>{stateFor(letter) === "correct"
+								? "✓"
+								: stateFor(letter) === "present"
+									? "↔"
+									: "×"}</span
+						>
+					{/if}
 				</button>
 			{/each}
 			{#if rowIndex === keyboardRows.length - 2}
 				<button
 					type="button"
-					class="glass interactive-surface inline-flex min-h-11 max-w-11 min-w-0 flex-1 items-center justify-center rounded-xs px-1 py-2 text-center font-mono text-(--pentle-text)"
+					class={keyClass}
 					aria-label={translate(displayLanguage, "backspace")}
 					onclick={() => onKey("Backspace")}
 				>
@@ -110,7 +136,7 @@
 			{:else if rowIndex === keyboardRows.length - 1}
 				<button
 					type="button"
-					class="glass interactive-surface inline-flex min-h-11 max-w-11 min-w-0 flex-1 items-center justify-center rounded-xs px-1 py-2 text-center font-mono text-(--pentle-text)"
+					class={keyClass}
 					aria-label={translate(displayLanguage, "submit")}
 					onclick={() => onKey("Enter")}
 				>

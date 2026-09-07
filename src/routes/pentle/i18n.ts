@@ -1,4 +1,4 @@
-import type { Language } from "./pentle";
+import { MAX_ATTEMPTS, type FeedbackStatus, type Language } from "./pentle";
 
 const translations = {
 	de: {
@@ -14,6 +14,8 @@ const translations = {
 		introductionAfterHelp: " erfährst du, wie das Spiel funktioniert.",
 		dictionaryDisclaimer:
 			"Die Wortliste ist bewusst kuratiert.\nEinige gültige Wörter werden möglicherweise nicht akzeptiert.",
+		javascriptRequired:
+			"Pentle benötigt JavaScript. Aktiviere JavaScript in deinem Browser, um zu spielen.",
 		playInGerman: "Auf Deutsch spielen",
 		playInEnglish: "Auf Englisch spielen",
 		score: "Punktzahl",
@@ -24,7 +26,14 @@ const translations = {
 		backspace: "Letzten Buchstaben löschen",
 		skipKeyboard: "Bildschirmtastatur überspringen",
 		currentGuess: "Aktueller Versuch: {guess}",
-		guessResult: "Ergebnis für {guess}: {feedback}",
+		guessResult: "Versuch {attempt} von {max}: {guess}. {feedback}",
+		position: "Position {position} von 5: {letter}.",
+		attemptReady: "Versuch {attempt} von {max}. Gib dein Wort ein.",
+		inputInstructions:
+			"Tippe fünf Buchstaben. Mit Links und Rechts wählst du eine Position. Rücktaste oder Entf löscht. Eingabe sendet den Versuch ab. Die Spielregeln erklären die Bedienung mit Tab.",
+		keyboardHelpLabel: "Tastaturbedienung",
+		keyboardHelp:
+			"Tippe im Eingabefeld oder auf einem Spielfeld-Buchstaben. Links und Rechts wählen die Position; Rücktaste und Entf löschen. Eingabe im Eingabefeld sendet den Versuch ab. Mit Tab erreichst du die aktive Position; Eingabe dort führt zur Bildschirmtastatur. Wähle Tasten mit Tab oder Umschalt+Tab und aktiviere sie mit Eingabe oder Leertaste. Die Taste Versuch absenden sendet das Wort ab. Mit einem Screenreader kannst du frühere Zeilen Buchstabe für Buchstabe lesen. Die Zeit beeinflusst nur die Punkte; es gibt kein Zeitlimit.",
 		keyboard: "Bildschirmtastatur",
 		letterHints: "Buchstabenübersicht",
 		correct: "richtige Stelle",
@@ -73,6 +82,7 @@ const translations = {
 		introductionAfterHelp: " to learn how to play.",
 		dictionaryDisclaimer:
 			"The dictionary is intentionally curated.\nSome valid words may not be accepted.",
+		javascriptRequired: "Pentle requires JavaScript. Enable JavaScript in your browser to play.",
 		playInGerman: "Play in German",
 		playInEnglish: "Play in English",
 		score: "Score",
@@ -83,7 +93,14 @@ const translations = {
 		backspace: "Delete last letter",
 		skipKeyboard: "Skip on-screen keyboard",
 		currentGuess: "Current guess: {guess}",
-		guessResult: "Result for {guess}: {feedback}",
+		guessResult: "Attempt {attempt} of {max}: {guess}. {feedback}",
+		position: "Position {position} of 5: {letter}.",
+		attemptReady: "Attempt {attempt} of {max}. Enter your word.",
+		inputInstructions:
+			"Type five letters. Left and Right select a position. Backspace or Delete removes a letter. Enter submits the guess. Game rules explain Tab navigation.",
+		keyboardHelpLabel: "Keyboard controls",
+		keyboardHelp:
+			"Type in the guess input or while a game letter is focused. Left and Right select a position; Backspace and Delete remove a letter. Enter in the input submits the guess. Tab reaches the active position; Enter there moves to the on-screen keyboard. Choose keys with Tab or Shift+Tab and activate them with Enter or Space. Use its Submit guess key to submit the word. With a screen reader, you can review previous rows letter by letter. Time only affects your score; there is no time limit.",
 		keyboard: "On-screen keyboard",
 		letterHints: "Letter status",
 		correct: "correct position",
@@ -140,4 +157,23 @@ export function ordinal(language: Language, index: number): string {
 	const english = ["first", "second", "third", "fourth", "fifth"];
 	const german = ["erster", "zweiter", "dritter", "vierter", "fünfter"];
 	return (language === "de" ? german : english)[index] ?? String(index + 1);
+}
+
+export function formatGuessFeedback(
+	language: Language,
+	guess: string,
+	feedback: readonly FeedbackStatus[],
+	attempt: number
+): string {
+	const letters = [...guess].map((letter) =>
+		letter === "ß" ? letter : letter.toLocaleUpperCase(language)
+	);
+	return translate(language, "guessResult", {
+		attempt,
+		max: MAX_ATTEMPTS,
+		guess: letters.join(" "),
+		feedback: letters
+			.map((letter, index) => `${index + 1}: ${letter}, ${translate(language, feedback[index])}.`)
+			.join(" ")
+	});
 }

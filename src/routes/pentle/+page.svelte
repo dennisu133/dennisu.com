@@ -3,23 +3,55 @@
 	import { resolve } from "$app/paths";
 	import { onDestroy, onMount, tick } from "svelte";
 
+	import IconButton from "$lib/components/IconButton.svelte";
+	import FancyLink from "$lib/components/FancyLink.svelte";
 	import ThemeToggle from "$lib/components/theme/ThemeToggle.svelte";
 	import GameBoard from "./GameBoard.svelte";
 	import { Game } from "./game.svelte";
 	import HelpDialog from "./HelpDialog.svelte";
-	import { translate, type TranslationKey } from "./i18n";
-	import type { Language } from "./pentle";
+	import { formatGuessFeedback, translate, type TranslationKey } from "./i18n";
+	import { MAX_ATTEMPTS, type Language } from "./pentle";
 
 	const game = new Game();
+	const resultButtonClass =
+		"accent-focus glass interactive-surface min-h-11 rounded-xs px-5 py-3 font-semibold text-(--pentle-text) hover:text-accent-hover";
+	const gameLanguages = ["de", "en"] as const;
 
 	let displayLanguage = $state<Language>("en");
 	let languageReady = $state(false);
 	let resultButton = $state<HTMLButtonElement>();
 	let help = $state<HelpDialog>();
+	let announcement = $state("");
+	let announcementVersion = 0;
 
-	function returnToSetup() {
+	async function announce(message: string) {
+		const version = ++announcementVersion;
+		announcement = "";
+		// Keep the region mounted and separate identical messages by a DOM update.
+		await tick();
+		if (version === announcementVersion) announcement = message;
+	}
+
+	function announceRound() {
+		void announce(text("attemptReady", { attempt: 1, max: MAX_ATTEMPTS }));
+	}
+
+	function startGame(language: Language) {
+		game.start(language);
+		announceRound();
+	}
+
+	function nextRound() {
+		game.startNextRound();
+		announceRound();
+	}
+
+	async function returnToSetup() {
 		if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
 		game.returnToSetup();
+		void announce(text("chooseGameLanguage"));
+		await tick();
+		document.getElementById("pentle-start-de")?.focus();
 	}
 
 	function text(key: TranslationKey, params?: Record<string, string | number>): string {
@@ -28,18 +60,41 @@
 
 	function toggleDisplayLanguage() {
 		displayLanguage = displayLanguage === "de" ? "en" : "de";
+		void announce("");
 	}
 
 	function submitAttempt(attempt: string): boolean {
 		const accepted = game.submitAttempt(attempt);
-		if (accepted && game.state !== "running") void focusResultButton();
-		return accepted;
+		if (!accepted) {
+			if (game.error) void announce(text(game.error));
+			return false;
+		}
+		const feedback = formatGuessFeedback(
+			displayLanguage,
+			game.attempts.at(-1)!,
+			game.feedbackGrid.at(-1)!,
+			game.attempts.length
+		);
+		if (game.state === "running") {
+			void announce(
+				`${feedback} ${text("attemptReady", { attempt: game.attempts.length + 1, max: MAX_ATTEMPTS })}`
+			);
+		} else {
+			const outcome =
+				game.state === "won"
+					? `${text("wonTitle")} ${text("roundScore", { score: game.roundScore })}.`
+					: `${text("lostTitle")}. ${text("wordWas", { word: [...(game.revealedWord ?? "")].join(", ") })}`;
+			void announceResult(
+				`${feedback} ${outcome} ${text("finalScore", { score: game.totalScore })}. ${text("finalStreak", { streak: game.streak })}.`
+			);
+		}
+		return true;
 	}
 
-	async function focusResultButton() {
+	async function announceResult(message: string) {
 		await tick();
-		if (window.matchMedia("(pointer: coarse)").matches) return;
 		resultButton?.focus();
+		void announce(message);
 	}
 
 	onMount(() => {
@@ -83,10 +138,13 @@
 		languageReady && "language-ready"
 	]}
 >
+	<p id="pentle-announcement" class="sr-only" role="status" aria-live="polite" aria-atomic="true">
+		{announcement}
+	</p>
 	<header
 		class="mx-auto grid w-full max-w-6xl grid-cols-[1fr_auto_1fr] items-center gap-4 max-lg:items-start max-md:grid-cols-[1fr_auto]"
 	>
-		<a
+		<FancyLink
 			class={[
 				"inline-flex items-center gap-1.5 justify-self-start py-1.5 text-muted-foreground no-underline hover:text-foreground max-md:row-start-2",
 				game.state === "running" ? "max-md:pointer-coarse:row-start-1" : ""
@@ -96,7 +154,7 @@
 		>
 			<MoveLeft size={18} aria-hidden="true" />
 			<span class="max-md:flex max-md:min-h-12 max-md:items-center">{text("home")}</span>
-		</a>
+		</FancyLink>
 		<h1
 			class={[
 				"text-center text-3xl max-md:col-span-full max-md:row-start-1 max-md:text-left sm:text-4xl lg:text-5xl",
@@ -165,29 +223,26 @@
 						{text("dictionaryDisclaimer")}
 					</p>
 				</div>
-				<div class="flex flex-wrap justify-center gap-3">
-					<button
-						class="accent-focus glass interactive-surface flex min-h-48 w-36 flex-col justify-between rounded-xs px-5 py-4 text-left text-base font-semibold text-(--pentle-text) hover:text-accent-hover sm:w-40"
-						type="button"
-						onclick={() => game.start("de")}
-					>
-						<span class="font-display text-5xl text-muted-foreground" aria-hidden="true">DE</span>
-						<span class="flex items-end justify-between gap-2">
-							{text("playInGerman")}
-							<MoveRight class="shrink-0" size={16} aria-hidden="true" />
-						</span>
-					</button>
-					<button
-						class="accent-focus glass interactive-surface flex min-h-48 w-36 flex-col justify-between rounded-xs px-5 py-4 text-left text-base font-semibold text-(--pentle-text) hover:text-accent-hover sm:w-40"
-						type="button"
-						onclick={() => game.start("en")}
-					>
-						<span class="font-display text-5xl text-muted-foreground" aria-hidden="true">EN</span>
-						<span class="flex items-end justify-between gap-2">
-							{text("playInEnglish")}
-							<MoveRight class="shrink-0" size={16} aria-hidden="true" />
-						</span>
-					</button>
+				<noscript class="glass rounded-xs p-4 text-sm text-foreground">
+					{text("javascriptRequired")}
+				</noscript>
+				<div class="flex flex-wrap justify-center gap-3 noscript:hidden">
+					{#each gameLanguages as language (language)}
+						<button
+							class="accent-focus glass interactive-surface flex min-h-48 w-36 flex-col justify-between rounded-xs px-5 py-4 text-left text-base font-semibold text-(--pentle-text) hover:text-accent-hover sm:w-40"
+							type="button"
+							id={`pentle-start-${language}`}
+							onclick={() => startGame(language)}
+						>
+							<span class="font-display text-5xl text-muted-foreground" aria-hidden="true"
+								>{language.toUpperCase()}</span
+							>
+							<span class="flex items-end justify-between gap-2">
+								{text(language === "de" ? "playInGerman" : "playInEnglish")}
+								<MoveRight class="shrink-0" size={16} aria-hidden="true" />
+							</span>
+						</button>
+					{/each}
 				</div>
 			</section>
 		{:else if game.gameLanguage}
@@ -200,22 +255,24 @@
 					playing={game.state === "running"}
 					error={game.error}
 					onSubmit={submitAttempt}
+					onAnnounce={announce}
 				/>
 			{/key}
 
 			{#if game.state === "won"}
 				<section
 					class="flex w-full max-w-sm flex-col items-center gap-4 text-center"
-					aria-live="polite"
+					aria-labelledby="pentle-result-title"
 				>
-					<h2 class="font-display text-3xl">{text("wonTitle")}</h2>
+					<h2 id="pentle-result-title" class="font-display text-3xl">{text("wonTitle")}</h2>
 					<p class="font-mono text-lg font-bold text-accent">
 						{text("roundScore", { score: game.roundScore })}
 					</p>
 					<button
-						class="accent-focus glass interactive-surface min-h-11 rounded-xs px-5 py-3 font-semibold text-(--pentle-text) hover:text-accent-hover"
+						class={resultButtonClass}
 						type="button"
-						onclick={() => game.startNextRound()}
+						onclick={nextRound}
+						aria-describedby="pentle-result-title"
 						bind:this={resultButton}
 					>
 						{text("nextWord")}
@@ -224,9 +281,9 @@
 			{:else if game.state === "lost"}
 				<section
 					class="flex w-full max-w-sm flex-col items-center gap-4 text-center"
-					aria-live="polite"
+					aria-labelledby="pentle-result-title"
 				>
-					<h2 class="font-display text-3xl">{text("lostTitle")}</h2>
+					<h2 id="pentle-result-title" class="font-display text-3xl">{text("lostTitle")}</h2>
 					<p>
 						{text("wordWas", {
 							word: game.revealedWord?.toLocaleUpperCase(game.gameLanguage) ?? ""
@@ -235,9 +292,10 @@
 					<p>{text("finalScore", { score: game.totalScore })}</p>
 					<p>{text("finalStreak", { streak: game.streak })}</p>
 					<button
-						class="accent-focus glass interactive-surface min-h-11 rounded-xs px-5 py-3 font-semibold text-(--pentle-text) hover:text-accent-hover"
+						class={resultButtonClass}
 						type="button"
 						onclick={returnToSetup}
+						aria-describedby="pentle-result-title"
 						bind:this={resultButton}
 					>
 						{text("newGame")}
@@ -248,19 +306,15 @@
 	</main>
 
 	<div class="flex gap-1.5 justify-self-end">
-		<button
+		<IconButton
 			id="pentle-settings"
-			type="button"
-			class="group/language glass interactive-surface relative inline-flex items-center justify-center gap-1 rounded-xs p-2 text-xs text-muted-foreground hover:text-foreground"
-			aria-label={text("displayLanguage")}
+			class="gap-1 text-xs"
+			label={text("displayLanguage")}
 			onclick={toggleDisplayLanguage}
 		>
 			<Languages size={20} aria-hidden="true" />
 			<span aria-hidden="true">{displayLanguage.toLocaleUpperCase()}</span>
-			<span class="tooltip right-0 bottom-full mb-1.5 group-hover/language:opacity-100">
-				{text("displayLanguage")}
-			</span>
-		</button>
+		</IconButton>
 		<ThemeToggle
 			toggleLabel={text("themeToggle")}
 			switchToDarkLabel={text("switchToDarkMode")}
@@ -295,28 +349,29 @@
 		visibility: hidden;
 	}
 
+	/* Shared feedback overrides tile defaults and glass hover styles.
+	 * Symbols stay in child elements so focus rings retain their pseudo-elements.
+	 * Keep these unlayered: this <style> is inlined above the Tailwind link, so an
+	 * @layer block here would register the layer first and demote it below components. */
 	.pentle-page :global([data-feedback]) {
 		position: relative;
+		background-image: none;
+		color: var(--pentle-result-text);
 	}
 
-	.pentle-page :global([data-feedback]::after) {
-		position: absolute;
-		right: 0.125rem;
-		bottom: 0.125rem;
-		font: 700 var(--text-xs)/1 var(--font-sans);
-		pointer-events: none;
+	.pentle-page :global([data-feedback="correct"]) {
+		border-color: var(--pentle-correct-border);
+		background-color: var(--pentle-correct);
 	}
 
-	.pentle-page :global([data-feedback="correct"]::after) {
-		content: "✓" / "";
+	.pentle-page :global([data-feedback="present"]) {
+		border-color: var(--pentle-present-border);
+		background-color: var(--pentle-present);
 	}
 
-	.pentle-page :global([data-feedback="present"]::after) {
-		content: "↔" / "";
-	}
-
-	.pentle-page :global([data-feedback="absent"]::after) {
-		content: "×" / "";
+	.pentle-page :global([data-feedback="absent"]) {
+		border-color: var(--pentle-absent-border);
+		background-color: var(--pentle-absent);
 	}
 
 	/* Palette changes are shared by tiles, controls, and the help dialog. */

@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { tick } from "svelte";
-
 	import type { GameError } from "./game.svelte";
 	import { ordinal, translate } from "./i18n";
 	import Keyboard from "./Keyboard.svelte";
@@ -13,7 +11,8 @@
 		displayLanguage,
 		playing,
 		error,
-		onSubmit
+		onSubmit,
+		onAnnounce
 	}: {
 		attempts: readonly string[];
 		feedback: readonly (readonly FeedbackStatus[])[];
@@ -22,7 +21,10 @@
 		playing: boolean;
 		error: GameError | null;
 		onSubmit: (attempt: string) => boolean;
+		onAnnounce: (message: string) => void;
 	} = $props();
+
+	const rowClass = "relative mb-2 flex items-center justify-center gap-2 sm:mb-2.5 sm:gap-2.5";
 
 	const rowNumbers = Array.from({ length: MAX_ATTEMPTS }, (_, index) => index);
 	const visibleRows = $derived(playing ? rowNumbers : rowNumbers.slice(0, attempts.length));
@@ -30,22 +32,15 @@
 	let values = $state<string[]>(Array(WORD_LENGTH).fill(""));
 	let activeIndex = $state(0);
 	let hiddenInput: HTMLInputElement | null = null;
-	let announcedGuess = $state<string | null>(null);
-	let announcedError = $state<GameError | null>(null);
 	let rejectionId = $state(0);
 
 	const placeholder = " ";
 	const guess = $derived(values.join(""));
-	const feedbackAnnouncement = $derived.by(() => {
-		const attempt = attempts.at(-1);
-		const attemptFeedback = feedback.at(-1);
-		if (!attempt || !attemptFeedback) return "";
-
-		return translate(displayLanguage, "guessResult", {
-			guess: attempt.toLocaleUpperCase(gameLanguage),
-			feedback: attemptFeedback.map((status) => translate(displayLanguage, status)).join(", ")
-		});
-	});
+	const guessDescription = $derived(
+		translate(displayLanguage, "currentGuess", {
+			guess: values.map((value) => value || translate(displayLanguage, "empty")).join(", ")
+		})
+	);
 
 	function isValidCharacter(character: string): boolean {
 		return (gameLanguage === "de" ? /^[a-zA-ZäöüÄÖÜß]$/ : /^[a-zA-Z]$/).test(character);
@@ -64,10 +59,20 @@
 	function moveCursor(index: number) {
 		activeIndex = index;
 		hiddenInput?.focus();
+		announceCursor();
+	}
+
+	function announceCursor() {
+		onAnnounce(
+			translate(displayLanguage, "position", {
+				position: activeIndex + 1,
+				letter: values[activeIndex] || translate(displayLanguage, "empty")
+			})
+		);
 	}
 
 	function announceGuess() {
-		announcedGuess = guess;
+		onAnnounce(guessDescription);
 	}
 
 	function insertCharacter(character: string, focusInput = true) {
@@ -89,19 +94,14 @@
 		announceGuess();
 	}
 
-	async function submit() {
+	function submit() {
 		if (onSubmit(guess)) {
 			values = Array(WORD_LENGTH).fill("");
 			activeIndex = 0;
-			announcedGuess = null;
-			announcedError = null;
 			return;
 		}
 
 		rejectionId += 1;
-		announcedError = null;
-		await tick();
-		announcedError = error;
 	}
 
 	function handleVirtualKey(key: string) {
@@ -123,7 +123,9 @@
 			event.ctrlKey ||
 			event.metaKey ||
 			event.altKey ||
-			document.querySelector("dialog[open]")
+			document.querySelector("dialog[open]") ||
+			!(event.target instanceof Element) ||
+			!event.target.closest("[data-pentle-input], #pentle-keyboard")
 		)
 			return;
 
@@ -138,6 +140,7 @@
 		if (inputHasFocus && (event.key.length === 1 || event.key === "Backspace")) return;
 
 		switch (event.key) {
+			case "Delete":
 			case "Backspace":
 				event.preventDefault();
 				deleteCharacter();
@@ -194,33 +197,39 @@
 		announceGuess();
 	}
 
-	function focusInput(index: number) {
+	function focusInput(index: number, event: MouseEvent) {
 		activeIndex = index;
-		hiddenInput?.focus();
+		announceCursor();
+		if (event.detail === 0 && window.matchMedia("(pointer: fine)").matches) {
+			document.querySelector<HTMLButtonElement>("#pentle-keyboard button")?.focus();
+		} else {
+			hiddenInput?.focus();
+		}
 	}
 
 	function captureInput(input: HTMLInputElement) {
 		hiddenInput = input;
 		input.value = placeholder;
-		input.focus();
+		// Keep Tab/Enter players on the keyboard when a new row mounts.
+		if (!document.activeElement?.closest("#pentle-keyboard")) input.focus();
 		return () => (hiddenInput = null);
 	}
 </script>
 
 <svelte:window onkeydown={handleWindowKeydown} />
 
-<div class={playing ? "mb-1.5" : "mb-4"}>
+<div data-pentle-input class={playing ? "mb-1.5" : "mb-4"}>
 	{#each visibleRows as rowIndex (rowIndex)}
 		{@const attempt = attempts[rowIndex]}
 		{#if attempt}
 			<div
-				class="relative mb-2 flex items-center justify-center gap-2 sm:mb-2.5 sm:gap-2.5"
+				class={rowClass}
 				role="group"
 				aria-label={`${translate(displayLanguage, "row")} ${rowIndex + 1}`}
 			>
 				{#each [...attempt] as character, index (index)}
 					<div
-						class="glass flex size-12 items-center justify-center rounded-xs border-2 border-(--pentle-border) bg-(--pentle-tile) p-0 font-mono text-2xl font-bold text-(--pentle-text) select-none data-feedback:bg-none data-feedback:text-(--pentle-result-text) data-[feedback=absent]:border-(--pentle-absent-border) data-[feedback=absent]:bg-(--pentle-absent) data-[feedback=correct]:border-(--pentle-correct-border) data-[feedback=correct]:bg-(--pentle-correct) data-[feedback=present]:border-(--pentle-present-border) data-[feedback=present]:bg-(--pentle-present) sm:size-14 sm:text-3xl"
+						class="glass flex size-12 items-center justify-center rounded-xs border-2 border-(--pentle-border) bg-(--pentle-tile) p-0 font-mono text-2xl font-bold text-(--pentle-text) select-none sm:size-14 sm:text-3xl"
 						data-feedback={feedback[rowIndex]?.[index]}
 						role="img"
 						aria-label={squareLabel(
@@ -230,39 +239,45 @@
 						)}
 					>
 						{displayCharacter(character)}
+						{#if feedback[rowIndex]?.[index]}
+							<span
+								aria-hidden="true"
+								class="pointer-events-none absolute right-0.5 bottom-0.5 font-sans text-xs leading-none font-bold"
+								>{feedback[rowIndex][index] === "correct"
+									? "✓"
+									: feedback[rowIndex][index] === "present"
+										? "↔"
+										: "×"}</span
+							>
+						{/if}
 					</div>
 				{/each}
 			</div>
 		{:else if playing && rowIndex === attempts.length}
-			{#key rejectionId}
-				<div
-					class="relative mb-2 flex items-center justify-center gap-2 sm:mb-2.5 sm:gap-2.5"
-					role="group"
-					aria-label={`${translate(displayLanguage, "row")} ${rowIndex + 1}`}
-				>
-					<span class="sr-only" aria-live="polite" aria-atomic="true">
-						{announcedGuess === null
-							? ""
-							: translate(displayLanguage, "currentGuess", {
-									guess: announcedGuess || translate(displayLanguage, "empty")
-								})}
-					</span>
-					<input
-						type="text"
-						class="pointer-events-none absolute size-px opacity-0"
-						inputmode="text"
-						enterkeyhint="done"
-						tabindex="-1"
-						aria-label={translate(displayLanguage, "characterLabel")}
-						autocomplete="off"
-						autocorrect="off"
-						autocapitalize="characters"
-						spellcheck="false"
-						{@attach captureInput}
-						onfocus={(event) => ((event.currentTarget as HTMLInputElement).value = placeholder)}
-						oninput={handleInput}
-						onpaste={handlePaste}
-					/>
+			<div
+				class={rowClass}
+				role="group"
+				aria-label={`${translate(displayLanguage, "row")} ${rowIndex + 1}`}
+			>
+				<input
+					type="text"
+					class="pointer-events-none absolute size-px opacity-0"
+					inputmode="text"
+					enterkeyhint="done"
+					tabindex="-1"
+					aria-label={translate(displayLanguage, "characterLabel")}
+					aria-describedby="pentle-input-instructions pentle-current-guess pentle-input-error"
+					aria-invalid={error ? true : undefined}
+					autocomplete="off"
+					autocorrect="off"
+					autocapitalize="characters"
+					spellcheck="false"
+					{@attach captureInput}
+					onfocus={(event) => ((event.currentTarget as HTMLInputElement).value = placeholder)}
+					oninput={handleInput}
+					onpaste={handlePaste}
+				/>
+				{#key rejectionId}
 					{#each values as value, index (index)}
 						<button
 							type="button"
@@ -274,35 +289,34 @@
 								error &&
 									"motion-safe:animate-[pentle-shake_500ms_ease-in-out] motion-reduce:border-(--pentle-error) forced-colors:border-dashed"
 							]}
-							onclick={() => focusInput(index)}
+							tabindex={index === activeIndex ? 0 : -1}
+							onclick={(event) => focusInput(index, event)}
 							onfocus={() => (activeIndex = index)}
+							aria-describedby="pentle-input-instructions pentle-current-guess"
 							aria-label={squareLabel(index, value)}
 						>
 							{value}
 						</button>
 					{/each}
+				{/key}
 
-					<button
-						type="button"
-						class={[
-							"glass interactive-surface absolute left-full ml-2 h-12 rounded-xs px-4 font-bold whitespace-nowrap text-(--pentle-text) hover:text-accent-hover max-lg:hidden sm:ml-2.5 sm:h-14",
-							guess.length !== WORD_LENGTH && "invisible"
-						]}
-						onclick={submit}
-						disabled={guess.length !== WORD_LENGTH}
-					>
-						{translate(displayLanguage, "submit")}
-					</button>
-				</div>
-			{/key}
+				<button
+					type="button"
+					class={[
+						"glass interactive-surface absolute left-full ml-2 h-12 rounded-xs px-4 font-bold whitespace-nowrap text-(--pentle-text) hover:text-accent-hover max-lg:hidden sm:ml-2.5 sm:h-14",
+						guess.length !== WORD_LENGTH && "invisible"
+					]}
+					onclick={submit}
+					disabled={guess.length !== WORD_LENGTH}
+				>
+					{translate(displayLanguage, "submit")}
+				</button>
+			</div>
 		{:else}
-			<div
-				class="relative mb-2 flex items-center justify-center gap-2 sm:mb-2.5 sm:gap-2.5"
-				aria-hidden="true"
-			>
+			<div class={rowClass} aria-hidden="true">
 				{#each rowNumbers.slice(0, WORD_LENGTH) as index (index)}
 					<div
-						class="glass size-12 items-center justify-center rounded-xs border-2 border-dashed border-(--pentle-empty-border) bg-(--pentle-empty-tile) p-0 font-mono text-2xl font-bold text-(--pentle-text) select-none sm:size-14 sm:text-3xl"
+						class="glass size-12 rounded-xs border-2 border-dashed border-(--pentle-empty-border) bg-(--pentle-empty-tile) sm:size-14"
 					></div>
 				{/each}
 			</div>
@@ -311,15 +325,23 @@
 </div>
 
 {#if playing}
-	<p
-		class="mb-2 min-h-6 text-sm font-semibold text-(--pentle-error)"
-		aria-live="polite"
-		aria-atomic="true"
-	>
-		{announcedError ? translate(displayLanguage, announcedError) : "\u00a0"}
+	<!-- min-h-6 reserves the row, so leave this empty when there is no error:
+	     it is referenced by the input's aria-describedby and a placeholder would be read out. -->
+	<p class="mb-2 min-h-6 text-sm font-semibold text-(--pentle-error)" id="pentle-input-error">
+		{error ? translate(displayLanguage, error) : ""}
 	</p>
-	<p class="sr-only" aria-live="polite" aria-atomic="true">{feedbackAnnouncement}</p>
+	<p id="pentle-input-instructions" class="sr-only">
+		{translate(displayLanguage, "inputInstructions")}
+	</p>
+	<p id="pentle-current-guess" class="sr-only">{guessDescription}</p>
 	<Keyboard rows={attempts} {feedback} {gameLanguage} {displayLanguage} onKey={handleVirtualKey} />
+	<button
+		type="button"
+		class="glass interactive-surface mt-3 min-h-11 rounded-xs px-5 py-3 font-semibold pointer-fine:hidden"
+		onclick={submit}
+	>
+		{translate(displayLanguage, "submit")}
+	</button>
 {/if}
 
 <style>
