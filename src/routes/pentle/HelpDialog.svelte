@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { CircleQuestionMark, X } from "@lucide/svelte";
 
+	import IconButton from "$lib/components/IconButton.svelte";
+	import FancyLink from "$lib/components/FancyLink.svelte";
+
 	import { translate } from "./i18n";
 	import type { Language } from "./pentle";
 
@@ -26,17 +29,9 @@
 	}
 </script>
 
-<button
-	type="button"
-	class="group/help glass interactive-surface relative inline-flex items-center justify-center rounded-xs p-2 text-muted-foreground hover:text-foreground"
-	aria-label={translate(displayLanguage, "helpButton")}
-	onclick={open}
->
+<IconButton label={translate(displayLanguage, "helpButton")} onclick={open}>
 	<CircleQuestionMark size={20} aria-hidden="true" />
-	<span class="tooltip right-0 bottom-full mb-1.5 group-hover/help:opacity-100">
-		{translate(displayLanguage, "helpButton")}
-	</span>
-</button>
+</IconButton>
 
 <dialog
 	class="glass m-auto w-11/12 max-w-lg rounded-xs border-(--pentle-border) bg-(--pentle-dialog) p-5 text-foreground shadow-2xl backdrop:bg-black/60 backdrop:backdrop-blur-xs open:grid open:gap-5 motion-safe:open:animate-[pentle-dialog-open_200ms_ease-out] contrast-more:shadow-none contrast-less:shadow-none sm:p-10 forced-colors:bg-[Canvas] forced-colors:backdrop:bg-[Canvas] forced-colors:backdrop:opacity-80 forced-colors:backdrop:backdrop-blur-none"
@@ -44,14 +39,15 @@
 	aria-labelledby="pentle-help-title"
 	onclick={closeFromBackdrop}
 >
-	<button
-		type="button"
-		class="glass interactive-surface absolute top-3 right-3 inline-flex items-center justify-center rounded-xs p-2 text-muted-foreground hover:text-foreground"
-		aria-label={translate(displayLanguage, "close")}
-		onclick={() => dialog?.close()}
-	>
-		<X size={20} aria-hidden="true" />
-	</button>
+	<div class="absolute top-3 right-3">
+		<IconButton
+			label={translate(displayLanguage, "close")}
+			tooltip={false}
+			onclick={() => dialog?.close()}
+		>
+			<X size={20} aria-hidden="true" />
+		</IconButton>
+	</div>
 	<h2 class="pr-8 font-display text-2xl" id="pentle-help-title">
 		{translate(displayLanguage, "helpTitle")}
 	</h2>
@@ -65,6 +61,10 @@
 			<dd class="mt-1 text-muted-foreground">{translate(displayLanguage, "guessText")}</dd>
 		</div>
 		<div>
+			<dt class="font-bold">{translate(displayLanguage, "keyboardHelpLabel")}</dt>
+			<dd class="mt-1 text-muted-foreground">{translate(displayLanguage, "keyboardHelp")}</dd>
+		</div>
+		<div>
 			<dt class="font-bold">{translate(displayLanguage, "feedbackLabel")}</dt>
 			<dd class="mt-1 text-muted-foreground">
 				{translate(displayLanguage, "feedbackText")}
@@ -76,11 +76,11 @@
 		</div>
 	</dl>
 	<p class="text-sm text-foreground/80">
-		{translate(displayLanguage, "inspirationBeforeLink")}<a
+		{translate(displayLanguage, "inspirationBeforeLink")}<FancyLink
 			class="text-accent underline underline-offset-2 hover:text-accent-hover"
 			href="https://www.nytimes.com/games/wordle/index.html"
 			target="_blank"
-			rel="noreferrer">Wordle</a
+			rel="noreferrer">Wordle</FancyLink
 		>{translate(displayLanguage, "inspirationAfterLink")}
 	</p>
 </dialog>

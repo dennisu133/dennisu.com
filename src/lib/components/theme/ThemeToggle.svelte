@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { Moon, Sun } from "@lucide/svelte";
 
+	import IconButton, { iconButtonClass } from "../IconButton.svelte";
+
 	import { toggleTheme } from "./theme";
 
 	let {
@@ -12,9 +14,6 @@
 		switchToDarkLabel?: string;
 		switchToLightLabel?: string;
 	} = $props();
-
-	const toggleClass =
-		"glass interactive-surface group/theme-toggle relative items-center justify-center rounded-xs p-2 text-muted-foreground hover:text-foreground";
 </script>
 
 {#snippet toggleContents()}
@@ -24,28 +23,21 @@
 	<span aria-hidden="true" class="theme-toggle-icon show-on-dark">
 		<Sun size={20} />
 	</span>
-	<span
-		aria-hidden="true"
-		class="tooltip show-on-light right-0 bottom-full mb-1.5 group-hover/theme-toggle:opacity-100"
-	>
-		{switchToDarkLabel}
-	</span>
-	<span
-		aria-hidden="true"
-		class="tooltip show-on-dark right-0 bottom-full mb-1.5 group-hover/theme-toggle:opacity-100"
-	>
-		{switchToLightLabel}
-	</span>
 {/snippet}
 
-<button
-	type="button"
-	class="script-theme-toggle inline-flex focus-visible:text-foreground noscript:hidden {toggleClass}"
-	aria-label={toggleLabel}
+{#snippet themeTooltip()}
+	<span class="show-on-light">{switchToDarkLabel}</span>
+	<span class="show-on-dark">{switchToLightLabel}</span>
+{/snippet}
+
+<IconButton
+	class="script-theme-toggle noscript:hidden"
+	label={toggleLabel}
+	tooltip={themeTooltip}
 	onclick={toggleTheme}
 >
 	{@render toggleContents()}
-</button>
+</IconButton>
 
 <input
 	id="no-script-theme-toggle"
@@ -55,7 +47,13 @@
 />
 <label
 	for="no-script-theme-toggle"
-	class="hidden peer-focus-visible:text-foreground peer-focus-visible:outline-2 peer-focus-visible:outline-offset-[3px] peer-focus-visible:outline-accent-hover noscript:inline-flex {toggleClass}"
+	class="hidden peer-focus-visible:text-foreground peer-focus-visible:outline-2 peer-focus-visible:outline-offset-[3px] peer-focus-visible:outline-accent-hover noscript:inline-flex peer-focus-visible:[&_.tooltip]:opacity-100 {iconButtonClass} relative"
 >
 	{@render toggleContents()}
+	<span
+		aria-hidden="true"
+		class="tooltip right-0 bottom-full mb-1.5 group-hover/icon-button:opacity-100"
+	>
+		{@render themeTooltip()}
+	</span>
 </label>
