@@ -220,7 +220,7 @@
 			>
 				{#each [...attempt] as character, index (index)}
 					<div
-						class="flex size-12 items-center justify-center rounded-xs border-2 border-(--pentle-border) bg-(--pentle-tile) bg-(image:--pentle-tile-gradient) p-0 font-mono text-2xl font-bold text-(--pentle-text) shadow-(--pentle-tile-shadow) backdrop-blur-md select-none data-feedback:bg-none data-feedback:text-(--pentle-result-text) data-[feedback=absent]:border-(--pentle-absent-border) data-[feedback=absent]:bg-(--pentle-absent) data-[feedback=correct]:border-(--pentle-correct-border) data-[feedback=correct]:bg-(--pentle-correct) data-[feedback=present]:border-(--pentle-present-border) data-[feedback=present]:bg-(--pentle-present) sm:size-14 sm:text-3xl"
+						class="glass flex size-12 items-center justify-center rounded-xs border-2 border-(--pentle-border) bg-(--pentle-tile) p-0 font-mono text-2xl font-bold text-(--pentle-text) select-none data-feedback:bg-none data-feedback:text-(--pentle-result-text) data-[feedback=absent]:border-(--pentle-absent-border) data-[feedback=absent]:bg-(--pentle-absent) data-[feedback=correct]:border-(--pentle-correct-border) data-[feedback=correct]:bg-(--pentle-correct) data-[feedback=present]:border-(--pentle-present-border) data-[feedback=present]:bg-(--pentle-present) sm:size-14 sm:text-3xl"
 						data-feedback={feedback[rowIndex]?.[index]}
 						role="img"
 						aria-label={squareLabel(
@@ -267,7 +267,7 @@
 						<button
 							type="button"
 							class={[
-								"accent-focus flex size-12 cursor-pointer items-center justify-center rounded-xs border-2 bg-(--pentle-tile) bg-(image:--pentle-tile-gradient) p-0 font-mono text-2xl font-bold text-(--pentle-text) shadow-(--pentle-tile-shadow) backdrop-blur-md select-none not-forced-colors:focus-visible:border-(--pentle-border) sm:size-14 sm:text-3xl",
+								"accent-focus glass flex size-12 cursor-pointer items-center justify-center rounded-xs border-2 bg-(--pentle-tile) p-0 font-mono text-2xl font-bold text-(--pentle-text) select-none not-forced-colors:focus-visible:border-(--pentle-border) sm:size-14 sm:text-3xl",
 								index === activeIndex
 									? "border-(--pentle-active) forced-colors:outline-2 forced-colors:-outline-offset-4 forced-colors:outline-[Highlight]"
 									: "border-(--pentle-border)",
@@ -285,7 +285,7 @@
 					<button
 						type="button"
 						class={[
-							"absolute left-full ml-2 h-12 cursor-pointer rounded-xs border border-(--pentle-border) bg-(--pentle-glass) bg-(image:--pentle-control-gradient) px-4 font-bold whitespace-nowrap text-(--pentle-text) shadow-(--pentle-control-shadow) backdrop-blur-md hover:border-(--pentle-active) hover:bg-(--pentle-glass-hover) hover:text-accent-hover max-lg:hidden sm:ml-2.5 sm:h-14",
+							"glass absolute left-full ml-2 h-12 cursor-pointer rounded-xs px-4 font-bold whitespace-nowrap text-(--pentle-text) hover:border-(--pentle-active) hover:text-accent-hover max-lg:hidden sm:ml-2.5 sm:h-14",
 							guess.length !== WORD_LENGTH && "invisible"
 						]}
 						onclick={submit}
@@ -302,7 +302,7 @@
 			>
 				{#each rowNumbers.slice(0, WORD_LENGTH) as index (index)}
 					<div
-						class="flex size-12 items-center justify-center rounded-xs border-2 border-dashed border-(--pentle-empty-border) bg-(--pentle-empty-tile) p-0 font-mono text-2xl font-bold text-(--pentle-text) backdrop-blur-md select-none sm:size-14 sm:text-3xl"
+						class="glass size-12 items-center justify-center rounded-xs border-2 border-dashed border-(--pentle-empty-border) bg-(--pentle-empty-tile) p-0 font-mono text-2xl font-bold text-(--pentle-text) select-none sm:size-14 sm:text-3xl"
 					></div>
 				{/each}
 			</div>

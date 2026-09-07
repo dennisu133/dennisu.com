@@ -7,6 +7,10 @@
 	let { displayLanguage }: { displayLanguage: Language } = $props();
 	let dialog: HTMLDialogElement;
 
+	export function open() {
+		dialog?.showModal();
+	}
+
 	function closeFromBackdrop(event: MouseEvent) {
 		if (event.target !== dialog) return;
 
@@ -24,9 +28,9 @@
 
 <button
 	type="button"
-	class="group/help relative inline-flex cursor-pointer items-center justify-center rounded-xs border border-(--pentle-border) bg-(--pentle-glass) bg-(image:--pentle-control-gradient) p-2 text-muted-foreground shadow-(--pentle-control-shadow) backdrop-blur-md hover:border-(--pentle-active) hover:bg-(--pentle-glass-hover) hover:text-foreground"
+	class="group/help glass relative inline-flex cursor-pointer items-center justify-center rounded-xs p-2 text-muted-foreground hover:border-(--pentle-active) hover:text-foreground"
 	aria-label={translate(displayLanguage, "helpButton")}
-	onclick={() => dialog?.showModal()}
+	onclick={open}
 >
 	<CircleQuestionMark size={20} aria-hidden="true" />
 	<span class="tooltip right-0 bottom-full mb-1.5 group-hover/help:opacity-100">
@@ -35,14 +39,14 @@
 </button>
 
 <dialog
-	class="m-auto w-11/12 max-w-lg rounded-xs border border-(--pentle-border) bg-(--pentle-dialog) p-5 text-foreground shadow-2xl backdrop:bg-black/60 backdrop:backdrop-blur-xs open:grid open:gap-5 motion-safe:open:animate-[pentle-dialog-open_200ms_ease-out] contrast-more:shadow-none contrast-less:shadow-none sm:p-10 forced-colors:bg-[Canvas] forced-colors:backdrop:bg-[Canvas] forced-colors:backdrop:opacity-80 forced-colors:backdrop:backdrop-blur-none"
+	class="glass m-auto w-11/12 max-w-lg rounded-xs border-(--pentle-border) bg-(--pentle-dialog) p-5 text-foreground shadow-2xl backdrop:bg-black/60 backdrop:backdrop-blur-xs open:grid open:gap-5 motion-safe:open:animate-[pentle-dialog-open_200ms_ease-out] contrast-more:shadow-none contrast-less:shadow-none sm:p-10 forced-colors:bg-[Canvas] forced-colors:backdrop:bg-[Canvas] forced-colors:backdrop:opacity-80 forced-colors:backdrop:backdrop-blur-none"
 	bind:this={dialog}
 	aria-labelledby="pentle-help-title"
 	onclick={closeFromBackdrop}
 >
 	<button
 		type="button"
-		class="absolute top-3 right-3 inline-flex cursor-pointer items-center justify-center rounded-xs border border-(--pentle-border) bg-(--pentle-glass) bg-(image:--pentle-control-gradient) p-2 text-muted-foreground shadow-(--pentle-inset-shadow) backdrop-blur-md hover:border-(--pentle-active) hover:bg-(--pentle-glass-hover) hover:text-foreground"
+		class="glass absolute top-3 right-3 inline-flex cursor-pointer items-center justify-center rounded-xs p-2 text-muted-foreground hover:border-(--pentle-active) hover:text-foreground"
 		aria-label={translate(displayLanguage, "close")}
 		onclick={() => dialog?.close()}
 	>
