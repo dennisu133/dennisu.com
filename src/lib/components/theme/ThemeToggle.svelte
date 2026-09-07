@@ -14,7 +14,7 @@
 	} = $props();
 
 	const toggleClass =
-		"glass theme-toggle group/theme-toggle relative cursor-pointer items-center justify-center rounded-xs p-2 text-muted-foreground hover:border-accent hover:text-foreground motion-safe:transition-colors";
+		"glass interactive-surface group/theme-toggle relative items-center justify-center rounded-xs p-2 text-muted-foreground hover:text-foreground";
 </script>
 
 {#snippet toggleContents()}

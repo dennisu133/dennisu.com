@@ -267,7 +267,7 @@
 						<button
 							type="button"
 							class={[
-								"accent-focus glass flex size-12 cursor-pointer items-center justify-center rounded-xs border-2 bg-(--pentle-tile) p-0 font-mono text-2xl font-bold text-(--pentle-text) select-none not-forced-colors:focus-visible:border-(--pentle-border) sm:size-14 sm:text-3xl",
+								"accent-focus glass interactive-surface flex size-12 items-center justify-center rounded-xs border-2 bg-(--pentle-tile) p-0 font-mono text-2xl font-bold text-(--pentle-text) select-none not-forced-colors:focus-visible:border-(--pentle-border) sm:size-14 sm:text-3xl",
 								index === activeIndex
 									? "border-(--pentle-active) forced-colors:outline-2 forced-colors:-outline-offset-4 forced-colors:outline-[Highlight]"
 									: "border-(--pentle-border)",
@@ -285,7 +285,7 @@
 					<button
 						type="button"
 						class={[
-							"glass absolute left-full ml-2 h-12 cursor-pointer rounded-xs px-4 font-bold whitespace-nowrap text-(--pentle-text) hover:border-(--pentle-active) hover:text-accent-hover max-lg:hidden sm:ml-2.5 sm:h-14",
+							"glass interactive-surface absolute left-full ml-2 h-12 rounded-xs px-4 font-bold whitespace-nowrap text-(--pentle-text) hover:text-accent-hover max-lg:hidden sm:ml-2.5 sm:h-14",
 							guess.length !== WORD_LENGTH && "invisible"
 						]}
 						onclick={submit}
