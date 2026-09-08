@@ -17,11 +17,12 @@
 
 # Styling
 
+- Never use rounded corners.
 - Use Tailwind utilities in markup for layout, spacing, typography, appearance,
   responsive behavior, and interaction states.
 - Prefer Tailwind's default scale and the project's existing semantic theme
   tokens. Use familiar spacing steps (including `1.5`, `2.5`, and `3.5`), named
-  text sizes, font weights, radii, shadows, and breakpoints before custom values.
+  text sizes, font weights, shadows, and breakpoints before custom values.
   Choose the nearest suitable scale value instead of preserving incidental CSS
   measurements: for example, prefer `gap-1.5` over `gap-[0.35rem]`, `px-5` over
   `px-[1.2rem]`, and `text-sm` over `text-[0.9rem]` when no functional constraint
