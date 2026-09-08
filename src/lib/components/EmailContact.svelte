@@ -51,18 +51,20 @@
 		<h3 class="text-base font-medium">
 			<a
 				{href}
-				class="inline-flex min-h-6 w-56 items-center select-none group-hover/email:text-accent-hover motion-safe:transition-colors motion-safe:duration-150"
+				class="inline-flex min-h-6 w-full items-center select-none group-hover/email:text-accent-hover motion-safe:transition-colors motion-safe:duration-150 noscript:hidden"
 				onmouseenter={reveal}
 				onfocus={reveal}
 				onclick={handleLinkClick}
 			>
 				Get in touch
 			</a>
+			<span class="hidden min-h-6 items-center noscript:inline-flex">Get in touch</span>
 		</h3>
-		<div class="relative min-h-6 text-sm text-muted-foreground">
+		<div class="relative min-h-6 text-sm text-muted-foreground noscript:hidden">
+			<!-- Fixed width: the revealed address (~14.5em in Geist) is wider than the scrambled placeholders, and sizing to content would shift the layout on reveal. -->
 			<a
 				{href}
-				class="inline-flex min-h-6 max-w-full flex-wrap items-center"
+				class="inline-flex min-h-6 w-[15.5em] max-w-full flex-wrap items-center"
 				onmouseenter={reveal}
 				onfocus={reveal}
 				onclick={handleLinkClick}
@@ -96,14 +98,14 @@
 				></button>
 			{/if}
 		</div>
-		<noscript class="text-xs text-muted-foreground opacity-80">
-			<br /> Revealing email requires JavaScript.
+		<noscript class="block text-xs text-muted-foreground">
+			Enable JavaScript to reveal email.
 		</noscript>
 	</div>
 
 	<a
 		{href}
-		class="ml-auto inline-flex items-center text-sm leading-none tracking-wider text-accent uppercase group-hover/email:text-accent-hover pointer-fine:hidden"
+		class="ml-auto inline-flex items-center text-sm leading-none tracking-wider text-accent uppercase group-hover/email:text-accent-hover pointer-fine:hidden noscript:hidden"
 		onclick={handleLinkClick}
 	>
 		Email
