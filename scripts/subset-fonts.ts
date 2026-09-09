@@ -25,11 +25,18 @@ if (fontPaths.length === 0) {
 }
 
 const text = [...keepCharacters].join("");
+// @types/subset-font does not yet declare keepFeatures, supported since 2.7.0.
+const options: NonNullable<Parameters<typeof subsetFont>[2]> & { keepFeatures: string[] } = {
+	targetFormat: "woff2",
+	// Keep normal text shaping and tabular figures used by tabular-nums.
+	// Revisit this list when adding fonts, writing systems, or CSS font features.
+	keepFeatures: ["ccmp", "locl", "liga", "rlig", "kern", "mark", "mkmk", "tnum"]
+};
 
 for (const file of fontPaths) {
 	const fontPath = `${buildDirectory}/${file}`;
 	const original = Buffer.from(await Bun.file(fontPath).arrayBuffer());
-	const subset = await subsetFont(original, text, { targetFormat: "woff2" });
+	const subset = await subsetFont(original, text, options);
 
 	if (subset.length >= original.length) {
 		console.log(`Fonts: ${basename(fontPath)} left unchanged (subset would not shrink it)`);

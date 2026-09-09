@@ -61,7 +61,7 @@
 		</div>
 		<time
 			datetime={date.toISOString()}
-			class="shrink-0 self-start font-mono text-xs leading-none tracking-wide text-muted-foreground opacity-80"
+			class="shrink-0 self-start font-mono text-xs leading-none tracking-wide text-muted-foreground"
 		>
 			{date.toLocaleDateString("en-US", { year: "numeric", month: "short" })}
 		</time>
@@ -109,7 +109,7 @@
 		<div class="relative z-20 flex items-center gap-2">
 			<a
 				href={projectUrl}
-				class="hidden min-h-6 items-center text-xs leading-none tracking-wider text-accent uppercase hover:text-accent-hover motion-safe:transition-colors motion-safe:duration-150 pointer-coarse:inline-flex"
+				class="hidden min-h-6 items-center text-sm leading-none tracking-wider text-accent uppercase hover:text-accent-hover motion-safe:transition-colors motion-safe:duration-150 pointer-coarse:inline-flex"
 				target="_blank"
 				rel="noreferrer"
 			>

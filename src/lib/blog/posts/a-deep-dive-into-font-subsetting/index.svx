@@ -1,0 +1,205 @@
+---
+title: "A Deep Dive into Font Subsetting"
+date: "2026-09-09"
+description: "How font subsetting and weight-axis clamping reduce file size, why tool defaults matter, and how the results compare with Google Fonts."
+---
+
+<script>
+  import FontCoverage from "./FontCoverage.svelte";
+  import FontTableBreakdown from "./FontTableBreakdown.svelte";
+  import FontWeightAxis from "./FontWeightAxis.svelte";
+  import FauxBold from "./FauxBold.svelte";
+  import FontFallback from "./FontFallback.svelte";
+</script>
+
+Custom fonts have become a routine part of building for the web. The [2025 Web Almanac](https://almanac.httparchive.org/en/2025/fonts#webfont-usage) found that roughly 88% of the pages surveyed requested web fonts. This website does too. While improving its performance, I noticed it was serving entire font files, including characters and weights it never used. That led me to investigate how much could be removed and what the tools actually kept.
+
+## Why fonts contain more than a page needs
+
+Fonts are designed to be used across many different websites and documents. They often include letters for multiple languages, along with punctuation and symbols. While operating systems use formats like TTF and OTF for fast, uncompressed access on local drives, WOFF2 is the standard for the web because it compresses that same font data losslessly for network transfer.
+
+I want to use [Vercel's Geist Sans v1.7.2](https://vercel.com/font) as an example. At the time of writing, decompressing Geist[wght].woff2 yields 169.06 KB<sup id="fnref-1"><a href="#fn-1">1</a></sup>. WOFF2 uses [Brotli compression](https://www.w3.org/TR/WOFF2/#compressed-data-format) alongside font-specific transformations to bring the download down to 69.65 KB.
+
+Font data is organized into sections called [font tables](https://learn.microsoft.com/en-us/typography/opentype/spec/otff#font-tables), each with a short identifier. Many of these tables revolve around storing and shaping glyphs.
+
+A **glyph** is a shape a font uses to display text, such as a letter, punctuation mark, or symbol. Characters and glyphs aren't quite the same thing: the characters `f` and `i`, for example, can be drawn together as a single joined glyph.
+
+Here are the largest tables in the Geist file and what they contain:
+
+<FontTableBreakdown />
+
+## Cutting the weight axis
+
+Glyph coverage is only part of the size. A font's **weight** describes how light or heavy its strokes appear. Geist's weights range from Thin at 100 to Black at 900, with Regular at 400 and Bold at 700. Static fonts typically store each weight in a separate file. Geist is a **variable font**: it stores a default design and the changes needed to produce other weights in one file. Its weight axis is continuous, so intermediate values like 450 or 625 are valid too.
+
+<FontWeightAxis />
+
+The [weight axis](https://learn.microsoft.com/en-us/typography/opentype/spec/dvaraxistag_wght), called `wght`, uses the same scale as CSS `font-weight`. Each font defines its own supported range. Geist supports the whole range from 100 to 900. Browsers default to a font weight of 400 for regular text and 700 for bold elements like `<h1>`-`<h6>` and `<strong>`. These defaults make 400-700 a useful range to examine.
+
+[FontTools](https://fonttools.readthedocs.io/en/latest/varLib/instancer.html) can restrict the font to that range. Its `varLib.instancer` command rewrites the variation data and removes what is no longer needed. FontTools and its WOFF2 dependencies can be installed with `pip install "fonttools[woff]"`. The following command will clamp the weights to that 400-700 range:
+
+```bash
+fonttools varLib.instancer "Geist[wght].woff2" wght=400:700 --output="Geist-400-700.woff2"
+```
+
+This lowers the file size from 69.65 KB to 52.16 KB. The result is still a variable font that retains all intermediate weights between 400 and 700. To break the axis, two static font files have to be created:
+
+```bash
+fonttools varLib.instancer "Geist[wght].woff2" wght=400 --output="Geist-400.woff2"
+fonttools varLib.instancer "Geist[wght].woff2" wght=700 --output="Geist-700.woff2"
+```
+
+This yields Geist-400.woff2 (32.98 KB) and Geist-700.woff2 (33.62 KB). Together they total 66.60 KB<sup id="fnref-2"><a href="#fn-2">2</a></sup>. That is 14.44 KB more than the clamped variable font. Each static file stores its own glyph outlines and supporting tables, while the variable font stores a default design and the variation data needed to produce other weights. If the page uses both static weights, the browser also makes two font requests.
+
+[web.dev's font guidance](https://web.dev/articles/font-best-practices#use_fewer_web_fonts) explains that variable fonts offer the greatest savings when a site uses several weights and styles. Here, even with only two weights, the clamped Geist variable font is smaller than the two static instances combined. It still supports intermediate weights like 450 or 625 at no extra cost. If the page genuinely uses only one weight, a single static instance is the better choice. Rendering "faux bold" is still possible then, but it will look different:
+
+<FauxBold />
+
+## Removing unused glyphs
+
+**Font subsetting** is the practice of removing unused glyphs and font data that is associated with them. Instead of serving everything a font supports, a smaller version containing only what the content needs is created at build time. This post uses a fraction of what Geist ships:
+
+<FontCoverage />
+
+This bar counts characters, not bytes, so the file does not shrink by the same proportion. `cmap` and `name` shrink without disappearing, and every font keeps some fixed overhead that no subset can remove. But the three tables that dominated the breakdown earlier, `gvar`, `glyf` and `GPOS`, are all indexed by glyph, and those are the ones that collapse.
+
+`pyftsubset` comes with the FontTools install from earlier. This command keeps Basic Latin along with a few typographic characters that tend to appear as HTML entities:
+
+```bash
+pyftsubset "Geist-400-700.woff2" \
+  --unicodes="U+0020-007E,U+00A0,U+2013,U+2014,U+2018,U+2019,U+201C,U+201D,U+2026,U+2122" \
+  --flavor=woff2 \
+  --output-file="Geist-400-700-subset.woff2"
+```
+
+This takes the clamped font from 52.16 KB down to 13.35 KB. Running the same command against the original font, with its full 100-900 axis, gives 18.80 KB. Subsetting and axis-clamping complement each other.
+
+Unlike weight cutting, subsetting depends on the content the font serves. The best time to subset a font is during build time, when content is static. For Node projects, [subset-font](https://www.npmjs.com/package/subset-font), a wrapper around HarfBuzz's [hb-subset](https://harfbuzz.github.io/harfbuzz-hb-subset.html) is a possible choice. [It also supports restricting variable font axes](https://github.com/papandreou/subset-font#reducing-the-variation-space) so a Node build can handle both steps. However when subsetting the exact same unicode code points as before:
+
+```js
+// subset.mjs
+import { readFile, writeFile } from "node:fs/promises";
+import subsetFont from "subset-font";
+
+const codePoints = [
+	...Array.from({ length: 95 }, (_, index) => 0x20 + index),
+	0xa0,
+	0x2013,
+	0x2014,
+	0x2018,
+	0x2019,
+	0x201c,
+	0x201d,
+	0x2026,
+	0x2122
+];
+
+const original = await readFile("Geist-400-700.woff2");
+const subset = await subsetFont(original, String.fromCodePoint(...codePoints), {
+	targetFormat: "woff2"
+});
+
+await writeFile("Geist-400-700-subset.woff2", subset);
+```
+
+the output will result in a file that is 16.56 KB, over 3 KB larger than what `pyftsubset` produced from the same characters. That gap is not a disagreement between FontTools and HarfBuzz. It is a deliberate choice in `subset-font` version 2.7.0.
+
+Both subsetters map characters to glyphs through `cmap`, then follow `GSUB` substitutions for retained features. With their [default feature settings](https://fonttools.readthedocs.io/en/latest/subset/), both subsetters retain seven of Geist's 29 features, yielding 151 glyphs. Plain `hb-subset` produces 13.31 KB. The 44-byte difference from FontTools is layout, not content. Both files carry the same glyphs, features and tables. HarfBuzz pads composite glyphs like `i` and `j` to a four-byte boundary where FontTools does not, and packs `GPOS` slightly tighter. Uncompressed its file is actually 22 bytes larger, and only Brotli reverses the order.
+
+`subset-font` clears and inverts HarfBuzz's feature set, equivalent to `--layout-features=*`. [Retaining every feature](https://github.com/papandreou/subset-font#api) brings in ten of Geist's eleven stylistic sets, superscripts, subscripts and tabular figures, raising the total to 212 glyphs and 16.56 KB. For a library that cannot see the stylesheet, that is the safer default. Nothing tells a subsetter that a page asks for `font-variant-numeric: tabular-nums`, or reaches for a stylistic set through `font-feature-settings`, and a feature dropped from the file takes that CSS down with it without any warning. The extra three kilobytes are insurance against a subtle rendering regression.
+
+The insurance can be declined once the page is known. `subset-font` will not hand back HarfBuzz's own default, because it clears the set before doing anything else, but it does accept an explicit list through `keepFeatures`. This list is specific to the Geist example:
+
+```js
+const subset = await subsetFont(original, String.fromCodePoint(...codePoints), {
+	targetFormat: "woff2",
+	keepFeatures: ["ccmp", "dnom", "frac", "liga", "locl", "numr", "kern", "tnum"]
+});
+```
+
+That lands at 13.58 KB with 161 glyphs. **An ~80% cut from the initial 69.65 KB file.**
+
+The list becomes part of the design at that point, because it has to name every feature the stylesheet asks for.
+
+## Subsetting dynamic content
+
+The weight range to retain depends on the site's styles. Character coverage depends on its content. If that content introduces a character the subset lacks, the browser silently uses a fallback font, or a missing-glyph box if no font covers it. A few letters render in the system sans-serif instead of Geist, easily mistaken for a styling bug.
+
+<FontFallback />
+
+For static pages, the build can collect the characters the site needs and pass them to the subsetter. [This blog's build script](https://github.com/dennisu133/dennisu.com/blob/main/scripts/subset-fonts.ts) collects characters across generated HTML and other site assets, then creates a shared subset for each font.
+
+Dynamic content needs broader coverage: all of Basic Latin, accented characters or whichever scripts the site supports. Splitting the font into files with `unicode-range` lets browsers download only the ranges the page uses. Splitting fonts adds overhead: every slice repeats its own `cmap`, `hmtx`, `GSUB` and `name` tables, the same overhead that made two static weights more expensive than one variable font. The less predictable the content, the more characters the font needs to retain.
+
+## Self-hosting vs Google Fonts
+
+Google Fonts is easy to set up: one `<link>`, no build step and no font files to host. Its CSS splits Geist into five `unicode-range` slices, so a Latin-only page skips the Cyrillic and Vietnamese outlines. Requesting one weight returns a static instance. For sites that need no further optimization, it is a convenient default.
+
+The cost is an external dependency and a chain of requests. The browser fetches the stylesheet from `fonts.googleapis.com` before discovering the font URL on `fonts.gstatic.com`. Fresh connections add DNS and TLS overhead. A cached copy from another site does not help: [browsers partition caches by site](https://developer.chrome.com/blog/http-cache-partitioning/), though repeat visits to the same site can still reuse it.
+
+The weight controls have limits. In this test, `Geist:wght@400..700` returned CSS declaring `font-weight: 400 700`, but the file still contained the full 100-900 axis. Its Latin slice weighed 29.30 KB against the local 13.58 KB subset. Some of that difference buys broader coverage: 225 characters instead of 104. The file also retains weight data outside the requested range. A single static weight was smaller at 12.96 KB, but provided no separate bold weight.
+
+This Bash example uses the FontTools CLI from earlier. It downloads the Latin slice for both ranges with the same browser `User-Agent`, then compares the files:
+
+```bash
+set -euo pipefail
+UA="Mozilla/5.0 (Windows NT 10.0) Firefox/133.0"
+for range in 400..700 100..900; do
+  CSS=$(curl -fsS -A "$UA" "https://fonts.googleapis.com/css2?family=Geist:wght@$range")
+  LATIN=$(printf '%s\n' "$CSS" | sed -n '/^[/][*] latin [*][/]$/,/}/p')
+  printf '%s\n' "$LATIN" | grep "font-weight:"
+  URL=$(printf '%s\n' "$LATIN" | grep -o 'https://[^)]*')
+  curl -fsS -A "$UA" "$URL" -o "geist-$range.woff2"
+done
+cmp geist-400..700.woff2 geist-100..900.woff2 && echo "Identical font files"
+wc -c < geist-400..700.woff2
+fonttools ttx -q -t fvar -o - geist-400..700.woff2 | grep -E "AxisTag|MinValue|MaxValue"
+```
+
+```text
+  font-weight: 400 700;
+  font-weight: 100 900;
+Identical font files
+29304
+      <AxisTag>wght</AxisTag>
+      <MinValue>100.0</MinValue>
+      <MaxValue>900.0</MaxValue>
+```
+
+Requesting a narrower weight range does not necessarily produce a smaller font file. In this Geist test, Google Fonts changed the CSS descriptor to `400 700` but served the same Latin font file as the `100..900` request, retaining the full weight axis. These results were checked on September 9, 2026. Google's responses can change and may differ for other fonts or clients.
+
+Google Fonts [can still subset characters](https://developers.google.com/fonts/docs/css2#optimizing_your_font_requests) through `text=`, so subsetting alone does not require self-hosting. The constraint from the previous section still applies: the characters must be known in advance. Requesting the same 104 characters returned 21.20 KB against the 13.58 KB local example. Coverage is identical, but the served file still carries the full 100-900 axis and `pnum`, the proportional figures this page never asks for. Hosting locally gives the build direct control over character coverage, weight ranges and retained features, while removing the external stylesheet request.
+
+## Licenses
+
+**Subsetting is modification**. Many fonts, [Geist](https://github.com/vercel/geist-font/blob/main/OFL.txt) included, use the [SIL Open Font License](https://openfontlicense.org/open-font-license-official-text/). It permits modification and redistribution under its conditions, which include keeping the result under the OFL and respecting any Reserved Font Names. The [ITF Free Font License](https://www.fontshare.com/licenses/itf-ffl) forbids altering the font software without the licensor's prior written consent, and names subsetting among the alterations it means. Such a font can be self-hosted, which that license explicitly permits, but not subset. **Always check a font's license before subsetting it.**
+
+The notices have to survive the build as well. The OFL lets the copyright notice and the license travel in a separate text file rather than inside the font, and it is blunt about skipping them: "This license becomes null and void if any of the above conditions are not met." The cheap fix is to include [a single OFL.txt](/OFL.txt) covering all served font families, which adds nothing to what a visitor downloads.
+
+Alternatively [the notices can live inside the font](https://openfontlicense.org/ofl-faq/) as well. Geist keeps its license notice and URL in name records 13 and 14, and both subsetters drop them by default while retaining the copyright notice and the other naming records. Passing `--name-IDs+=13,14` to pyftsubset or `preserveNameIds: [13, 14]` to subset-font keeps them, at a cost here of 128 and 192 bytes.
+
+## Conclusion
+
+Geist began at 69.65 KB. Clamping the weight axis brought it to 52.16 KB, and subsetting reduced it further to 13.58 KB, roughly 80% smaller than the original. Getting there required checking what the tools actually retained: `subset-font` kept every OpenType feature by default, Google Fonts served the full weight axis despite the narrower request, and both subsetters dropped the license records unless told to preserve them.
+
+Self-hosting gives the build control over those choices, but the subset has to stay in sync with the site’s content and styles. For static pages, collecting characters during the build makes that manageable. For dynamic content, broader coverage may be worth the extra bytes.
+
+<aside>
+	<ol>
+		<li id="fn-1">
+			That is the size of the decompressed file. The table above totals 168,692 bytes, because it
+			counts only the table data. The remaining 364 bytes are the file header, the directory that
+			records where each of the 21 tables begins, and the padding that aligns every table to a
+			four-byte boundary.
+			<a href="#fnref-1" aria-label="Back to content">&#8617;</a>
+		</li>
+		<li id="fn-2">
+			FontTools writes the current time into the <code>head</code> table on every save. Because
+			WOFF2 compresses the entire font as a single Brotli stream, those few bytes shift the
+			compressed result by roughly ±0.3 KB between runs. The sizes recorded here come from FontTools
+			4.64.0 with <code>--no-recalc-timestamp</code>, which keeps the timestamp of the source font
+			and makes the output byte-identical.
+			<a href="#fnref-2" aria-label="Back to content">&#8617;</a>
+		</li>
+	</ol>
+</aside>

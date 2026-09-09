@@ -6,6 +6,10 @@ const emailPattern = /[\w.+-]+@(?:[\w-]+\.)+[\w-]+/;
 const leaks: string[] = [];
 
 for await (const file of textFiles.scan(buildDirectory)) {
+	// The OFL requires every copy to carry the fonts' copyright notices verbatim, and
+	// Commit Mono's names its author's address. Someone else's notice, not ours to rewrite.
+	if (file === "OFL.txt") continue;
+
 	const contents = await Bun.file(`${buildDirectory}/${file}`).text();
 	if (emailPattern.test(contents)) leaks.push(file);
 }
