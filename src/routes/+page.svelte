@@ -1,9 +1,12 @@
 <script lang="ts">
+	import type { PageData } from "./$types";
+	let { data }: { data: PageData } = $props();
 	import githubIcon from "$lib/assets/icons/social/github.svg";
 	import githubDarkIcon from "$lib/assets/icons/social/github-dark.svg";
 	import { ArrowRight } from "@lucide/svelte";
 
 	import ProjectCard from "$lib/components/card/ProjectCard.svelte";
+	import PostCard from "$lib/components/card/PostCard.svelte";
 	import EmailContact from "$lib/components/EmailContact.svelte";
 	import ThemeToggle from "$lib/components/theme/ThemeToggle.svelte";
 	import FancyLink from "$lib/components/FancyLink.svelte";
@@ -243,7 +246,7 @@
 						<ImagePreview src="/topsters.avif" alt="A grid of my favorite albums">
 							music
 						</ImagePreview> and
-						<NekoChase>cats</NekoChase>.
+						<span class="whitespace-nowrap"><NekoChase>cats</NekoChase>.</span>
 					</p>
 
 					<p class="text-[clamp(0.75rem,1.5vw,0.9rem)] tracking-wide text-muted-foreground">
@@ -267,28 +270,43 @@
 				</div>
 
 				<div
-					class="flex min-w-0 border-t border-border/50 pt-3 md:min-w-52 md:items-center md:border-t-0 md:border-l md:pt-0 md:pl-5"
+					class="flex min-w-0 border-t border-border/50 pt-3 md:border-t-0 md:border-l md:pt-0 md:pl-5"
 				>
 					<EmailContact />
 				</div>
 			</div>
 		</section>
 
-		<section class="mb-6 lg:mb-0" aria-labelledby="projects-heading">
-			<h2
-				id="projects-heading"
-				class="mb-[clamp(0.5rem,1dvh,1rem)] flex items-center gap-4 py-2 tracking-[0.2em] text-muted-foreground uppercase after:h-px after:grow after:bg-border"
-			>
-				Projects
-			</h2>
-			<ul
-				class="grid grid-cols-1 gap-2 lg:grid-cols-2 [@media(min-width:80rem)_and_(max-height:48rem)]:grid-cols-4"
-			>
-				{#each projects as project}
-					<ProjectCard {...project} />
-				{/each}
-			</ul>
-		</section>
+		<div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+			<section class="min-w-0" aria-labelledby="projects-heading">
+				<h2
+					id="projects-heading"
+					class="mb-[clamp(0.5rem,1dvh,1rem)] flex items-center gap-4 py-2 tracking-[0.2em] text-muted-foreground uppercase after:h-px after:grow after:bg-border"
+				>
+					Projects
+				</h2>
+				<ul class="grid grid-cols-1 gap-2">
+					{#each projects as project (project.name)}
+						<ProjectCard {...project} />
+					{/each}
+				</ul>
+			</section>
+			<section class="min-w-0" aria-labelledby="blog-heading">
+				<h2
+					id="blog-heading"
+					class="mb-[clamp(0.5rem,1dvh,1rem)] flex items-center gap-4 py-2 tracking-[0.2em] text-muted-foreground uppercase after:h-px after:grow after:bg-border"
+				>
+					Blog
+				</h2>
+				<ul class="grid grid-cols-1 gap-2">
+					{#each data.posts as post (post.slug)}
+						<PostCard {...post} />
+					{:else}
+						<li class="py-4 text-sm text-muted-foreground">No posts yet.</li>
+					{/each}
+				</ul>
+			</section>
+		</div>
 	</main>
 
 	<footer class="border-t border-border py-3 text-xs">
@@ -300,10 +318,10 @@
 					rel="noreferrer"
 					class="font-mono tracking-wide text-accent hover:text-accent-hover"
 				>
-					Source
+					Source Code
 				</FancyLink>
 
-				<span class="h-3 w-px bg-border/70" aria-hidden="true"></span>
+				<span class="h-3 w-px bg-border/80" aria-hidden="true"></span>
 
 				<FancyLink
 					href="/pentle"

@@ -35,7 +35,8 @@
 
 	--color-background: light-dark(oklch(74.685% 0.1352 250.366), oklch(0% 0 0));
 	--color-foreground: light-dark(oklch(20.768% 0.0398 265.755), oklch(94.007% 0 0));
-	--color-muted-foreground: light-dark(oklch(27.95% 0.0368 260.031), oklch(71.366% 0.0192 261.325));
+	/* Keeps 80%-opacity metadata above 4.5:1 over the darkest light-theme background. */
+	--color-muted-foreground: light-dark(oklch(15% 0.0368 260.031), oklch(71.366% 0.0192 261.325));
 	--color-border: light-dark(oklch(21% 0.04 266 / 0.25), oklch(100% 0 none / 0.12));
 	--color-accent: light-dark(oklch(25% 0.09 266.189), oklch(75.351% 0.139 232.661));
 	--color-accent-hover: light-dark(oklch(21% 0.065 267.935), oklch(82.759% 0.1013 230.318));
@@ -53,11 +54,17 @@
 		font-family: var(--font-sans);
 		color: var(--color-foreground);
 		background-color: var(--color-background);
+		scrollbar-width: thin;
+		scrollbar-color: var(--color-border) transparent;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		html {
+			scroll-behavior: smooth;
+		}
 	}
 
 	body {
-		/*prevent artificial font rendering */
-		font-synthesis: none;
 		min-height: 100vh;
 	}
 
@@ -78,6 +85,12 @@
 	h3 {
 		font-size: var(--text-h3);
 	}
+}
+
+/* Overflow containers inside glass panels. */
+@utility thin-scrollbar {
+	scrollbar-width: thin;
+	scrollbar-color: var(--color-border) transparent;
 }
 
 @layer components {

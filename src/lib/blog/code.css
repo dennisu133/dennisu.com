@@ -1,0 +1,14 @@
+/* The preset supplies token colors; the article owns the surface and typography.
+ * light-dark() follows the existing color-scheme, including the no-script toggle.
+ */
+.shiki,
+.shiki span {
+	color: light-dark(var(--shiki-light), var(--shiki-dark));
+}
+
+@media (prefers-contrast: more), (prefers-contrast: less), (forced-colors: active) {
+	.shiki,
+	.shiki span {
+		color: var(--color-foreground);
+	}
+}
