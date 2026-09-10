@@ -32,9 +32,11 @@ export default defineConfig({
 			],
 			inlineStyleThreshold: 40000,
 			prerender: {
-				// An empty blog has no pages to prerender.
+				// An empty blog has no pages or social images to prerender.
 				handleUnseenRoutes: ({ routes }) => {
-					const unexpected = routes.filter((route) => route !== "/blog/[slug]");
+					const unexpected = routes.filter(
+						(route) => route !== "/blog/[slug]" && route !== "/blog/[slug]/og.png"
+					);
 					if (unexpected.length) throw new Error(`Unprerendered routes: ${unexpected.join(", ")}`);
 				}
 			},

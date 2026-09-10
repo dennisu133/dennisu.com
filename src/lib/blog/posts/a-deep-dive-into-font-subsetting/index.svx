@@ -57,7 +57,7 @@ This yields Geist-400.woff2 (32.98 KB) and Geist-700.woff2 (33.62 KB). Together 
 
 ## Removing unused glyphs
 
-**Font subsetting** is the practice of removing unused glyphs and font data that is associated with them. Instead of serving everything a font supports, a smaller version containing only what the content needs is created at build time. This post uses a fraction of what Geist ships:
+**Font subsetting** is the practice of removing unused glyphs and their associated data, thereby creating a subset of a font. Instead of serving everything a font supports, a smaller version containing only what the content needs is created at build time. This post uses a fraction of what Geist ships:
 
 <FontCoverage />
 

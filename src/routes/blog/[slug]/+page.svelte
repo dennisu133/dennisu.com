@@ -1,5 +1,6 @@
 <script lang="ts">
 	import "$lib/blog/code.css";
+	import { PUBLIC_SITE_ORIGIN } from "$env/static/public";
 	import { copyCode } from "$lib/blog/copy-code";
 	import { resolve } from "$app/paths";
 	import ThemeToggle from "$lib/components/theme/ThemeToggle.svelte";
@@ -12,6 +13,7 @@
 
 	let { data }: { data: PageData } = $props();
 	let article = $state<HTMLElement>();
+	const socialImage = $derived(`${PUBLIC_SITE_ORIGIN}/blog/${data.post.slug}/og.png`);
 	const postSource = $derived(
 		`https://github.com/dennisu133/dennisu.com/tree/main/src/lib/blog/posts/${data.post.slug}`
 	);
@@ -22,6 +24,16 @@
 	<meta name="description" content={data.post.description} />
 	<meta property="og:title" content={data.post.title} />
 	<meta property="og:description" content={data.post.description} />
+	<meta property="og:image" content={socialImage} />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+	<meta property="og:image:type" content="image/png" />
+	<meta property="og:image:alt" content={data.post.title} />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content={data.post.title} />
+	<meta name="twitter:description" content={data.post.description} />
+	<meta name="twitter:image" content={socialImage} />
+	<meta name="twitter:image:alt" content={data.post.title} />
 </svelte:head>
 
 <div class="isolate mx-auto flex min-h-screen max-w-6xl flex-col px-6 sm:px-10">
