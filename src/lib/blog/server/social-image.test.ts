@@ -1,4 +1,5 @@
 import { expect, test } from "bun:test";
+import { rejects } from "node:assert/strict";
 import sharp from "sharp";
 import { renderSocialImage } from "./social-image";
 
@@ -15,11 +16,12 @@ test("renders wrapped metadata and literal markup characters as a social PNG", a
 });
 
 test("rejects metadata that cannot fit instead of publishing clipped text", async () => {
-	await expect(
+	await rejects(
 		renderSocialImage({
 			title: "An excessively long title ".repeat(100),
 			description: "Description",
 			date: "2026-09-09"
-		})
-	).rejects.toThrow("Social image text does not fit");
+		}),
+		/Social image text does not fit/
+	);
 });
