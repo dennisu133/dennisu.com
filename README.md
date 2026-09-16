@@ -5,14 +5,9 @@ Source code for my personal website. Developed using [Sveltekit](https://svelte.
 ## bun
 
 1. `bun install`.
-2. `cp .env.example .env`.
-3. `bun run dev`.
-4. `bun run build`.
-5. `bun run preview`.
-
-## Deploy
-
-- `PUBLIC_SITE_ORIGIN` must be set as a build variable; the build fails without it.
+2. `bun run dev`.
+3. `bun run build`.
+4. `bun run preview`.
 
 ## Cloudflare notes
 

@@ -32,6 +32,7 @@ export default defineConfig({
 			],
 			inlineStyleThreshold: 40000,
 			prerender: {
+				origin: "https://dennisu.com",
 				// An empty blog has no pages or social images to prerender.
 				handleUnseenRoutes: ({ routes }) => {
 					const unexpected = routes.filter(

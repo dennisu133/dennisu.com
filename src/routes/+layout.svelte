@@ -5,7 +5,6 @@
 	import fontDMSerifDisplay from "$lib/assets/fonts/dm-serif-display-400.woff2";
 	import fontGeist from "$lib/assets/fonts/geist-400-700.woff2";
 	import fontCommitMono from "$lib/assets/fonts/commit-mono-400.woff2";
-	import { PUBLIC_SITE_ORIGIN } from "$env/static/public";
 
 	import Background from "$lib/components/Background.svelte";
 
@@ -32,11 +31,11 @@
 	<meta name="apple-mobile-web-app-title" content="Dennis K" />
 
 	<!-- global meta stuff -->
-	<link rel="canonical" href={PUBLIC_SITE_ORIGIN + path} />
+	<link rel="canonical" href={page.url.origin + path} />
 	<meta name="author" content="Dennis Karnowitsch" />
 	<meta name="theme-color" content="#66b2ff" />
 	<meta property="og:type" content="website" />
-	<meta property="og:url" content={PUBLIC_SITE_ORIGIN + path} />
+	<meta property="og:url" content={page.url.origin + path} />
 </svelte:head>
 
 <Background />

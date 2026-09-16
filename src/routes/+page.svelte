@@ -12,10 +12,10 @@
 	import FancyLink from "$lib/components/FancyLink.svelte";
 	import ImagePreview from "$lib/components/ImagePreview.svelte";
 	import NekoChase from "$lib/components/NekoChase.svelte";
-	import { PUBLIC_SITE_ORIGIN } from "$env/static/public";
 	import { generateFrames } from "$lib/generateFrames";
 	import { allStackIconUrls, getStackIcons } from "$lib/stackIcons";
 	import { onMount } from "svelte";
+	import { page } from "$app/state";
 
 	import ImageDispenser from "$lib/components/ImageDispenser.svelte";
 
@@ -94,13 +94,13 @@
 	const profilePageSchema = JSON.stringify({
 		"@context": "https://schema.org",
 		"@type": "ProfilePage",
-		"@id": `${PUBLIC_SITE_ORIGIN}/`,
-		url: `${PUBLIC_SITE_ORIGIN}/`,
+		"@id": `${page.url.origin}/`,
+		url: `${page.url.origin}/`,
 		mainEntity: {
 			"@type": "Person",
-			"@id": `${PUBLIC_SITE_ORIGIN}/#person`,
+			"@id": `${page.url.origin}/#person`,
 			name: profile.name,
-			url: `${PUBLIC_SITE_ORIGIN}/`,
+			url: `${page.url.origin}/`,
 			jobTitle: profile.subtitle,
 			address: {
 				"@type": "PostalAddress",
@@ -182,7 +182,7 @@
 	<meta property="og:description" content="Please hire me." />
 
 	<!-- OG image -->
-	<meta property="og:image" content="{PUBLIC_SITE_ORIGIN}/og-image.jpg" />
+	<meta property="og:image" content="{page.url.origin}/og-image.jpg" />
 	<meta property="og:image:alt" content="Cozy cat with knitted hat on" />
 	<meta property="og:image:width" content="1200" />
 	<meta property="og:image:height" content="630" />
@@ -191,7 +191,7 @@
 	<!-- Twitter - title and site fall back to OG -->
 	<meta name="twitter:description" content="Check out my cat!" />
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:image" content="{PUBLIC_SITE_ORIGIN}/twitter-card.jpg" />
+	<meta name="twitter:image" content="{page.url.origin}/twitter-card.jpg" />
 	<meta
 		name="twitter:image:alt"
 		content="Black cat named Rust with reddish-brown undertones in her fur"
