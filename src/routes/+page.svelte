@@ -305,7 +305,7 @@
 	</main>
 
 	<footer class="border-t border-border py-3 text-xs">
-		<nav class="flex items-center justify-between">
+		<div class="flex items-center justify-between">
 			<div class="flex items-center gap-3">
 				<FancyLink
 					href={siteSource}
@@ -366,6 +366,6 @@
 					{/each}
 				</ul>
 			</div>
-		</nav>
+		</div>
 	</footer>
 </div>
