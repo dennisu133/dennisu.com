@@ -1,6 +1,6 @@
 <script lang="ts">
 	import "$lib/blog/code.css";
-	import { PUBLIC_SITE_ORIGIN } from "$env/static/public";
+	import { page } from "$app/state";
 	import { copyCode } from "$lib/blog/copy-code";
 	import { resolve } from "$app/paths";
 	import ThemeToggle from "$lib/components/theme/ThemeToggle.svelte";
@@ -13,7 +13,7 @@
 
 	let { data }: { data: PageData } = $props();
 	let article = $state<HTMLElement>();
-	const socialImage = $derived(`${PUBLIC_SITE_ORIGIN}/blog/${data.post.slug}/og.png`);
+	const socialImage = $derived(`${page.url.origin}/blog/${data.post.slug}/og.png`);
 	const postSource = $derived(
 		`https://github.com/dennisu133/dennisu.com/tree/main/src/lib/blog/posts/${data.post.slug}`
 	);
