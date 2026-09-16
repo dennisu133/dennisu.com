@@ -108,6 +108,6 @@
 		class="ml-auto inline-flex items-center text-sm leading-none tracking-wider text-accent uppercase group-hover/email:text-accent-hover pointer-fine:hidden noscript:hidden"
 		onclick={handleLinkClick}
 	>
-		Email
+		reveal
 	</a>
 </div>
