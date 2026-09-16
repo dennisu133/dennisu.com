@@ -14,6 +14,23 @@
 	let { data }: { data: PageData } = $props();
 	let article = $state<HTMLElement>();
 	const socialImage = $derived(`${page.url.origin}/blog/${data.post.slug}/og.png`);
+	const blogPostingSchema = $derived(
+		JSON.stringify({
+			"@context": "https://schema.org",
+			"@type": "BlogPosting",
+			headline: data.post.title,
+			description: data.post.description,
+			datePublished: data.post.date,
+			image: socialImage,
+			mainEntityOfPage: page.url.origin + page.url.pathname,
+			author: {
+				"@type": "Person",
+				"@id": `${page.url.origin}/#person`,
+				name: "Dennis Karnowitsch",
+				url: `${page.url.origin}/`
+			}
+		}).replace(/</g, "\\u003c")
+	);
 	const postSource = $derived(
 		`https://github.com/dennisu133/dennisu.com/tree/main/src/lib/blog/posts/${data.post.slug}`
 	);
@@ -34,6 +51,7 @@
 	<meta name="twitter:description" content={data.post.description} />
 	<meta name="twitter:image" content={socialImage} />
 	<meta name="twitter:image:alt" content={data.post.title} />
+	{@html `<script type="application/ld+json">${blogPostingSchema}</script>`}
 </svelte:head>
 
 <div class="isolate mx-auto flex min-h-screen max-w-6xl flex-col px-6 sm:px-10">
