@@ -6,21 +6,21 @@
 	font-family: "DM Serif Display";
 	font-weight: 400;
 	font-display: swap;
-	src: url("$lib/assets/fonts/dm-serif-display-400.woff2") format("woff2");
+	src: url("$lib/assets/fonts/dm-serif-display-400.subset.woff2") format("woff2");
 }
 
 @font-face {
 	font-family: "Geist";
 	font-weight: 400 700;
 	font-display: swap;
-	src: url("$lib/assets/fonts/geist-400-700.woff2") format("woff2");
+	src: url("$lib/assets/fonts/geist-400-700.subset.woff2") format("woff2");
 }
 
 @font-face {
 	font-family: "Commit Mono";
 	font-weight: 400;
 	font-display: swap;
-	src: url("$lib/assets/fonts/commit-mono-400.woff2") format("woff2");
+	src: url("$lib/assets/fonts/commit-mono-400.subset.woff2") format("woff2");
 }
 
 @theme {

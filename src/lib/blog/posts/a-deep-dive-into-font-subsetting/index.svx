@@ -127,7 +127,7 @@ The weight range to retain depends on the site's styles. Character coverage depe
 
 <FontFallback />
 
-For static pages, the build can collect the characters the site needs and pass them to the subsetter. [This blog's build script](https://github.com/dennisu133/dennisu.com/blob/main/scripts/subset-fonts.ts) collects characters across generated HTML and other site assets, then creates a shared subset for each font.
+For static pages, the build can collect the characters the site needs and pass them to the subsetter. [This blog's build script](https://github.com/dennisu133/dennisu.com/blob/main/scripts/subset-fonts.ts) collects characters from site sources, then creates a shared subset for each font before Vite builds the site. This lets Vite include the subset's contents in its filename hash, so changing the subset also changes its URL.
 
 Dynamic content needs broader coverage: all of Basic Latin, accented characters or whichever scripts the site supports. Splitting the font into files with `unicode-range` lets browsers download only the ranges the page uses. Splitting fonts adds overhead: every slice repeats its own `cmap`, `hmtx`, `GSUB` and `name` tables, the same overhead that made two static weights more expensive than one variable font. The less predictable the content, the more characters the font needs to retain.
 
