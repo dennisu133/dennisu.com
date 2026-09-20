@@ -45,7 +45,7 @@
 	   no real bold to use and it smears the regular outlines instead. */
 	@font-face {
 		font-family: "Geist Regular Only";
-		src: url("$lib/assets/fonts/geist-400-700.woff2") format("woff2");
+		src: url("$lib/assets/fonts/geist-400-700.subset.woff2") format("woff2");
 		font-weight: 400;
 		font-display: swap;
 	}

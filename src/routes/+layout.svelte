@@ -2,9 +2,9 @@
 	import "./layout.css";
 	import { page } from "$app/state";
 
-	import fontDMSerifDisplay from "$lib/assets/fonts/dm-serif-display-400.woff2";
-	import fontGeist from "$lib/assets/fonts/geist-400-700.woff2";
-	import fontCommitMono from "$lib/assets/fonts/commit-mono-400.woff2";
+	import fontDMSerifDisplay from "$lib/assets/fonts/dm-serif-display-400.subset.woff2";
+	import fontGeist from "$lib/assets/fonts/geist-400-700.subset.woff2";
+	import fontCommitMono from "$lib/assets/fonts/commit-mono-400.subset.woff2";
 
 	import Background from "$lib/components/Background.svelte";
 

@@ -54,7 +54,7 @@
 	   characters looks like on the page. */
 	@font-face {
 		font-family: "Geist Basic Latin Only";
-		src: url("$lib/assets/fonts/geist-400-700.woff2") format("woff2");
+		src: url("$lib/assets/fonts/geist-400-700.subset.woff2") format("woff2");
 		font-weight: 400 700;
 		font-display: swap;
 		unicode-range: U+0020-007E, U+00A0;
