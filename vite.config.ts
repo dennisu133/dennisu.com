@@ -30,7 +30,7 @@ export default defineConfig({
 					}
 				})
 			],
-			inlineStyleThreshold: 40000,
+			inlineStyleThreshold: 4000,
 			prerender: {
 				origin: "https://dennisu.com",
 				// An empty blog has no pages or social images to prerender.
