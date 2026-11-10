@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { CircleQuestionMark, X } from "@lucide/svelte";
 
-	import IconButton from "$lib/components/IconButton.svelte";
-	import FancyLink from "$lib/components/FancyLink.svelte";
+	import IconButton from "#lib/components/IconButton.svelte";
+	import FancyLink from "#lib/components/FancyLink.svelte";
 
 	import { translate } from "./i18n";
 	import type { Language } from "./pentle";

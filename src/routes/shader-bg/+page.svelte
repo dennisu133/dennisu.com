@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ThemeToggle from "$lib/components/theme/ThemeToggle.svelte";
+	import ThemeToggle from "#lib/components/theme/ThemeToggle.svelte";
 	import ShaderBackground from "./ShaderBackground.svelte";
 </script>
 

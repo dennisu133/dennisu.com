@@ -4,13 +4,19 @@
 	import { translate } from "./i18n";
 	import type { FeedbackStatus, Language } from "./pentle";
 
-	let { rows, feedback, gameLanguage, displayLanguage, onKey } = $props<{
+	let {
+		rows,
+		feedback,
+		gameLanguage,
+		displayLanguage,
+		onKey
+	}: {
 		rows: readonly string[];
 		feedback: readonly (readonly FeedbackStatus[])[];
 		gameLanguage: Language;
 		displayLanguage: Language;
 		onKey: (key: string) => void;
-	}>();
+	} = $props();
 
 	const keyClass =
 		"glass interactive-surface inline-flex min-h-11 max-w-11 min-w-0 flex-1 items-center justify-center rounded-xs px-1 py-2 text-center font-mono text-(--pentle-text)";
