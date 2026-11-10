@@ -55,20 +55,18 @@
 </svelte:head>
 
 <div class="isolate mx-auto flex min-h-screen max-w-6xl flex-col px-6 sm:px-10">
-	<header class="mt-6 flex min-h-40 flex-wrap gap-4 sm:min-h-36">
-		<div class="max-w-4xl min-w-0">
-			<h1 class="wrap-break-word">{data.post.title}</h1>
-			<p
-				class="flex flex-wrap gap-x-2 gap-y-1 text-h3 leading-tight font-semibold text-muted-foreground"
-			>
-				<time datetime={data.post.date}>{formatPostDate(data.post.date)}</time>
-				<span class="w-px bg-border/80" aria-hidden="true"></span>
-				<span class="text-muted-foreground/80">{data.post.readingMinutes} min read</span>
-			</p>
-		</div>
+	<!-- The controls share the meta row on small screens so the title keeps the full width. -->
+	<header class="mt-6 mb-4 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-x-4">
+		<h1 class="col-span-2 max-w-4xl wrap-break-word sm:col-span-1">{data.post.title}</h1>
+		<p
+			class="col-start-1 flex min-w-0 flex-wrap gap-x-2 gap-y-1 text-h3 leading-tight font-semibold text-muted-foreground"
+		>
+			<time datetime={data.post.date}>{formatPostDate(data.post.date)}</time>
+			<span class="w-px bg-border/80" aria-hidden="true"></span>
+			<span class="text-muted-foreground/80">{data.post.readingMinutes} min read</span>
+		</p>
 
-		<!-- mb matches the "Based in" line under the home page toggle so both toggles line up. -->
-		<div class="mb-7 ml-auto flex items-center gap-2 self-end sm:mb-8">
+		<div class="col-start-2 row-start-2 flex items-center gap-2 sm:row-span-2 sm:row-start-1">
 			<a href={resolve("/")} aria-label="Home" class={[iconButtonClass, "relative inline-flex"]}>
 				<House size={20} aria-hidden="true" />
 				<span
