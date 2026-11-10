@@ -27,11 +27,12 @@
 	></div>
 </div>
 
-<table>
+<!-- The table scrolls sideways on phones; these keep the description column readable while it does. -->
+<table class="[&_td:first-child]:whitespace-nowrap">
 	<thead>
 		<tr>
 			<th>Font table</th>
-			<th>What it contains</th>
+			<th class="min-w-56">What it contains</th>
 			<th class="text-right">Uncompressed bytes</th>
 			<th class="text-right">Share</th>
 		</tr>

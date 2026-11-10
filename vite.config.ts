@@ -24,7 +24,15 @@ export default defineConfig({
 									lang: lang || "text",
 									tabindex: false,
 									themes: { light: "github-light", dark: "github-dark-default" },
-									defaultColor: false
+									defaultColor: false,
+									// Read by the code-block header (copy-code.ts).
+									transformers: [
+										{
+											pre(node) {
+												if (lang && lang !== "text") node.properties["data-lang"] = lang;
+											}
+										}
+									]
 								})
 							)
 					}

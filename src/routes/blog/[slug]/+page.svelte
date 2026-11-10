@@ -80,11 +80,30 @@
 		</div>
 	</header>
 	<main class="mb-6 grid flex-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_14rem]">
-		<article bind:this={article} class="glass max-w-4xl min-w-0 p-6 sm:p-10">
-			<p class="mb-8 border-b border-border pb-6 text-muted-foreground">{data.post.description}</p>
+		<article
+			bind:this={article}
+			class="glass max-w-4xl min-w-0 bg-(--glass-surface-reading) p-4 sm:p-10"
+		>
+			<p class="mb-8 border-b border-border pb-6 text-lg leading-relaxed text-muted-foreground">
+				{data.post.description}
+			</p>
 			<div
 				{@attach copyCode}
-				class="min-w-0 leading-relaxed wrap-break-word [&_a]:text-accent [&_a]:underline [&_a]:underline-offset-4 [&_a:hover]:text-accent-hover [&_blockquote]:border-l-2 [&_blockquote]:border-accent [&_blockquote]:pl-4 [&_blockquote]:text-muted-foreground [&_code]:font-mono [&_code]:text-[clamp(0.75rem,1.5vw,0.875rem)] [&_h2]:mt-10 [&_h2]:mb-4 [&_h2]:scroll-mt-6 [&_h2]:text-2xl [&_h2]:font-semibold [&_h3]:mt-8 [&_h3]:mb-3 [&_h3]:scroll-mt-6 [&_h3]:text-xl [&_h3]:font-semibold [&_h4]:mt-6 [&_h4]:font-semibold [&_hr]:my-8 [&_hr]:border-border [&_img]:my-6 [&_img]:h-auto [&_img]:max-w-full [&_li]:my-1 [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_p]:my-4 [&_pre]:my-6 [&_pre]:thin-scrollbar [&_pre]:overflow-x-auto [&_pre]:border [&_pre]:border-border [&_pre]:p-4 [&_table]:my-6 [&_table]:block [&_table]:thin-scrollbar [&_table]:overflow-x-auto [&_td]:border [&_td]:border-border [&_td]:p-3 [&_th]:border [&_th]:border-border [&_th]:p-3 [&_ul]:my-4 [&_ul]:list-disc [&_ul]:pl-6"
+				class={[
+					"min-w-0 leading-relaxed wrap-break-word",
+					"[&_p]:my-5 [&_p]:text-base lg:[&_p]:text-p",
+					"[&_h2]:mt-14 [&_h2]:mb-4 [&_h2]:scroll-mt-6 [&_h2]:font-display [&_h2]:text-3xl [&_h2]:leading-tight",
+					"[&_h3]:mt-10 [&_h3]:mb-3 [&_h3]:scroll-mt-6 [&_h3]:text-xl [&_h3]:leading-snug [&_h3]:font-semibold",
+					"[&_h4]:mt-6 [&_h4]:font-semibold",
+					"[&_a]:text-accent [&_a]:underline [&_a]:underline-offset-4 [&_a:hover]:text-accent-hover",
+					"[&_blockquote]:border-l-2 [&_blockquote]:border-accent [&_blockquote]:pl-4 [&_blockquote]:text-muted-foreground",
+					"[&_li]:my-1 [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_ul]:my-4 [&_ul]:list-disc [&_ul]:pl-6",
+					"[&_hr]:my-8 [&_hr]:border-border [&_img]:my-6 [&_img]:h-auto [&_img]:max-w-full",
+					"[&_:not(pre)>code]:bg-foreground/10 [&_:not(pre)>code]:px-1 [&_:not(pre)>code]:py-0.5 [&_code]:font-mono [&_code]:text-sm",
+					"[&_pre]:my-6 [&_pre]:thin-scrollbar [&_pre]:overflow-x-auto [&_pre]:border [&_pre]:border-border [&_pre]:bg-foreground/5 [&_pre]:p-4 [&_pre_code]:text-xs sm:[&_pre_code]:text-sm",
+					"[&_table]:my-6 [&_table]:block [&_table]:thin-scrollbar [&_table]:overflow-x-auto [&_td]:border [&_td]:border-border [&_td]:p-2 sm:[&_td]:p-3 [&_th]:border [&_th]:border-border [&_th]:p-2 sm:[&_th]:p-3",
+					"[&_aside]:mt-12 [&_aside]:border-t [&_aside]:border-border [&_aside]:pt-4 [&_aside]:text-sm [&_aside]:text-muted-foreground"
+				]}
 			>
 				<data.Content />
 			</div>
