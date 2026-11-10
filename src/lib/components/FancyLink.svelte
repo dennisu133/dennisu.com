@@ -6,6 +6,8 @@
 
 <a {...rest} class={["accent-focus group/link relative inline-flex", className]}>
 	{@render children?.()}
+	<span aria-hidden="true" class="absolute bottom-0 left-0 h-px w-full bg-current opacity-30"
+	></span>
 	<span
 		aria-hidden="true"
 		class="absolute bottom-0 left-0 h-px w-0 bg-accent-hover group-hover/link:w-full motion-safe:transition-[width] motion-safe:duration-300 motion-safe:ease-out"

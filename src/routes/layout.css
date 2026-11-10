@@ -46,7 +46,11 @@
 		light-dark(oklch(98.5% 0 0 / 20%), oklch(98.5% 0 0 / 5%)),
 		transparent 35%
 	);
-	--glass-highlight: light-dark(oklch(98.5% 0 0 / 60%), oklch(98.5% 0 0 / 25%));
+	--glass-highlight: light-dark(oklch(98.5% 0 0 / 60%), oklch(90% 0.05 225 / 30%));
+	--glass-surface: light-dark(oklch(98.5% 0 0 / 15%), oklch(32% 0.045 240 / 16%));
+	--glass-surface-hover: light-dark(oklch(98.5% 0 0 / 26%), oklch(42% 0.06 235 / 22%));
+	/* Falls away from the sun in the top-left corner. */
+	--glass-shadow: 5px 9px 24px light-dark(oklch(20.8% 0.042 265.755 / 12%), oklch(0% 0 0 / 35%));
 }
 
 @layer base {
@@ -97,7 +101,7 @@
 	/* Read-only pane: flat. Interactive surfaces add .interactive-surface to read as raised. */
 	.glass {
 		border: 1px solid var(--color-border);
-		background-color: light-dark(oklch(98.5% 0 0 / 15%), oklch(14.5% 0 0 / 15%));
+		background-color: var(--glass-surface);
 		background-image: var(--glass-sheen);
 		backdrop-filter: blur(12px);
 	}
@@ -121,7 +125,7 @@
 
 	.interactive-surface {
 		cursor: pointer;
-		box-shadow: 0 8px 24px light-dark(oklch(20.8% 0.042 265.755 / 10%), transparent);
+		box-shadow: var(--glass-shadow);
 		transition:
 			color 150ms ease-out,
 			background-color 150ms ease-out,
@@ -131,6 +135,7 @@
 
 	.interactive-surface:hover {
 		border-color: var(--interaction-accent, var(--color-accent));
+		background-color: var(--glass-surface-hover);
 		transform: translateY(-1px);
 	}
 

@@ -36,6 +36,7 @@
 			class="flex shrink-0 flex-col items-end gap-1.5 font-mono text-xs leading-none tracking-wide text-muted-foreground"
 		>
 			<time datetime={date}>{formatPostDate(date)}</time>
+			<span class="text-muted-foreground/80">{readingMinutes} min read</span>
 		</div>
 	</div>
 

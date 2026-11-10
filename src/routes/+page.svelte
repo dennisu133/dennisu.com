@@ -3,7 +3,7 @@
 	let { data }: { data: PageData } = $props();
 	import githubIcon from "#lib/assets/icons/social/github.svg";
 	import githubDarkIcon from "#lib/assets/icons/social/github-dark.svg";
-	import { ArrowRight } from "@lucide/svelte";
+	import { ArrowRight, MapPin } from "@lucide/svelte";
 
 	import ProjectCard from "#lib/components/card/ProjectCard.svelte";
 	import PostCard from "#lib/components/card/PostCard.svelte";
@@ -201,21 +201,21 @@
 </svelte:head>
 
 <div class="isolate mx-auto flex min-h-screen max-w-6xl flex-col px-6 sm:px-10">
-	<header class="mt-6 flex min-h-40 flex-wrap gap-4 sm:min-h-36">
-		<div class="motion-safe:transition-colors motion-safe:duration-150 motion-safe:ease-linear">
-			<h1>
-				{profile.name}
-			</h1>
-			<p class="text-h3 leading-tight font-semibold text-muted-foreground">
+	<!-- The controls share the meta row on small screens so the title keeps the full width. -->
+	<header class="mt-6 mb-4 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-x-4">
+		<h1 class="col-span-2 sm:col-span-1">
+			{profile.name}
+		</h1>
+		<div
+			class="col-start-1 flex min-w-0 flex-col gap-x-2 gap-y-1 leading-tight text-muted-foreground sm:flex-row"
+		>
+			<p class="text-h3 font-semibold">
 				{profile.subtitle}
 			</p>
-		</div>
-
-		<div class="ml-auto flex flex-col items-end self-end">
-			<ThemeToggle />
-
-			<div class="mt-1 text-right text-muted-foreground sm:mt-2">
-				<span>Based in </span>
+			<span class="hidden w-px bg-border/80 sm:block" aria-hidden="true"></span>
+			<p class="flex items-center gap-1 text-h3">
+				<MapPin aria-hidden="true" strokeWidth={1.75} class="size-4 shrink-0" />
+				<span class="sr-only">Based in</span>
 				<FancyLink
 					href={profile.location.url}
 					target="_blank"
@@ -224,15 +224,19 @@
 				>
 					{profile.location.label}
 				</FancyLink>
-			</div>
+			</p>
+		</div>
+
+		<div class="col-start-2 row-start-2 sm:row-span-2 sm:row-start-1">
+			<ThemeToggle />
 		</div>
 	</header>
 
 	<main class="flex flex-1 flex-col">
-		<section class="mb-6 lg:mb-2" aria-labelledby="about-heading">
+		<section class="mb-4" aria-labelledby="about-heading">
 			<h2
 				id="about-heading"
-				class="mb-[clamp(0.5rem,1dvh,1rem)] flex items-center gap-4 py-2 tracking-[0.2em] text-muted-foreground uppercase after:h-px after:grow after:bg-border"
+				class="mb-2 flex items-center gap-4 py-1 text-sm font-medium tracking-[0.2em] text-muted-foreground uppercase after:h-px after:grow after:bg-border"
 			>
 				About
 			</h2>
@@ -255,7 +259,7 @@
 
 					<div class="flex items-center gap-2 text-accent forced-colors:text-[CanvasText]">
 						<span
-							class="size-1.5 shrink-0 rounded-full border-3 border-current bg-current"
+							class="size-1.5 shrink-0 bg-current forced-colors:bg-[CanvasText]"
 							aria-hidden="true"
 						></span>
 						<p class="text-[clamp(0.75rem,1.5vw,0.9rem)] leading-relaxed text-muted-foreground">
@@ -277,11 +281,11 @@
 			</div>
 		</section>
 
-		<div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+		<div class="mb-6 grid grid-cols-1 gap-x-6 gap-y-4 lg:grid-cols-2">
 			<section class="min-w-0" aria-labelledby="projects-heading">
 				<h2
 					id="projects-heading"
-					class="mb-[clamp(0.5rem,1dvh,1rem)] flex items-center gap-4 py-2 tracking-[0.2em] text-muted-foreground uppercase after:h-px after:grow after:bg-border"
+					class="mb-2 flex items-center gap-4 py-1 text-sm font-medium tracking-[0.2em] text-muted-foreground uppercase after:h-px after:grow after:bg-border"
 				>
 					Projects
 				</h2>
@@ -294,7 +298,7 @@
 			<section class="min-w-0" aria-labelledby="blog-heading">
 				<h2
 					id="blog-heading"
-					class="mb-[clamp(0.5rem,1dvh,1rem)] flex items-center gap-4 py-2 tracking-[0.2em] text-muted-foreground uppercase after:h-px after:grow after:bg-border"
+					class="mb-2 flex items-center gap-4 py-1 text-sm font-medium tracking-[0.2em] text-muted-foreground uppercase after:h-px after:grow after:bg-border"
 				>
 					Blog
 				</h2>
