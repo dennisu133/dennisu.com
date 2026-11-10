@@ -2,11 +2,11 @@
 	import { onDestroy, tick, type Snippet } from "svelte";
 	import { MediaQuery } from "svelte/reactivity";
 	import { asset } from "$app/paths";
-	import type { Asset } from "$app/types";
+	import type { AssetPath } from "$app/types";
 
 	interface Props {
 		children: Snippet;
-		src: Asset; // Full-size image at a stable URL from static/.
+		src: AssetPath; // Full-size image at a stable URL from static/.
 		previewSrc?: string; // Optional imported asset used only inside the preview.
 		alt: string;
 	}

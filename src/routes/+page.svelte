@@ -1,27 +1,27 @@
 <script lang="ts">
 	import type { PageData } from "./$types";
 	let { data }: { data: PageData } = $props();
-	import githubIcon from "$lib/assets/icons/social/github.svg";
-	import githubDarkIcon from "$lib/assets/icons/social/github-dark.svg";
+	import githubIcon from "#lib/assets/icons/social/github.svg";
+	import githubDarkIcon from "#lib/assets/icons/social/github-dark.svg";
 	import { ArrowRight } from "@lucide/svelte";
 
-	import ProjectCard from "$lib/components/card/ProjectCard.svelte";
-	import PostCard from "$lib/components/card/PostCard.svelte";
-	import EmailContact from "$lib/components/EmailContact.svelte";
-	import ThemeToggle from "$lib/components/theme/ThemeToggle.svelte";
-	import FancyLink from "$lib/components/FancyLink.svelte";
-	import ImagePreview from "$lib/components/ImagePreview.svelte";
-	import NekoChase from "$lib/components/NekoChase.svelte";
-	import { generateFrames } from "$lib/generateFrames";
-	import { allStackIconUrls, getStackIcons } from "$lib/stackIcons";
+	import ProjectCard from "#lib/components/card/ProjectCard.svelte";
+	import PostCard from "#lib/components/card/PostCard.svelte";
+	import EmailContact from "#lib/components/EmailContact.svelte";
+	import ThemeToggle from "#lib/components/theme/ThemeToggle.svelte";
+	import FancyLink from "#lib/components/FancyLink.svelte";
+	import ImagePreview from "#lib/components/ImagePreview.svelte";
+	import NekoChase from "#lib/components/NekoChase.svelte";
+	import { generateFrames } from "#lib/generateFrames.ts";
+	import { allStackIconUrls, getStackIcons } from "#lib/stackIcons.ts";
 	import { onMount } from "svelte";
 	import { page } from "$app/state";
 
-	import ImageDispenser from "$lib/components/ImageDispenser.svelte";
+	import ImageDispenser from "#lib/components/ImageDispenser.svelte";
 
-	import discordIcon from "$lib/assets/icons/social/discord.svg";
-	import steamIcon from "$lib/assets/icons/social/steam.svg";
-	import spotifyIcon from "$lib/assets/icons/social/spotify.svg";
+	import discordIcon from "#lib/assets/icons/social/discord.svg";
+	import steamIcon from "#lib/assets/icons/social/steam.svg";
+	import spotifyIcon from "#lib/assets/icons/social/spotify.svg";
 
 	const profile = {
 		name: "Dennis Karnowitsch",
@@ -243,7 +243,7 @@
 					<p>
 						Bachelor in Computer Science. My interests are
 						<ImageDispenser images={allStackIconUrls}>programming</ImageDispenser>,
-						<ImagePreview src="/topsters.avif" alt="A grid of my favorite albums">
+						<ImagePreview src="topsters.avif" alt="A grid of my favorite albums">
 							music
 						</ImagePreview> and
 						<span class="whitespace-nowrap"><NekoChase>cats</NekoChase>.</span>

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import githubIcon from "$lib/assets/icons/social/github.svg";
-	import githubDarkIcon from "$lib/assets/icons/social/github-dark.svg";
-	import type { StackIcon } from "$lib/stackIcons";
+	import githubIcon from "#lib/assets/icons/social/github.svg";
+	import githubDarkIcon from "#lib/assets/icons/social/github-dark.svg";
+	import type { StackIcon } from "#lib/stackIcons.ts";
 
 	let {
 		name,

@@ -3,7 +3,7 @@ export type StackIcon = {
 	src: string;
 };
 
-const iconFiles = import.meta.glob<string>("$lib/assets/icons/stack/*.svg", {
+const iconFiles = import.meta.glob<string>("#lib/assets/icons/stack/*.svg", {
 	eager: true,
 	query: "?url",
 	import: "default"

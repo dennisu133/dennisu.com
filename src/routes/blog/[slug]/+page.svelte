@@ -1,13 +1,13 @@
 <script lang="ts">
-	import "$lib/blog/code.css";
+	import "#lib/blog/code.css";
 	import { page } from "$app/state";
-	import { copyCode } from "$lib/blog/copy-code";
+	import { copyCode } from "#lib/blog/copy-code.ts";
 	import { resolve } from "$app/paths";
-	import ThemeToggle from "$lib/components/theme/ThemeToggle.svelte";
-	import { formatPostDate } from "$lib/blog/posts";
+	import ThemeToggle from "#lib/components/theme/ThemeToggle.svelte";
+	import { formatPostDate } from "#lib/blog/posts.ts";
 	import type { PageData } from "./$types";
-	import { iconButtonClass } from "$lib/components/IconButton.svelte";
-	import FancyLink from "$lib/components/FancyLink.svelte";
+	import { iconButtonClass } from "#lib/components/IconButton.svelte";
+	import FancyLink from "#lib/components/FancyLink.svelte";
 	import { House } from "@lucide/svelte";
 	import TableOfContents from "./TableOfContents.svelte";
 

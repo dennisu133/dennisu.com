@@ -3,9 +3,9 @@
 	import { resolve } from "$app/paths";
 	import { onDestroy, onMount, tick } from "svelte";
 
-	import IconButton from "$lib/components/IconButton.svelte";
-	import FancyLink from "$lib/components/FancyLink.svelte";
-	import ThemeToggle from "$lib/components/theme/ThemeToggle.svelte";
+	import IconButton from "#lib/components/IconButton.svelte";
+	import FancyLink from "#lib/components/FancyLink.svelte";
+	import ThemeToggle from "#lib/components/theme/ThemeToggle.svelte";
 	import GameBoard from "./GameBoard.svelte";
 	import { Game } from "./game.svelte";
 	import HelpDialog from "./HelpDialog.svelte";

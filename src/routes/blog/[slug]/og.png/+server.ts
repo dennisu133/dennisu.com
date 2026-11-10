@@ -1,6 +1,6 @@
 import { error } from "@sveltejs/kit";
-import { posts } from "$lib/blog/server/posts";
-import { renderSocialImage } from "$lib/blog/server/social-image";
+import { posts } from "#lib/blog/server/posts.ts";
+import { renderSocialImage } from "#lib/blog/server/social-image.ts";
 import type { EntryGenerator, RequestHandler } from "./$types";
 
 export const prerender = true;

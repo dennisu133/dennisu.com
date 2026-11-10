@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount, tick as nextTick, type Snippet } from "svelte";
-	import nekoSheet from "$lib/assets/neko_java.png?no-inline";
-	import javaPreview from "$lib/assets/preview/java-preview.avif";
-	import ImagePreview from "$lib/components/ImagePreview.svelte";
+	import nekoSheet from "#lib/assets/neko_java.png?no-inline";
+	import javaPreview from "#lib/assets/preview/java-preview.avif";
+	import ImagePreview from "#lib/components/ImagePreview.svelte";
 
 	type Phase = "idle" | "chasing" | "caught" | "returning";
 
@@ -185,7 +185,7 @@
 <!-- Kept flush against the button: intervening whitespace would render as a
      stray space between the trigger word and adjacent punctuation. -->
 {#if reducedMotion}<ImagePreview
-		src="/java.avif"
+		src="java.avif"
 		previewSrc={javaPreview}
 		alt="Java, a black cat sitting in a doorway">{@render children()}</ImagePreview
 	>{:else}<button

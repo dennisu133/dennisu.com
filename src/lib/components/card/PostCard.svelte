@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { formatPostDate } from "$lib/blog/posts";
+	import { formatPostDate } from "#lib/blog/posts.ts";
 
 	let {
 		slug,
