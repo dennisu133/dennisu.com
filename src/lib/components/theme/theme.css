@@ -73,6 +73,11 @@
  * The view transition that plays when the toggle flips color-scheme. It owns
  * the color change, so component-level color transitions are suppressed to
  * stop them being captured halfway between themes.
+ *
+ * The dark theme is the water: switching to dark dives (the waterline rises
+ * past the viewport), switching to light surfaces (it drains away again). The
+ * dark snapshot is therefore always the masked layer on top, whether it is the
+ * incoming or the outgoing one.
  */
 :root.theme-transition-capture *,
 :root.theme-transition-capture *::before,
@@ -84,32 +89,50 @@
 	view-transition-name: theme-toggle-icon;
 }
 
-@property --theme-reveal {
-	syntax: "<percentage>";
+/* 0 = waterline below the viewport, 1 = fully submerged. */
+@property --theme-waterline {
+	syntax: "<number>";
 	inherits: false;
-	initial-value: 12%;
+	initial-value: 0;
 }
 
-:root.theme-transition-active::view-transition-old(root) {
+:root.theme-transition-active::view-transition-old(root),
+:root.theme-transition-active::view-transition-new(root) {
 	z-index: 1;
 	animation: none;
+	mix-blend-mode: normal;
 }
 
-:root.theme-transition-active::view-transition-new(root) {
-	--theme-reveal: 12%;
+:root.theme-transition-dive::view-transition-new(root),
+:root.theme-transition-surface::view-transition-old(root) {
+	/* The crest tile is 26px tall. The swell rides 14px ahead of it and is stretched to 40px so the two overlap without a gap. */
+	--wave-top: calc((1 - var(--theme-waterline)) * (100vh + 80px) - 40px);
+	--wave-drift: calc(var(--theme-waterline) * 160px);
+
 	z-index: 2;
-	animation: theme-twilight-reveal 760ms cubic-bezier(0.4, 0, 0.2, 1) both;
-	mask-image: linear-gradient(
-		225deg,
-		black 0%,
-		black calc(var(--theme-reveal) - 2.2%),
-		rgb(0 0 0 / 92%) calc(var(--theme-reveal) - 1.7%),
-		rgb(0 0 0 / 68%) calc(var(--theme-reveal) - 1.05%),
-		rgb(0 0 0 / 32%) calc(var(--theme-reveal) - 0.4%),
-		transparent calc(var(--theme-reveal) + 0.35%)
-	);
-	mask-repeat: no-repeat;
-	mask-size: 100% 100%;
+	/* A translucent swell, the opaque crest, then solid water below them. */
+	mask-image:
+		url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 26' preserveAspectRatio='none'%3E%3Cpath fill-opacity='.45' d='M0 13Q60-11 120 13T240 13V26H0Z'/%3E%3C/svg%3E"),
+		url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 26' preserveAspectRatio='none'%3E%3Cpath d='M0 13Q60-11 120 13T240 13V26H0Z'/%3E%3C/svg%3E"),
+		linear-gradient(black, black);
+	mask-repeat: repeat-x, repeat-x, no-repeat;
+	mask-size:
+		380px 40px,
+		240px 26px,
+		/* Taller than the viewport: at full submersion this layer starts above the top edge and must still reach the bottom. */
+		100% calc(100% + 40px);
+	mask-position:
+		calc(var(--wave-drift) * -1.5) calc(var(--wave-top) - 14px),
+		var(--wave-drift) var(--wave-top),
+		0 calc(var(--wave-top) + 24px);
+}
+
+:root.theme-transition-dive::view-transition-new(root) {
+	animation: theme-waterline 900ms cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+
+:root.theme-transition-surface::view-transition-old(root) {
+	animation: theme-waterline 900ms cubic-bezier(0.65, 0, 0.35, 1) both reverse;
 }
 
 :root.theme-transition-active::view-transition-group(theme-toggle-icon) {
@@ -124,9 +147,13 @@
 	animation: theme-icon-in 360ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-@keyframes theme-twilight-reveal {
+@keyframes theme-waterline {
+	from {
+		--theme-waterline: 0;
+	}
+
 	to {
-		--theme-reveal: 106%;
+		--theme-waterline: 1;
 	}
 }
 

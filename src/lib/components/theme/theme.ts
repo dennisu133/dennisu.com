@@ -37,7 +37,10 @@ export function toggleTheme() {
 		return;
 	}
 
-	root.classList.add("theme-transition-active", "theme-transition-capture");
+	// Dark is "underwater": going dark dives, going light surfaces.
+	const direction = nextTheme === "dark" ? "theme-transition-dive" : "theme-transition-surface";
+	root.classList.remove("theme-transition-dive", "theme-transition-surface");
+	root.classList.add("theme-transition-active", "theme-transition-capture", direction);
 
 	const transition = document.startViewTransition(() => applyTheme(root, nextTheme));
 	activeTransition = transition;
@@ -52,7 +55,7 @@ export function toggleTheme() {
 	const finishTransition = () => {
 		if (activeTransition === transition) {
 			activeTransition = null;
-			root.classList.remove("theme-transition-active", "theme-transition-capture");
+			root.classList.remove("theme-transition-active", "theme-transition-capture", direction);
 		}
 	};
 	void transition.finished.then(finishTransition, finishTransition);
