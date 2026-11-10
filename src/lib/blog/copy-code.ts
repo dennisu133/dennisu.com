@@ -1,33 +1,42 @@
 import type { Attachment } from "svelte/attachments";
 
+// The wrapper takes over the frame that a bare <pre> draws for itself without scripting.
+const preOverrides = ["!my-0", "!border-0", "!bg-transparent"];
+
 export const copyCode: Attachment<HTMLElement> = (element) => {
 	const cleanups = Array.from(element.querySelectorAll("pre"), (pre) => {
 		const code = pre.querySelector("code");
 		if (!code) return () => {};
 
+		// A header strip keeps the button off the code, so long lines never run underneath it.
 		const wrapper = document.createElement("div");
-		wrapper.className = "group/code relative my-6";
+		wrapper.className = "my-6 border border-border bg-foreground/5";
+		const header = document.createElement("div");
+		header.className =
+			"flex items-center justify-between gap-3 border-b border-border/50 py-1.5 pr-2 pl-4 font-mono text-xs tracking-wider text-muted-foreground uppercase";
+		const language = document.createElement("span");
+		language.textContent = pre.dataset.lang ?? "";
 		pre.before(wrapper);
-		wrapper.append(pre);
-		pre.classList.add("!my-0");
+		wrapper.append(header, pre);
+		pre.classList.add(...preOverrides);
 
 		const button = document.createElement("button");
 		button.type = "button";
 		button.textContent = "Copy";
 		button.setAttribute("aria-label", "Copy code");
 		button.className =
-			"absolute top-2 right-2 border border-current bg-background px-2 py-1 text-xs text-foreground hover:text-accent [@media(hover:hover)]:pointer-events-none [@media(hover:hover)]:opacity-0 group-hover/code:pointer-events-auto group-hover/code:opacity-100 group-focus-within/code:pointer-events-auto group-focus-within/code:opacity-100";
+			"accent-focus cursor-pointer px-2 py-0.5 tracking-wider text-accent uppercase hover:text-accent-hover motion-safe:transition-colors motion-safe:duration-150";
 		const status = document.createElement("span");
 		status.className = "sr-only";
 		status.setAttribute("role", "status");
-		wrapper.append(button, status);
+		header.append(language, button, status);
 
 		let timeout: ReturnType<typeof setTimeout>;
 		button.onclick = async () => {
 			clearTimeout(timeout);
 			try {
 				await navigator.clipboard.writeText(code.textContent ?? "");
-				button.textContent = "Copied!";
+				button.textContent = "Copied";
 				status.textContent = "Code copied to clipboard.";
 			} catch {
 				button.textContent = "Try again";
@@ -42,7 +51,7 @@ export const copyCode: Attachment<HTMLElement> = (element) => {
 		return () => {
 			clearTimeout(timeout);
 			wrapper.before(pre);
-			pre.classList.remove("!my-0");
+			pre.classList.remove(...preOverrides);
 			wrapper.remove();
 		};
 	});

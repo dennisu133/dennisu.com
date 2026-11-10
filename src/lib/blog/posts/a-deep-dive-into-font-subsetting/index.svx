@@ -63,6 +63,8 @@ This yields Geist-400.woff2 (32.98 KB) and Geist-700.woff2 (33.62 KB). Together 
 
 This bar counts characters, not bytes, so the file does not shrink by the same proportion. `cmap` and `name` shrink without disappearing, and every font keeps some fixed overhead that no subset can remove. But the three tables that dominated the breakdown earlier, `gvar`, `glyf` and `GPOS`, are all indexed by glyph, and those are the ones that collapse.
 
+### Subsetting with FontTools
+
 `pyftsubset` comes with the FontTools install from earlier. This command keeps Basic Latin along with a few typographic characters that tend to appear as HTML entities:
 
 ```bash
@@ -73,6 +75,8 @@ pyftsubset "Geist-400-700.woff2" \
 ```
 
 This takes the clamped font from 52.16 KB down to 13.35 KB. Running the same command against the original font, with its full 100-900 axis, gives 18.80 KB. Subsetting and axis-clamping complement each other.
+
+### Subsetting in a Node build
 
 Unlike weight cutting, subsetting depends on the content the font serves. The best time to subset a font is during build time, when content is static. For Node projects, [subset-font](https://www.npmjs.com/package/subset-font), a wrapper around HarfBuzz's [hb-subset](https://harfbuzz.github.io/harfbuzz-hb-subset.html) is a possible choice. [It also supports restricting variable font axes](https://github.com/papandreou/subset-font#reducing-the-variation-space) so a Node build can handle both steps. However when subsetting the exact same unicode code points as before:
 
@@ -103,6 +107,8 @@ await writeFile("Geist-400-700-subset.woff2", subset);
 ```
 
 the output will result in a file that is 16.56 KB, over 3 KB larger than what `pyftsubset` produced from the same characters. That gap is not a disagreement between FontTools and HarfBuzz. It is a deliberate choice in `subset-font` version 2.7.0.
+
+### Why the same characters give different sizes
 
 Both subsetters map characters to glyphs through `cmap`, then follow `GSUB` substitutions for retained features. With their [default feature settings](https://fonttools.readthedocs.io/en/latest/subset/), both subsetters retain seven of Geist's 29 features, yielding 151 glyphs. Plain `hb-subset` produces 13.31 KB. The 44-byte difference from FontTools is layout, not content. Both files carry the same glyphs, features and tables. HarfBuzz pads composite glyphs like `i` and `j` to a four-byte boundary where FontTools does not, and packs `GPOS` slightly tighter. Uncompressed its file is actually 22 bytes larger, and only Brotli reverses the order.
 
