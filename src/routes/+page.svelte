@@ -3,7 +3,7 @@
 	let { data }: { data: PageData } = $props();
 	import githubIcon from "#lib/assets/icons/social/github.svg";
 	import githubDarkIcon from "#lib/assets/icons/social/github-dark.svg";
-	import { ArrowRight, MapPin } from "@lucide/svelte";
+	import { ArrowRight } from "@lucide/svelte";
 
 	import ProjectCard from "#lib/components/card/ProjectCard.svelte";
 	import PostCard from "#lib/components/card/PostCard.svelte";
@@ -25,13 +25,9 @@
 
 	const profile = {
 		name: "Dennis Karnowitsch",
-		subtitle: "Full-Stack Developer",
-		proficiencies: "Experienced in Python, TypeScript and Java.",
-		availability: "Currently looking for a full-time software role and open to freelance projects.",
-		location: {
-			label: "***REMOVED***",
-			url: "***REMOVED***"
-		}
+		subtitle: "Software engineer",
+		proficiencies: "Focus on web development, embedded systems, radio and automation.",
+		availability: "Currently looking for a full-time software role and open to freelance projects."
 	};
 
 	const projects = [
@@ -175,12 +171,8 @@
 		>{isVisible ? (showStatic ? "Dennis Karnowitsch 🐱" : frames[currentFrame]) : altTitle}</title
 	>
 
-	<meta
-		name="description"
-		content="Personal website of Dennis Karnowitsch, full-stack developer."
-	/>
-
-	<meta property="og:title" content="Dennis Karnowitsch | Full-Stack Developer 🐱" />
+	<meta name="description" content="Personal website of Dennis Karnowitsch, software engineer." />
+	<meta property="og:title" content="Dennis Karnowitsch | Software Engineer 🐱" />
 	<meta property="og:description" content="Please hire me." />
 
 	<!-- OG image -->
@@ -213,19 +205,6 @@
 		>
 			<p class="text-h3 font-semibold">
 				{profile.subtitle}
-			</p>
-			<span class="hidden w-px bg-border/80 sm:block" aria-hidden="true"></span>
-			<p class="flex items-center gap-1 text-h3">
-				<MapPin aria-hidden="true" strokeWidth={1.75} class="size-4 shrink-0" />
-				<span class="sr-only">Based in</span>
-				<FancyLink
-					href={profile.location.url}
-					target="_blank"
-					rel="noreferrer"
-					class="text-accent hover:text-accent-hover focus-visible:text-accent-hover"
-				>
-					{profile.location.label}
-				</FancyLink>
 			</p>
 		</div>
 
