@@ -36,20 +36,27 @@
 
 	const projects = [
 		{
+			name: "lab1090",
+			description: "Mode-S and ADS-B decoder with a live tracker and explanatory graphs.",
+			url: "lab1090.dennisu.com/",
+			repo: "https://github.com/dennisu133/lab1090",
+			date: new Date(2026, 10, 1, 12), // 10 = November
+			stack: getStackIcons("typescript", "tailwind", "svelte", "python")
+		},
+		{
 			name: "Jikaze",
 			description: "Android Riichi Mahjong score calculator for in-person play.",
 			url: "https://jikaze.app/",
 			repo: "https://github.com/dennisu133/Jikaze",
 			date: new Date(2026, 2, 1, 12), // 2 = March, noon to avoid timezone shifts
-			stack: getStackIcons("android", "jetpackcompose", "kotlin")
+			stack: getStackIcons("android", "jetpackcompose", "kotlin", "svelte")
 		},
 		{
 			name: "PrivateStream",
 			description: "A private low-latency livestream viewer for friend groups.",
-			url: "https://github.com/dennisu133/PrivateStream",
 			repo: "https://github.com/dennisu133/PrivateStream",
 			date: new Date(2025, 9, 1, 12), // Month is 0-indexed: 9 = October, noon to avoid timezone shifts
-			stack: getStackIcons("typescript", "svelte", "tailwind")
+			stack: getStackIcons("typescript", "tailwind", "svelte")
 		},
 		{
 			name: "LetterMaker",
@@ -57,7 +64,7 @@
 			url: "https://letter.dennisu.com",
 			repo: "https://github.com/dennisu133/LetterMaker",
 			date: new Date(2025, 7, 1, 12), // 7 = August, noon to avoid timezone shifts
-			stack: getStackIcons("typescript", "go", "react", "tailwind")
+			stack: getStackIcons("typescript", "tailwind", "react", "go")
 		}
 	];
 
