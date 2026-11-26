@@ -38,7 +38,7 @@
 		{
 			name: "lab1090",
 			description: "Mode-S and ADS-B decoder with a live tracker and explanatory graphs.",
-			url: "lab1090.dennisu.com/",
+			url: "https://lab1090.dennisu.com/",
 			repo: "https://github.com/dennisu133/lab1090",
 			date: new Date(2026, 10, 1, 12), // 10 = November
 			stack: getStackIcons("typescript", "tailwind", "svelte", "python")
